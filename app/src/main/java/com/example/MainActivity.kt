@@ -148,7 +148,7 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
                 return@withContext "API_KEY_MISSING: Please configure your GEMINI_API_KEY in the AI Studio secrets."
             }
             
-            val modelsToTry = listOf("gemini-1.5-flash", "gemini-2.0-flash")
+            val modelsToTry = listOf("gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro")
             val jsonBody = JSONObject().apply {
                 put("contents", org.json.JSONArray().apply {
                     put(JSONObject().apply {

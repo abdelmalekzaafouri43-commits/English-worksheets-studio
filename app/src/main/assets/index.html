@@ -3203,15 +3203,20 @@
                     To use this web application on GitHub Pages, you must provide your own Google Gemini API key. This key is stored <strong>locally in your browser</strong> and is never sent to any server other than Google's secure API.
                 </p>
                 <div class="bento-form-group">
-                    <label for="web-api-key-input" class="bento-label">Your API Key</label>
-                    <input type="password" id="web-api-key-input" class="primary-input bento-input" placeholder="AIzaSy..." style="font-family: monospace;">
+                    <label for="web-api-key-input" class="bento-label">Your Gemini API Key</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="password" id="web-api-key-input" class="primary-input bento-input" placeholder="AIzaSy..." style="font-family: monospace; flex: 1;">
+                        <button type="button" class="editor-btn" onclick="toggleApiKeyVisibility()" id="btn-toggle-key-visibility" title="Show/Hide API Key">👁️</button>
+                    </div>
                 </div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px;">
-                    Don't have one? Get it for free at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--accent-primary); font-weight: bold; text-decoration: none;">Google AI Studio</a>.
+                <div id="api-key-test-status" style="display: none; margin-bottom: 15px; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.4;"></div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <span>Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--accent-primary); font-weight: bold; text-decoration: none;">Google AI Studio</a></span>
+                    <button type="button" class="editor-btn" onclick="testWebApiKey()" id="btn-test-api-key" style="padding: 4px 10px; font-size: 12px;">🔍 Test Connection</button>
                 </div>
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
                     <button type="button" class="editor-btn" onclick="document.getElementById('api-key-modal').style.display='none'">Cancel</button>
-                    <button type="button" class="print-btn" onclick="saveWebApiKey()" style="padding: 8px 16px; font-weight: 700;">Save API Key</button>
+                    <button type="button" class="print-btn" onclick="saveWebApiKey()" style="padding: 8px 18px; font-weight: 700;">Save API Key</button>
                 </div>
             </div>
         </div>
@@ -3922,66 +3927,117 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 if (btn) btn.innerHTML = `⏳ ${msg}`;
             };
 
-            updateStatus("Generating worksheet with Gemini AI...");
+            updateStatus("Connecting to Google Gemini AI...");
 
-            const models = [
-                'gemini-2.5-flash',
+            // 1. Check if we already found and cached a working model for this API key
+            const cachedWorkingModel = localStorage.getItem('cached_working_gemini_model');
+
+            // 2. Discover models dynamically from Google's ModelService for this specific key
+            let candidateModels = [];
+            if (cachedWorkingModel) {
+                candidateModels.push(cachedWorkingModel);
+            }
+
+            try {
+                const listController = new AbortController();
+                const listTimeout = setTimeout(() => listController.abort(), 4000);
+                const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`, {
+                    signal: listController.signal
+                });
+                clearTimeout(listTimeout);
+                const listData = await listRes.json();
+                
+                if (listData.models && Array.isArray(listData.models)) {
+                    const dynamicModels = listData.models
+                        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                        .map(m => m.name.replace('models/', ''));
+                    
+                    if (dynamicModels.length > 0) {
+                        // Prioritize fastest flash models
+                        dynamicModels.sort((a, b) => {
+                            const score = (name) => {
+                                if (name.includes('2.0-flash')) return 10;
+                                if (name.includes('2.5-flash')) return 9;
+                                if (name.includes('1.5-flash')) return 8;
+                                if (name.includes('flash')) return 7;
+                                if (name.includes('pro')) return 6;
+                                return 1;
+                            };
+                            return score(b) - score(a);
+                        });
+                        candidateModels = Array.from(new Set([...candidateModels, ...dynamicModels]));
+                    }
+                } else if (listData.error) {
+                    if (listData.error.message && (listData.error.message.includes('API key not valid') || listData.error.message.includes('API_KEY_INVALID'))) {
+                        throw new Error("Invalid API key. Please verify your key in the 🔑 API Key settings.");
+                    }
+                }
+            } catch (err) {
+                if (err.message && err.message.includes('Invalid API key')) throw err;
+                console.warn("Dynamic model discovery bypassed, using standard model list:", err);
+            }
+
+            // Fallback list of modern standard models
+            const fallbackList = [
                 'gemini-2.0-flash',
+                'gemini-2.5-flash',
                 'gemini-1.5-flash',
                 'gemini-1.5-flash-8b',
                 'gemini-1.5-pro',
                 'gemini-pro'
             ];
+            candidateModels = Array.from(new Set([...candidateModels, ...fallbackList]));
 
-            const callModel = (model) => {
-                return new Promise((resolve, reject) => {
+            updateStatus("Generating custom worksheet with Gemini AI...");
+
+            let lastErr = "";
+            for (const model of candidateModels) {
+                try {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => {
-                        controller.abort();
-                        reject(new Error(`Timeout on ${model}`));
-                    }, 9000);
+                    const timeoutId = setTimeout(() => controller.abort(), 20000); // generous 20s timeout per call
 
-                    fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         signal: controller.signal,
                         body: JSON.stringify({
                             contents: [{ parts: [{ text: prompt }] }],
-                            generationConfig: { temperature: 0.7 }
+                            generationConfig: { 
+                                temperature: 0.7,
+                                maxOutputTokens: 3000
+                            }
                         })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        clearTimeout(timeoutId);
-                        if (data && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                            resolve(data.candidates[0].content.parts[0].text);
-                        } else if (data && data.error) {
-                            reject(new Error(data.error.message || `Error with ${model}`));
-                        } else {
-                            reject(new Error(`Invalid response from ${model}`));
-                        }
-                    })
-                    .catch(err => {
-                        clearTimeout(timeoutId);
-                        reject(err);
                     });
-                });
-            };
+                    clearTimeout(timeoutId);
 
-            try {
-                // Race all model endpoints concurrently for maximum speed and instant fallback
-                const result = await Promise.any(models.map(m => callModel(m)));
-                return result;
-            } catch (aggregateErr) {
-                console.warn("All parallel model attempts failed:", aggregateErr);
-                const firstMsg = aggregateErr.errors && aggregateErr.errors[0] ? aggregateErr.errors[0].message : "All models failed";
-                throw new Error(firstMsg);
+                    const data = await res.json();
+                    if (res.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                        // Success! Cache working model
+                        localStorage.setItem('cached_working_gemini_model', model);
+                        return data.candidates[0].content.parts[0].text;
+                    }
+
+                    if (data.error) {
+                        lastErr = data.error.message;
+                        if (data.error.message.includes('API key not valid') || data.error.message.includes('API_KEY_INVALID')) {
+                            throw new Error("Invalid API key. Please check your key in the 🔑 API Key settings.");
+                        }
+                    }
+                } catch (e) {
+                    if (e.message && e.message.includes('Invalid API key')) throw e;
+                    lastErr = e.message;
+                }
             }
+
+            throw new Error(lastErr || "Could not generate content from Gemini AI. Please check your connection and API key.");
         }
 
         function openApiKeyModal() {
             const modal = document.getElementById('api-key-modal');
             const input = document.getElementById('web-api-key-input');
+            const statusBox = document.getElementById('api-key-test-status');
+            if (statusBox) statusBox.style.display = 'none';
+
             const savedKey = localStorage.getItem('web_gemini_api_key');
             if (savedKey) {
                 input.value = savedKey;
@@ -3989,21 +4045,84 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             modal.style.display = 'flex';
         }
 
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('web-api-key-input');
+            const btn = document.getElementById('btn-toggle-key-visibility');
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (btn) btn.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                if (btn) btn.innerText = '👁️';
+            }
+        }
+
+        async function testWebApiKey() {
+            const input = document.getElementById('web-api-key-input');
+            const statusBox = document.getElementById('api-key-test-status');
+            const testBtn = document.getElementById('btn-test-api-key');
+            const key = input ? input.value.trim() : "";
+
+            if (!key) {
+                if (statusBox) {
+                    statusBox.style.display = 'block';
+                    statusBox.style.background = '#fef2f2';
+                    statusBox.style.border = '1px solid #fecaca';
+                    statusBox.style.color = '#991b1b';
+                    statusBox.innerHTML = '⚠️ Please enter an API key first before testing.';
+                }
+                return;
+            }
+
+            if (testBtn) testBtn.disabled = true;
+            if (statusBox) {
+                statusBox.style.display = 'block';
+                statusBox.style.background = '#f0f9ff';
+                statusBox.style.border = '1px solid #bae6fd';
+                statusBox.style.color = '#0369a1';
+                statusBox.innerHTML = '⏳ Testing connection to Google Gemini API...';
+            }
+
+            try {
+                const responseText = await fetchGeminiWithFallback(key, "Write a 1-sentence friendly greeting for an English classroom.");
+                if (statusBox) {
+                    statusBox.style.display = 'block';
+                    statusBox.style.background = '#f0fdf4';
+                    statusBox.style.border = '1px solid #bbf7d0';
+                    statusBox.style.color = '#166534';
+                    const activeModel = localStorage.getItem('cached_working_gemini_model') || 'Gemini Flash';
+                    statusBox.innerHTML = `✅ <strong>Connected successfully!</strong> Verified with model: <code>${escapeHtml(activeModel)}</code>.<br><span style="font-size: 11.5px; opacity: 0.9;">AI Test Output: "${escapeHtml(responseText.substring(0, 70))}..."</span>`;
+                }
+            } catch (err) {
+                if (statusBox) {
+                    statusBox.style.display = 'block';
+                    statusBox.style.background = '#fef2f2';
+                    statusBox.style.border = '1px solid #fecaca';
+                    statusBox.style.color = '#991b1b';
+                    statusBox.innerHTML = `❌ <strong>Connection failed:</strong> ${escapeHtml(err.message)}`;
+                }
+            } finally {
+                if (testBtn) testBtn.disabled = false;
+            }
+        }
+
         function saveWebApiKey() {
             const input = document.getElementById('web-api-key-input');
-            const key = input.value.trim();
+            const key = input ? input.value.trim() : "";
             if (key) {
                 localStorage.setItem('web_gemini_api_key', key);
                 document.getElementById('api-key-modal').style.display = 'none';
                 showToast("API Key saved successfully!", "🔑");
                 
-                // If they already have text in the prompt box, auto-trigger the generation!
+                // If user was trying to generate, re-trigger AI creation now
                 const promptVal = document.getElementById('custom-prompt') ? document.getElementById('custom-prompt').value.trim() : "";
                 if (promptVal || typeof currentLoadedSample !== 'undefined') {
                     setTimeout(() => { askAITutor(); }, 300);
                 }
             } else {
                 localStorage.removeItem('web_gemini_api_key');
+                localStorage.removeItem('cached_working_gemini_model');
                 document.getElementById('api-key-modal').style.display = 'none';
                 showToast("API Key cleared.", "🗑️");
             }
@@ -4319,36 +4438,58 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
         function onAiResponse(responseText) {
             const btn = document.getElementById('ai-button');
-            btn.disabled = false;
-            btn.innerHTML = '✨ Generate Worksheet <span class="premium-pill">PRO</span>';
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '✨ Generate Worksheet <span class="premium-pill">PRO</span>';
+            }
             
             const customPromptInput = document.getElementById('custom-prompt');
             const userRequest = customPromptInput ? customPromptInput.value.trim() : "";
 
             let formattedText = responseText.replace(/```html/g, '').replace(/```/g, '');
 
-            // Detect actual API errors we passed from the fetch block
+            // Handle API errors cleanly without substituting fake worksheets
             if (formattedText.startsWith('API_ERROR:')) {
                 const errorMsg = formattedText.replace('API_ERROR:', '').trim();
-                showToast("Loaded ready-made worksheet!", "⚡");
+                showToast("AI Generation Error", "⚠️");
                 
-                // Immediately generate and display a ready-made worksheet with a subtle notice bar
-                const readyMadeWorksheet = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
                 formattedText = `
-                <div id="api-status-banner" style="margin-bottom: 18px; padding: 12px 16px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 13.5px; color: #1e40af; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 2px 6px rgba(59,130,246,0.08);">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 18px;">⚡</span>
-                        <span><strong>Ready-Made Worksheet Ready:</strong> Generated instantly for your topic.</span>
+                <div style="margin: 25px auto; max-width: 650px; padding: 28px 24px; border-radius: 16px; background: #fff; border: 1.5px solid #fca5a5; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.1); text-align: center; font-family: sans-serif;">
+                    <div style="font-size: 42px; margin-bottom: 12px;">⚠️</div>
+                    <h3 style="color: #991b1b; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Gemini AI Generation Notice</h3>
+                    <p style="color: #64748b; font-size: 14px; margin-bottom: 16px; line-height: 1.5;">
+                        Google Gemini API encountered an issue while generating your custom worksheet:
+                    </p>
+                    
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 12px 16px; border-radius: 10px; font-family: monospace; font-size: 13px; margin-bottom: 22px; word-break: break-word; text-align: left; line-height: 1.4;">
+                        ${escapeHtml(errorMsg)}
                     </div>
-                    <button onclick="openApiKeyModal()" style="background: white; border: 1px solid #93c5fd; color: #1d4ed8; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;">
-                        🔑 API Key
-                    </button>
+                    
+                    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                        <button type="button" onclick="openApiKeyModal()" class="print-btn" style="padding: 10px 20px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                            🔑 Test / Update API Key
+                        </button>
+                        <button type="button" onclick="askAITutor()" class="editor-btn" style="padding: 10px 18px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                            🔄 Retry Generation
+                        </button>
+                    </div>
                 </div>
-                ${readyMadeWorksheet}
                 `;
             } else if (!formattedText || formattedText.includes('API_KEY_MISSING:') || formattedText.includes('Please configure your GEMINI_API_KEY')) {
-                showToast("Loaded ready-made worksheet!", "⚡");
-                formattedText = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
+                showToast("API Key Needed", "🔑");
+                openApiKeyModal();
+                formattedText = `
+                <div style="margin: 25px auto; max-width: 600px; padding: 28px 24px; border-radius: 16px; background: #fff; border: 1.5px solid #cbd5e1; text-align: center; font-family: sans-serif;">
+                    <div style="font-size: 40px; margin-bottom: 12px;">🔑</div>
+                    <h3 style="color: #1e293b; font-size: 19px; font-weight: 700; margin-bottom: 8px;">Gemini API Key Required</h3>
+                    <p style="color: #64748b; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+                        Please configure your free Gemini API key to enable live AI worksheet generation.
+                    </p>
+                    <button type="button" onclick="openApiKeyModal()" class="print-btn" style="padding: 10px 22px; font-size: 14px; font-weight: 600;">
+                        Enter API Key
+                    </button>
+                </div>
+                `;
             }
             
             originalWorksheetHTML = formattedText;
