@@ -1153,25 +1153,6 @@
             background: var(--bg-card);
         }
 
-        @media print {
-            .no-print, .sample-modal-overlay, .sample-modal, #print-preview-modal {
-                display: none !important;
-            }
-            body {
-                background: white !important;
-                color: black !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .a4-preview {
-                box-shadow: none !important;
-                border: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 1.5cm !important;
-                margin: 0 !important;
-            }
-        }
 
         .edit-mode-banner {
             display: none;
@@ -1288,6 +1269,41 @@
             border-color: var(--accent-primary);
             background: rgba(37, 99, 235, 0.05);
             box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .manual-page-break {
+            page-break-before: always !important;
+            break-before: page !important;
+            width: 100%;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+            clear: both;
+        }
+
+        .editing-mode-active .manual-page-break {
+            border-top: 2px dashed #dc2626 !important;
+            margin: 25px 0 !important;
+            position: relative;
+            opacity: 0.8;
+            display: block !important;
+        }
+
+        .editing-mode-active .manual-page-break::after {
+            content: '✂️ PAGE BREAK';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            pointer-events: none;
         }
 
         .ws-block.reorder-active {
@@ -2615,40 +2631,38 @@
         }
 
         @media print {
-            body { background: white; margin: 0; padding: 0; }
-            .no-print { display: none !important; }
+            body { 
+                background: white !important; 
+                margin: 0; 
+                padding: 0; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
+            .no-print, .sample-modal-overlay, .sample-modal, #print-preview-modal, #api-key-modal { 
+                display: none !important; 
+            }
             @page {
-                margin: 20mm;
-                @bottom-right {
-                    content: "Page " counter(page);
-                    font-size: 10pt;
-                    color: #666;
-                }
+                margin: 15mm;
             }
             .image-placeholder {
                 border: 2px dashed #999 !important;
                 background-color: transparent !important;
-                color: #999 !important;
+                color: #666 !important;
             }
             .a4-preview { 
-                box-shadow: none; 
-                margin: 0; 
-                padding: 0; 
-                max-width: none; 
-                min-height: 0;
+                box-shadow: none !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                max-width: none !important;
+                width: 100% !important;
+                border: none !important;
+                min-height: 0 !important;
             }
-            .a4-preview * {
-                color: black !important;
-                background: white !important;
+            h2, h3, h4 {
+                page-break-after: avoid;
             }
-            .middle-box {
-                border: 2px solid black !important;
-            }
-            .primary-box-class {
-                border: 1px solid black !important;
-            }
-            input, textarea {
-                border: 1px solid black !important;
+            p, li, .middle-box {
+                page-break-inside: avoid;
             }
         }
 
@@ -2969,6 +2983,7 @@
                 <button type="button" class="editor-btn" onclick="insertStudentBlankLine()" title="Insert Fill-in line (_______)">✍️ + Blank Line</button>
                 <button type="button" class="editor-btn" onclick="insertCheckboxOption()" title="Insert Choice Checkbox (☐)">☑️ + Checkbox</button>
                 <button type="button" class="editor-btn" onclick="insertDrawingBox()" title="Insert Drawing Box Area">📷 + Drawing Box</button>
+                <button type="button" class="editor-btn" onclick="insertPageBreak()" title="Insert Manual Page Break">✂️ + Page Break</button>
             </div>
 
             <div class="editor-tool-group" style="margin-left: auto;">
@@ -3893,7 +3908,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                     return;
                 }
                 
-                fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
+                fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -3934,6 +3949,12 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 localStorage.setItem('web_gemini_api_key', key);
                 document.getElementById('api-key-modal').style.display = 'none';
                 showToast("API Key saved successfully!", "🔑");
+                
+                // If they already have text in the prompt box, auto-trigger the generation!
+                const promptVal = document.getElementById('custom-prompt') ? document.getElementById('custom-prompt').value.trim() : "";
+                if (promptVal || typeof currentLoadedSample !== 'undefined') {
+                    setTimeout(() => { askAITutor(); }, 300);
+                }
             } else {
                 localStorage.removeItem('web_gemini_api_key');
                 document.getElementById('api-key-modal').style.display = 'none';
@@ -4037,42 +4058,58 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 }
             }
             
-            enqueueNodes(sourceNodes, root);
+            try {
+                enqueueNodes(sourceNodes, root);
+            } catch (e) {
+                console.error("DOM Parsing error", e);
+                container.innerHTML = html; // fallback
+                if(callback) callback();
+                return;
+            }
             
             let qIdx = 0;
             let textIdx = 0;
             
             function processQueue() {
-                if (qIdx >= queue.length) {
-                    cursor.remove();
-                    if (callback) callback();
-                    return;
-                }
-                
-                let item = queue[qIdx];
-                
-                if (item.type === 'element') {
-                    item.parent.appendChild(item.element);
-                    qIdx++;
-                    processQueue();
-                } else if (item.type === 'text') {
-                    if (textIdx === 0) {
-                        item.textNode = document.createTextNode('');
-                        item.parent.appendChild(item.textNode);
-                        item.parent.appendChild(cursor);
+                try {
+                    if (qIdx >= queue.length) {
+                        if (cursor.parentNode) cursor.remove();
+                        if (callback) callback();
+                        return;
                     }
                     
-                    if (textIdx < item.text.length) {
-                        let chunk = 2; // Type 2 chars at a time for smooth speed
-                        item.textNode.textContent += item.text.substr(textIdx, chunk);
-                        textIdx += chunk;
-                        
-                        setTimeout(processQueue, 5); 
-                    } else {
-                        textIdx = 0;
+                    let item = queue[qIdx];
+                    
+                    if (item.type === 'element') {
+                        if (item.parent) item.parent.appendChild(item.element);
                         qIdx++;
                         processQueue();
+                    } else if (item.type === 'text') {
+                        if (textIdx === 0) {
+                            item.textNode = document.createTextNode('');
+                            if (item.parent) {
+                                item.parent.appendChild(item.textNode);
+                                item.parent.appendChild(cursor);
+                            }
+                        }
+                        
+                        if (textIdx < item.text.length) {
+                            let chunk = 3; // slightly faster typing
+                            item.textNode.textContent += item.text.substring(textIdx, textIdx + chunk);
+                            textIdx += chunk;
+                            
+                            setTimeout(processQueue, 5); 
+                        } else {
+                            textIdx = 0;
+                            qIdx++;
+                            processQueue();
+                        }
                     }
+                } catch(e) {
+                    console.error("Typing error", e);
+                    // Abort animation and just show everything
+                    container.innerHTML = '<div id="ws-content-root" style="color: black; padding: 10px;">' + html + '</div>';
+                    if (callback) callback();
                 }
             }
             
@@ -4089,14 +4126,19 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
             let formattedText = responseText.replace(/```html/g, '').replace(/```/g, '');
 
-            // Detect API Key notice, quota, or network errors
-            if (!formattedText || 
-                formattedText.includes('API_ERROR:') || 
-                formattedText.includes('API_KEY_MISSING:') || 
-                formattedText.includes('API Error:') || 
-                formattedText.includes('Error:') || 
-                formattedText.includes('Please configure your GEMINI_API_KEY')) {
+            // Detect actual API errors we passed from the fetch block
+            if (formattedText.startsWith('API_ERROR:')) {
+                const errorMsg = formattedText.replace('API_ERROR:', '').trim();
+                showToast("API Error: " + errorMsg, "⚠️");
                 
+                // Show the error in the worksheet area so they know what went wrong
+                formattedText = `<div style="padding: 30px; text-align: center; color: #ef4444; font-family: sans-serif;">
+                    <h2 style="margin-bottom: 15px;">⚠️ API Connection Failed</h2>
+                    <p style="font-size: 16px; margin-bottom: 20px;"><strong>Error Details:</strong> ${errorMsg}</p>
+                    <p style="color: #64748b; font-size: 14px;">Please click the <strong>🔑 API Key</strong> button at the top of the screen to check if your Gemini API key is correct.</p>
+                </div>`;
+            } else if (!formattedText || formattedText.includes('API_KEY_MISSING:') || formattedText.includes('Please configure your GEMINI_API_KEY')) {
+                // Fallback for missing keys (mostly for android legacy)
                 showToast("API Notice: Loaded smart offline worksheet template!", "⚡");
                 formattedText = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
             }
@@ -4477,6 +4519,12 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         function insertDrawingBox() {
             const boxHtml = `<div class="image-placeholder" style="width: 100%; max-width: 320px; height: 140px; margin: 15px auto; border: 2px dashed #94a3b8; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #f8fafc; color: #64748b; font-size: 13px; font-weight: bold;">📷 Student Drawing / Picture Area</div>`;
             insertHtmlAtCursor(boxHtml);
+        }
+
+        function insertPageBreak() {
+            // contenteditable="false" ensures the user can't accidentally type inside the divider line itself
+            const breakHtml = `<div class="manual-page-break" contenteditable="false"></div><p style="margin: 8px 0;"><br></p>`;
+            insertHtmlAtCursor(breakHtml);
         }
 
         function insertHtmlAtCursor(html) {
