@@ -3915,53 +3915,58 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         }
 
         async function fetchGeminiWithFallback(apiKey, prompt) {
-            let availableModels = [];
-            
-            // 1. Try to dynamically discover what models this API key has access to
-            try {
-                const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-                const listData = await listRes.json();
-                if (listData.models && Array.isArray(listData.models)) {
-                    availableModels = listData.models
-                        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
-                        .map(m => m.name.replace('models/', ''));
-                    console.log("Discovered available models for key:", availableModels);
-                } else if (listData.error && listData.error.message.includes('API key not valid')) {
-                    throw new Error("Invalid API key. Please check your key in the 🔑 API Key settings.");
-                }
-            } catch (err) {
-                if (err.message.includes('Invalid API key')) throw err;
-                console.warn("Could not list models dynamically, will use fallback list:", err);
-            }
+            const btn = document.getElementById('ai-button');
+            const updateStatus = (msg) => {
+                const statusEl = document.querySelector('#level-body div span');
+                if (statusEl) statusEl.textContent = msg;
+                if (btn) btn.innerHTML = `⏳ ${msg}`;
+            };
 
-            // Fallback list of models in preferred order
-            const defaultModels = [
+            updateStatus("Connecting to Gemini AI...");
+
+            // 1. Check if we already have a saved working model
+            const cachedModel = localStorage.getItem('gemini_active_model');
+            const candidateModels = [
                 'gemini-2.0-flash',
                 'gemini-1.5-flash',
                 'gemini-1.5-flash-latest',
-                'gemini-1.5-pro',
                 'gemini-pro',
+                'gemini-1.5-pro',
                 'gemini-1.0-pro'
             ];
 
-            // Merge discovered models with defaults (avoiding duplicates)
-            const modelsToTry = Array.from(new Set([...availableModels, ...defaultModels]));
+            const modelsToTry = cachedModel 
+                ? [cachedModel, ...candidateModels.filter(m => m !== cachedModel)]
+                : candidateModels;
 
             let lastErr = "";
+
             for (const model of modelsToTry) {
                 try {
+                    updateStatus(`Generating with ${model.replace('gemini-', '')}...`);
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout per model
+
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
+                        signal: controller.signal,
                         body: JSON.stringify({
                             contents: [{ parts: [{ text: prompt }] }],
                             generationConfig: { temperature: 0.7 }
                         })
                     });
+                    clearTimeout(timeoutId);
+
                     const data = await res.json();
+                    
                     if (res.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                        // Cache this working model for instant generation in the future!
+                        localStorage.setItem('gemini_active_model', model);
                         return data.candidates[0].content.parts[0].text;
                     }
+                    
                     if (data.error) {
                         lastErr = data.error.message;
                         if (data.error.message.includes('API key not valid')) {
@@ -3969,11 +3974,18 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                         }
                     }
                 } catch (e) {
-                    if (e.message.includes('Invalid API key')) throw e;
-                    lastErr = e.message;
+                    if (e.name === 'AbortError') {
+                        console.warn(`Model ${model} timed out, trying next...`);
+                        lastErr = "Connection timed out. Trying faster model...";
+                    } else if (e.message.includes('Invalid API key')) {
+                        throw e;
+                    } else {
+                        lastErr = e.message;
+                    }
                 }
             }
-            throw new Error(lastErr || "Could not connect to Gemini models with this key.");
+
+            throw new Error(lastErr || "Could not generate content. Please verify your API key.");
         }
 
         function openApiKeyModal() {
@@ -4138,11 +4150,11 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                         }
                         
                         if (textIdx < item.text.length) {
-                            let chunk = 3; // slightly faster typing
+                            let chunk = 35; // fast responsive typing
                             item.textNode.textContent += item.text.substring(textIdx, textIdx + chunk);
                             textIdx += chunk;
                             
-                            setTimeout(processQueue, 5); 
+                            setTimeout(processQueue, 0); 
                         } else {
                             textIdx = 0;
                             qIdx++;
