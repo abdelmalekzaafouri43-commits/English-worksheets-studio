@@ -771,6 +771,46 @@
             transition: all 0.3s ease;
         }
 
+        /* Specialized PDF Generation Clean Rules */
+        .a4-preview.rendering-pdf {
+            min-height: 0 !important;
+            height: auto !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .a4-preview.rendering-pdf .a4-qr-layer {
+            position: relative !important;
+            bottom: auto !important;
+            right: auto !important;
+            margin-top: 24px !important;
+            margin-bottom: 10px !important;
+            margin-left: auto !important;
+            width: fit-content !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .a4-preview.rendering-pdf .ws-block,
+        .a4-preview.rendering-pdf .middle-box,
+        .a4-preview.rendering-pdf .a4-qr-layer,
+        .a4-preview.rendering-pdf .image-placeholder {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .a4-preview.rendering-pdf h1,
+        .a4-preview.rendering-pdf h2,
+        .a4-preview.rendering-pdf h3,
+        .a4-preview.rendering-pdf h4 {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+
         /* Live Worksheet Editing Mode Styles */
         .a4-preview.editing-mode-active {
             outline: 2.5px dashed var(--accent-primary) !important;
@@ -2651,11 +2691,12 @@
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important; 
             }
-            .no-print, .sample-modal-overlay, .sample-modal, #print-preview-modal, #api-key-modal { 
+            .no-print, .sample-modal-overlay, .sample-modal, #print-preview-modal, #api-key-modal, .header-title, .top-toolbar, .a4-studio-header { 
                 display: none !important; 
             }
             @page {
-                margin: 15mm;
+                margin: 12mm;
+                size: A4 portrait;
             }
             .image-placeholder {
                 border: 2px dashed #999 !important;
@@ -2670,12 +2711,25 @@
                 width: 100% !important;
                 border: none !important;
                 min-height: 0 !important;
+                height: auto !important;
             }
-            h2, h3, h4 {
-                page-break-after: avoid;
+            .a4-preview .a4-qr-layer {
+                position: relative !important;
+                bottom: auto !important;
+                right: auto !important;
+                margin-top: 20px !important;
+                margin-left: auto !important;
+                width: fit-content !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
-            p, li, .middle-box {
-                page-break-inside: avoid;
+            h1, h2, h3, h4 {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            p, li, .middle-box, .ws-block {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
         }
 
@@ -6361,6 +6415,9 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const wasEditing = isEditMode;
             if (wasEditing) setWorksheetEditMode(false);
 
+            const element = document.getElementById('a4-preview-area');
+            if (element) element.classList.add('rendering-pdf');
+
             // Determine active watermark text
             const select = document.getElementById('acc-pdf-watermark');
             const customInput = document.getElementById('acc-pdf-custom-text');
@@ -6373,17 +6430,18 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 }
             }
             
-            const element = document.getElementById('a4-preview-area');
             const targetFilename = filenameOverride || 'Classroom_Worksheet.pdf';
             const opt = {
                 margin:       10,
                 filename:     targetFilename.endsWith('.pdf') ? targetFilename : (targetFilename + '.pdf'),
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             const restoreState = () => {
+                if (element) element.classList.remove('rendering-pdf');
                 if (btn) {
                     btn.disabled = false;
                     btn.innerText = '📥 Download PDF';
@@ -6394,8 +6452,8 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             setTimeout(() => {
                 if (typeof html2pdf !== 'function') {
                     showToast("Directing to print/save as PDF...", "🖨️");
-                    printWorksheet();
                     restoreState();
+                    printWorksheet();
                     return;
                 }
 
@@ -6442,24 +6500,24 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                             restoreState();
                         }).catch((e) => {
                             console.error("PDF datauri generation failed, using native print", e);
-                            printWorksheet();
                             restoreState();
+                            printWorksheet();
                         });
                     } else {
                         worker.save().then(() => {
                             restoreState();
                         }).catch((e) => {
                             console.error("PDF save failed, using print", e);
-                            printWorksheet();
                             restoreState();
+                            printWorksheet();
                         });
                     }
                 } catch (pdfErr) {
                     console.error("PDF processing failed, falling back to system print", pdfErr);
-                    printWorksheet();
                     restoreState();
+                    printWorksheet();
                 }
-            }, 100);
+            }, 150);
         }
 
         // --- SAVED WORKSHEETS ENGINE ---
