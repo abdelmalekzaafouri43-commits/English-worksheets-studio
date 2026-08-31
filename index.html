@@ -3915,16 +3915,40 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         }
 
         async function fetchGeminiWithFallback(apiKey, prompt) {
-            const models = [
+            let availableModels = [];
+            
+            // 1. Try to dynamically discover what models this API key has access to
+            try {
+                const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                const listData = await listRes.json();
+                if (listData.models && Array.isArray(listData.models)) {
+                    availableModels = listData.models
+                        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                        .map(m => m.name.replace('models/', ''));
+                    console.log("Discovered available models for key:", availableModels);
+                } else if (listData.error && listData.error.message.includes('API key not valid')) {
+                    throw new Error("Invalid API key. Please check your key in the 🔑 API Key settings.");
+                }
+            } catch (err) {
+                if (err.message.includes('Invalid API key')) throw err;
+                console.warn("Could not list models dynamically, will use fallback list:", err);
+            }
+
+            // Fallback list of models in preferred order
+            const defaultModels = [
                 'gemini-2.0-flash',
                 'gemini-1.5-flash',
                 'gemini-1.5-flash-latest',
                 'gemini-1.5-pro',
-                'gemini-pro'
+                'gemini-pro',
+                'gemini-1.0-pro'
             ];
 
+            // Merge discovered models with defaults (avoiding duplicates)
+            const modelsToTry = Array.from(new Set([...availableModels, ...defaultModels]));
+
             let lastErr = "";
-            for (const model of models) {
+            for (const model of modelsToTry) {
                 try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
                         method: 'POST',
