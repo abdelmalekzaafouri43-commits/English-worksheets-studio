@@ -1,0 +1,6 @@
+{
+  "name": "EnglishWorksheets",
+  "description": "Classroom English & ESL Worksheet Generator for teachers and learners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
