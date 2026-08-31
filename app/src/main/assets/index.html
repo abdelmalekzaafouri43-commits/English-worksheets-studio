@@ -3900,7 +3900,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             if (window.AndroidAI) {
                 window.AndroidAI.askGemini(prompt, "onAiResponse");
             } else {
-                const apiKey = localStorage.getItem('web_gemini_api_key');
+                const apiKey = (localStorage.getItem('web_gemini_api_key') || '').trim();
                 if (!apiKey) {
                     document.getElementById('api-key-modal').style.display = 'flex';
                     btn.disabled = false;
@@ -3908,45 +3908,48 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                     return;
                 }
                 
-                fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { temperature: 0.7 }
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        if (data.error.message.includes('not found') || data.error.message.includes('not supported')) {
-                            console.warn("gemini-1.5-flash not available for this key, falling back to gemini-pro...");
-                            return fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    contents: [{ parts: [{ text: prompt }] }],
-                                    generationConfig: { temperature: 0.7 }
-                                })
-                            }).then(r => r.json());
-                        }
-                        throw new Error(data.error.message);
-                    }
-                    return data;
-                })
-                .then(data => {
-                    if (data.error) {
-                        onAiResponse(`API_ERROR: ${data.error.message}`);
-                    } else if (data.candidates && data.candidates.length > 0) {
-                        onAiResponse(data.candidates[0].content.parts[0].text);
-                    } else {
-                        onAiResponse("API_ERROR: Unknown response format.");
-                    }
-                })
-                .catch(error => {
-                    onAiResponse(`API_ERROR: ${error.message}`);
-                });
+                fetchGeminiWithFallback(apiKey, prompt)
+                    .then(text => onAiResponse(text))
+                    .catch(err => onAiResponse(`API_ERROR: ${err.message}`));
             }
+        }
+
+        async function fetchGeminiWithFallback(apiKey, prompt) {
+            const models = [
+                'gemini-2.0-flash',
+                'gemini-1.5-flash',
+                'gemini-1.5-flash-latest',
+                'gemini-1.5-pro',
+                'gemini-pro'
+            ];
+
+            let lastErr = "";
+            for (const model of models) {
+                try {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { temperature: 0.7 }
+                        })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                        return data.candidates[0].content.parts[0].text;
+                    }
+                    if (data.error) {
+                        lastErr = data.error.message;
+                        if (data.error.message.includes('API key not valid')) {
+                            throw new Error("Invalid API key. Please check your key in the 🔑 API Key settings.");
+                        }
+                    }
+                } catch (e) {
+                    if (e.message.includes('Invalid API key')) throw e;
+                    lastErr = e.message;
+                }
+            }
+            throw new Error(lastErr || "Could not connect to Gemini models with this key.");
         }
 
         function openApiKeyModal() {
