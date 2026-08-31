@@ -3922,33 +3922,26 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 if (btn) btn.innerHTML = `⏳ ${msg}`;
             };
 
-            updateStatus("Connecting to Gemini AI...");
+            updateStatus("Generating worksheet with Gemini AI...");
 
-            // 1. Check if we already have a saved working model
-            const cachedModel = localStorage.getItem('gemini_active_model');
-            const candidateModels = [
+            const models = [
+                'gemini-2.5-flash',
                 'gemini-2.0-flash',
                 'gemini-1.5-flash',
-                'gemini-1.5-flash-latest',
-                'gemini-pro',
+                'gemini-1.5-flash-8b',
                 'gemini-1.5-pro',
-                'gemini-1.0-pro'
+                'gemini-pro'
             ];
 
-            const modelsToTry = cachedModel 
-                ? [cachedModel, ...candidateModels.filter(m => m !== cachedModel)]
-                : candidateModels;
-
-            let lastErr = "";
-
-            for (const model of modelsToTry) {
-                try {
-                    updateStatus(`Generating with ${model.replace('gemini-', '')}...`);
-                    
+            const callModel = (model) => {
+                return new Promise((resolve, reject) => {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout per model
+                    const timeoutId = setTimeout(() => {
+                        controller.abort();
+                        reject(new Error(`Timeout on ${model}`));
+                    }, 9000);
 
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                    fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         signal: controller.signal,
@@ -3956,36 +3949,34 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                             contents: [{ parts: [{ text: prompt }] }],
                             generationConfig: { temperature: 0.7 }
                         })
-                    });
-                    clearTimeout(timeoutId);
-
-                    const data = await res.json();
-                    
-                    if (res.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                        // Cache this working model for instant generation in the future!
-                        localStorage.setItem('gemini_active_model', model);
-                        return data.candidates[0].content.parts[0].text;
-                    }
-                    
-                    if (data.error) {
-                        lastErr = data.error.message;
-                        if (data.error.message.includes('API key not valid')) {
-                            throw new Error("Invalid API key. Please check your key in the 🔑 API Key settings.");
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        clearTimeout(timeoutId);
+                        if (data && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                            resolve(data.candidates[0].content.parts[0].text);
+                        } else if (data && data.error) {
+                            reject(new Error(data.error.message || `Error with ${model}`));
+                        } else {
+                            reject(new Error(`Invalid response from ${model}`));
                         }
-                    }
-                } catch (e) {
-                    if (e.name === 'AbortError') {
-                        console.warn(`Model ${model} timed out, trying next...`);
-                        lastErr = "Connection timed out. Trying faster model...";
-                    } else if (e.message.includes('Invalid API key')) {
-                        throw e;
-                    } else {
-                        lastErr = e.message;
-                    }
-                }
-            }
+                    })
+                    .catch(err => {
+                        clearTimeout(timeoutId);
+                        reject(err);
+                    });
+                });
+            };
 
-            throw new Error(lastErr || "Could not generate content. Please verify your API key.");
+            try {
+                // Race all model endpoints concurrently for maximum speed and instant fallback
+                const result = await Promise.any(models.map(m => callModel(m)));
+                return result;
+            } catch (aggregateErr) {
+                console.warn("All parallel model attempts failed:", aggregateErr);
+                const firstMsg = aggregateErr.errors && aggregateErr.errors[0] ? aggregateErr.errors[0].message : "All models failed";
+                throw new Error(firstMsg);
+            }
         }
 
         function openApiKeyModal() {
@@ -4070,6 +4061,14 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 📷 Visual Corner: Draw or sketch a picture illustrating this topic
             </div>
             `;
+        }
+
+        function generateAndLoadOfflineNow() {
+            const customPromptInput = document.getElementById('custom-prompt');
+            const userRequest = customPromptInput ? customPromptInput.value.trim() : "";
+            const content = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
+            showToast("Generating instant worksheet...", "⚡");
+            onAiResponse(content);
         }
 
         function typewriteDOM(html, container, callback) {
@@ -4187,15 +4186,25 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 const errorMsg = formattedText.replace('API_ERROR:', '').trim();
                 showToast("API Error: " + errorMsg, "⚠️");
                 
-                // Show the error in the worksheet area so they know what went wrong
-                formattedText = `<div style="padding: 30px; text-align: center; color: #ef4444; font-family: sans-serif;">
-                    <h2 style="margin-bottom: 15px;">⚠️ API Connection Failed</h2>
-                    <p style="font-size: 16px; margin-bottom: 20px;"><strong>Error Details:</strong> ${errorMsg}</p>
-                    <p style="color: #64748b; font-size: 14px;">Please click the <strong>🔑 API Key</strong> button at the top of the screen to check if your Gemini API key is correct.</p>
+                // Show the error in the worksheet area with instant 1-click fallback & key update options
+                formattedText = `<div style="padding: 30px 20px; text-align: center; color: #ef4444; font-family: sans-serif; background: #fff5f5; border-radius: 12px; border: 1px solid #fecaca; margin: 15px;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">⚠️</div>
+                    <h2 style="margin-bottom: 10px; color: #991b1b; font-size: 20px;">AI Connection Notice</h2>
+                    <p style="font-size: 14px; color: #b91c1c; margin-bottom: 15px; background: #fee2e2; padding: 10px 14px; border-radius: 8px; font-family: monospace; word-break: break-word;">${errorMsg}</p>
+                    <p style="color: #475569; font-size: 13.5px; margin-bottom: 20px; line-height: 1.5;">Your API key may have reached rate limits or model restrictions in your region. You can generate the worksheet immediately using the offline template engine:</p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                        <button onclick="generateAndLoadOfflineNow()" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+                            ⚡ Generate Instant Worksheet
+                        </button>
+                        <button onclick="openApiKeyModal()" style="background: white; color: #334155; border: 1px solid #cbd5e1; padding: 12px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            🔑 Update API Key
+                        </button>
+                    </div>
                 </div>`;
             } else if (!formattedText || formattedText.includes('API_KEY_MISSING:') || formattedText.includes('Please configure your GEMINI_API_KEY')) {
                 // Fallback for missing keys (mostly for android legacy)
-                showToast("API Notice: Loaded smart offline worksheet template!", "⚡");
+                showToast("Loaded smart offline worksheet template!", "⚡");
                 formattedText = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
             }
             
