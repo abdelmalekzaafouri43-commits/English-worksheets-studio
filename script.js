@@ -391,7 +391,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             Format the response ENTIRELY in valid, clean HTML. 
             
             Strict Guidelines for English Worksheets:
-            1. ALWAYS include a classic teacher & student header at the very top: <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #ccc; padding-bottom: 12px; font-size: 15px;"><span><strong>Teacher:</strong> Zaafouri Abdelmalek</span><span><strong>Student:</strong> ___________________________</span><span><strong>Date:</strong> _________________</span></div>
+            1. ALWAYS include a classic teacher & student header at the very top: <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #ccc; padding-bottom: 12px; font-size: 15px;"><span><strong>Teacher:</strong> ___________________________</span><span><strong>Student:</strong> ___________________________</span><span><strong>Date:</strong> _________________</span></div>
             2. For complex or multi-part English exercises (e.g. Reading Passage, Vocabulary Word Bank, Grammar Rules, Fill-in-the-Blanks, Sentence Scramble, Multiple Choice, Writing Prompt), organize them clearly with section headings: <h3>Part 1: [Title]</h3>, <h3>Part 2: [Title]</h3>, etc.
             3. Use clean HTML tags: <h2> for main English worksheet title, <h3> for section instructions, <ol>/<ul>/<li> or <p> for questions. Add generous spacing and underline blanks (_______) or answer lines (<br><br>) for student written work.
             4. DO NOT use markdown formatting (no **bold**, no # headings). Use HTML <strong> or <em> instead.
@@ -464,7 +464,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
             return `
             <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; font-size: 15px; color: #475569;">
-                <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                <span><strong>Teacher:</strong> ___________________________</span>
                 <span><strong>Student:</strong> ___________________________</span>
                 <span><strong>Date:</strong> _________________</span>
             </div>
@@ -1036,7 +1036,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -1097,7 +1097,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -1174,7 +1174,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -1219,7 +1219,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -1283,7 +1283,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -1380,7 +1380,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -1440,7 +1440,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>

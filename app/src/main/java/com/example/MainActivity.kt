@@ -115,7 +115,7 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
                             outputStream.write(pdfAsBytes)
                         }
                         withContext(Dispatchers.Main) {
-                            android.widget.Toast.makeText(webView.context, "PDF saved to Downloads!", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(webView.context, "PDF saved to Downloads folder!", android.widget.Toast.LENGTH_SHORT).show()
                         }
                     } ?: run {
                         withContext(Dispatchers.Main) {
@@ -130,13 +130,60 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
                         outputStream.write(pdfAsBytes)
                     }
                     withContext(Dispatchers.Main) {
-                        android.widget.Toast.makeText(webView.context, "PDF saved to Downloads!", android.widget.Toast.LENGTH_SHORT).show()
+                        android.widget.Toast.makeText(webView.context, "PDF saved to Downloads folder!", android.widget.Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    android.widget.Toast.makeText(webView.context, "Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                    android.widget.Toast.makeText(webView.context, "PDF Export: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun shareText(title: String, text: String) {
+        coroutineScope.launch(Dispatchers.Main) {
+            try {
+                val sendIntent = android.content.Intent().apply {
+                    action = android.content.Intent.ACTION_SEND
+                    putExtra(android.content.Intent.EXTRA_TITLE, title)
+                    putExtra(android.content.Intent.EXTRA_TEXT, text)
+                    type = "text/plain"
+                }
+                val shareIntent = android.content.Intent.createChooser(sendIntent, title)
+                shareIntent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                webView.context.startActivity(shareIntent)
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(webView.context, "Share: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun copyToClipboard(label: String, text: String) {
+        coroutineScope.launch(Dispatchers.Main) {
+            try {
+                val clipboard = webView.context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clip = android.content.ClipData.newPlainText(label, text)
+                clipboard.setPrimaryClip(clip)
+                android.widget.Toast.makeText(webView.context, "Link copied to clipboard!", android.widget.Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(webView.context, "Clipboard: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun openExternalUrl(url: String) {
+        coroutineScope.launch(Dispatchers.Main) {
+            try {
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url)).apply {
+                    addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                webView.context.startActivity(intent)
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(webView.context, "Open Link: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -206,6 +253,7 @@ fun HtmlAppWebView() {
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
+                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
                 settings.allowContentAccess = true

@@ -815,6 +815,19 @@
             border-radius: 14px;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
             z-index: 10;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .a4-qr-layer:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary, #2563eb);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+            background: #ffffff;
+        }
+
+        .a4-qr-layer:active {
+            transform: scale(0.97);
         }
 
         .a4-preview.has-qr .a4-qr-layer {
@@ -2782,7 +2795,7 @@
         <div class="header-title">
             <span>English Worksheet Studio</span>
             <span class="premium-pill">ESL / ELT</span>
-            <span class="educator-pill" style="font-size: 11.5px; background: var(--primary-box-bg); color: var(--accent-primary); border: 1px solid var(--tag-border); padding: 3px 9px; border-radius: 12px; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;">👤 Zaafouri Abdelmalek</span>
+            <span class="educator-pill" style="font-size: 11.5px; background: var(--primary-box-bg); color: var(--accent-primary); border: 1px solid var(--tag-border); padding: 3px 9px; border-radius: 12px; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;">👤 Teacher</span>
         </div>
         
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -2835,7 +2848,7 @@
                     <div class="studio-icon">📚</div>
                     <div>
                         <div class="studio-title-text">English Worksheet Creator</div>
-                        <div class="studio-subtitle">Classroom English & ESL Suite • Teacher: <strong>Zaafouri Abdelmalek</strong></div>
+                        <div class="studio-subtitle">Classroom English & ESL Suite</div>
                     </div>
                 </div>
 
@@ -2956,12 +2969,18 @@
                     <span>✏️ Edit & Reorder Mode</span>
                 </button>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button type="button" class="print-btn" onclick="openIllustrationModal()" style="padding: 7px 16px; font-size: 13px; font-weight: 700; border-radius: 12px; background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); border: none;">
                     <span>🎨 Add Illustration</span>
                 </button>
                 <button type="button" class="print-btn" onclick="openPrintPreviewModal()" style="padding: 7px 18px; font-size: 13px; font-weight: 700; border-radius: 12px;">
                     <span>🖨️ A4 Print Preview</span>
+                </button>
+                <button type="button" class="download-btn" onclick="downloadPDFFromAccordion()" style="padding: 7px 18px; font-size: 13px; font-weight: 700; border-radius: 12px; background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    <span>📥 Download PDF</span>
+                </button>
+                <button type="button" class="editor-btn" onclick="openDigitalShareModal(event)" style="padding: 7px 16px; font-size: 13px; font-weight: 700; border-radius: 12px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--tag-border); cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    <span>📱 Digital Link</span>
                 </button>
             </div>
         </div>
@@ -3419,6 +3438,9 @@
                         <span class="sample-badge" style="background: var(--tag-bg); color: var(--tag-color); border: 1px solid var(--tag-border);">210 x 297 mm</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
+                        <button type="button" onclick="downloadPDFFromPreviewModal()" class="editor-btn primary" style="padding: 7px 16px; font-size: 13px;">
+                            <span>📥 Download PDF</span>
+                        </button>
                         <button type="button" onclick="confirmPrintFromPreview()" class="print-btn" style="padding: 7px 18px; font-size: 13px;">
                             <span>🖨️ Print Now</span>
                         </button>
@@ -3464,7 +3486,39 @@
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <button type="button" onclick="closePrintPreviewModal()" class="editor-btn" style="padding: 8px 16px;">Cancel</button>
+                        <button type="button" onclick="downloadPDFFromPreviewModal()" class="editor-btn primary" style="padding: 8px 18px; font-size: 13.5px;">📥 Save as PDF</button>
                         <button type="button" onclick="confirmPrintFromPreview()" class="print-btn" style="padding: 8px 22px; font-size: 13.5px;">🖨️ Confirm & Print</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Digital Version Link & Share Modal -->
+        <div id="digital-share-modal" class="sample-modal-overlay" onclick="handleDigitalShareOverlayClick(event)">
+            <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 540px;">
+                <div class="sample-modal-header">
+                    <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span>📱 Digital Worksheet Link</span>
+                    </div>
+                    <button type="button" onclick="closeDigitalShareModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✖</button>
+                </div>
+                <div class="sample-modal-body" style="padding: 20px 24px;">
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+                        This digital link contains the full interactive worksheet. Students or colleagues can open it on any device to view, print, or edit.
+                    </p>
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <input type="text" id="digital-share-url-input" class="primary-input" readonly style="width: 100%; border-radius: 12px; font-size: 13px; padding: 10px 14px; background: var(--input-bg);" />
+                        <button type="button" onclick="copyDigitalShareUrl()" class="editor-btn primary" style="flex-shrink: 0; padding: 10px 18px; font-size: 13px; border-radius: 12px;">
+                            📋 Copy
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+                        <button type="button" onclick="shareDigitalLinkNative()" class="print-btn" style="padding: 10px 20px; font-size: 13.5px; width: auto; margin-top: 0;">
+                            📤 Share via Apps
+                        </button>
+                        <button type="button" onclick="openDigitalLinkDirectly()" class="editor-btn" style="padding: 10px 18px; font-size: 13.5px;">
+                            🌐 Open Link
+                        </button>
                     </div>
                 </div>
             </div>
@@ -3478,16 +3532,16 @@
 
         <div class="a4-preview" id="a4-preview-area" style="margin-top: 20px;">
             <div id="a4-watermark-overlay" class="a4-watermark-layer"></div>
-            <div id="a4-qr-footer" class="a4-qr-layer">
+            <div id="a4-qr-footer" class="a4-qr-layer" onclick="openDigitalShareModal(event)" style="cursor: pointer;" title="Click to view and share digital link">
                 <div id="qrcode-box" class="a4-qr-box"></div>
                 <div class="a4-qr-info">
                     <div class="a4-qr-title">📱 Digital Version Link</div>
-                    <div class="a4-qr-sub">Scan to open & edit online</div>
+                    <div class="a4-qr-sub">Scan / click to open & edit online 🔗</div>
                 </div>
             </div>
             <div id="level-body">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; font-size: 15px; color: #475569;">
-                    <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                    <span><strong>Teacher:</strong> ___________________________</span>
                     <span><strong>Student:</strong> ___________________________</span>
                     <span><strong>Date:</strong> _________________</span>
                 </div>
@@ -3890,17 +3944,26 @@ ${currentLoadedSample.content}
 Instruction: You MUST base the worksheet directly on the reference sample material provided above according to the user's request.`;
             }
 
-            const prompt = `You are an expert English Language Teacher (ESL / EFL / ELT) and educational worksheet designer. Create a professional, pedagogy-driven English language learning worksheet based exactly on this request: "${userRequest}". ${sampleContextInstruction}
+            const prompt = `You are an expert English Language Teacher (ESL / EFL / ELT) and master educational worksheet designer. Create an impeccably organized, pedagogy-driven English language learning worksheet based exactly on this request: "${userRequest}". ${sampleContextInstruction}
             Format the response ENTIRELY in valid, clean HTML. 
             
-            Strict Guidelines for English Worksheets:
-            1. ALWAYS include a classic teacher & student header at the very top: <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #ccc; padding-bottom: 12px; font-size: 15px;"><span><strong>Teacher:</strong> Zaafouri Abdelmalek</span><span><strong>Student:</strong> ___________________________</span><span><strong>Date:</strong> _________________</span></div>
-            2. For complex or multi-part English exercises (e.g. Reading Passage, Vocabulary Word Bank, Grammar Rules, Fill-in-the-Blanks, Sentence Scramble, Multiple Choice, Writing Prompt), organize them clearly with section headings: <h3>Part 1: [Title]</h3>, <h3>Part 2: [Title]</h3>, etc.
-            3. Use clean HTML tags: <h2> for main English worksheet title, <h3> for section instructions, <ol>/<ul>/<li> or <p> for questions. Add generous spacing and underline blanks (_______) or answer lines (<br><br>) for student written work.
-            4. DO NOT use markdown formatting (no **bold**, no # headings). Use HTML <strong> or <em> instead.
-            5. If an illustration helps reinforce the English vocabulary or reading story, embed it using: <img src="https://image.pollinations.ai/prompt/{detailed-URL-encoded-description}?width=600&height=400&nologo=true" style="max-width: 100%; border-radius: 12px; display: block; margin: 25px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" alt="Worksheet Image">
-            6. If an image is not generated but a drawing/phonics/matching box is useful, use: <div class='image-placeholder' style='width: 100%; max-width: 300px; height: 150px; display: flex; margin: 20px auto;'>📷 Student Drawing / Picture Area</div>
-            7. Ensure vocabulary, grammar explanations, and instructions are clear, pedagogical, natural, and error-free for English learners.`;
+            Strict Guidelines for English Worksheets Organization & Layout:
+            1. ALWAYS include the classic teacher & student header at the top:
+               <div style="display: flex; justify-content: space-between; margin-bottom: 24px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; font-size: 14.5px; color: #334155;"><span><strong>Teacher:</strong> ___________________________</span><span><strong>Student:</strong> ___________________________</span><span><strong>Date:</strong> _________________</span></div>
+            2. Main Worksheet Title:
+               <h2 style="text-align: center; color: #0f172a; margin: 16px 0 20px; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">[Descriptive English Topic / Unit Title]</h2>
+            3. Structure EVERY section/part inside an organized, neat container block:
+               <div class="ws-block" style="margin-bottom: 22px; padding: 14px 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                   <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 10px; font-size: 17px; display: flex; align-items: center; gap: 8px;">Part 1: [Section Title, e.g. Reading Passage & Comprehension / Vocabulary Bank / Grammar Rules / Fill in the Blanks / Sentence Transformation / Writing Task]</h3>
+                   <p style="font-size: 13.5px; color: #475569; margin-bottom: 12px; font-style: italic;"><strong>Instructions:</strong> [Clear, pedagogical step-by-step instructions for the learner]</p>
+                   [Content, word banks, tables, numbered questions with clean blank underlines (_______) or matching pairs]
+               </div>
+            4. For Word Banks, present them in clean styled boxes:
+               <div style="background: #ffffff; border: 1.5px dashed #3b82f6; border-radius: 8px; padding: 10px 14px; margin: 10px 0 14px; text-align: center; font-weight: 600; color: #1e3a8a; letter-spacing: 0.5px;">[ word1 • word2 • word3 • word4 • word5 ]</div>
+            5. For Questions, use clear numbered lists <ol style="padding-left: 20px; line-height: 1.9; font-size: 15px; color: #1e293b;"> with generous spacing and distinct answer lines.
+            6. DO NOT use markdown formatting (no **bold**, no # headings, no backticks). Use standard HTML tags (<strong>, <em>, <span>).
+            7. If an illustration helps reinforce vocabulary or reading comprehension, embed: <img src="https://image.pollinations.ai/prompt/{detailed-URL-encoded-description}?width=600&height=360&nologo=true" style="max-width: 100%; border-radius: 12px; display: block; margin: 18px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" alt="Educational Illustration">
+            8. Ensure vocabulary, grammar rules, dialogues, and exercises are authentic, error-free, pedagogical, and completely organized.`;
 
             if (window.AndroidAI) {
                 window.AndroidAI.askGemini(prompt, "onAiResponse");
@@ -4139,7 +4202,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
             let headerHTML = `
             <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; font-size: 15px; color: #475569;">
-                <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                <span><strong>Teacher:</strong> ___________________________</span>
                 <span><strong>Student:</strong> ___________________________</span>
                 <span><strong>Date:</strong> _________________</span>
             </div>
@@ -4916,7 +4979,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -4977,7 +5040,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -5054,7 +5117,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -5099,7 +5162,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -5163,7 +5226,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -5260,7 +5323,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -5320,7 +5383,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 getHTML: function() {
                     return `
                     <div style="display: flex; justify-content: space-between; margin-bottom: 22px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; font-size: 14px; color: #475569;">
-                        <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
+                        <span><strong>Teacher:</strong> ___________________________</span>
                         <span><strong>Student:</strong> ___________________________</span>
                         <span><strong>Date:</strong> _________________</span>
                     </div>
@@ -5844,6 +5907,17 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             setTimeout(printPage, 150);
         }
 
+        function downloadPDFFromPreviewModal() {
+            closePrintPreviewModal();
+            setTimeout(() => {
+                downloadPDFFromAccordion();
+            }, 150);
+        }
+
+        function printWorksheet() {
+            printPage();
+        }
+
         function printPage() {
             const wasEditing = isEditMode;
             if (wasEditing) setWorksheetEditMode(false);
@@ -6208,6 +6282,75 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }
 
+        // --- DIGITAL SHARE MODAL LOGIC ---
+        function openDigitalShareModal(event) {
+            if (event) event.stopPropagation();
+            const shareUrl = generateWorksheetShareUrl();
+            const input = document.getElementById('digital-share-url-input');
+            if (input) input.value = shareUrl;
+            
+            const modal = document.getElementById('digital-share-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeDigitalShareModal() {
+            const modal = document.getElementById('digital-share-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function handleDigitalShareOverlayClick(event) {
+            if (event.target && event.target.id === 'digital-share-modal') {
+                closeDigitalShareModal();
+            }
+        }
+
+        function copyDigitalShareUrl() {
+            const shareUrl = generateWorksheetShareUrl();
+            if (window.AndroidAI && window.AndroidAI.copyToClipboard) {
+                window.AndroidAI.copyToClipboard("Digital Worksheet Link", shareUrl);
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast("Link copied to clipboard!", "📋");
+                }).catch(() => {
+                    const input = document.getElementById('digital-share-url-input');
+                    if (input) { input.select(); document.execCommand('copy'); }
+                    showToast("Link copied!", "📋");
+                });
+            } else {
+                const input = document.getElementById('digital-share-url-input');
+                if (input) { input.select(); document.execCommand('copy'); }
+                showToast("Link copied!", "📋");
+            }
+        }
+
+        function shareDigitalLinkNative() {
+            const shareUrl = generateWorksheetShareUrl();
+            const root = document.getElementById('level-body');
+            const titleEl = root ? root.querySelector('h1, h2, h3') : null;
+            const title = titleEl ? titleEl.innerText : 'English Worksheet';
+            
+            if (window.AndroidAI && window.AndroidAI.shareText) {
+                window.AndroidAI.shareText("Share Digital Worksheet: " + title, shareUrl);
+            } else if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: 'Interactive English Worksheet: ' + title,
+                    url: shareUrl
+                }).catch(e => console.log('Share canceled or error', e));
+            } else {
+                copyDigitalShareUrl();
+            }
+        }
+
+        function openDigitalLinkDirectly() {
+            const shareUrl = generateWorksheetShareUrl();
+            if (window.AndroidAI && window.AndroidAI.openExternalUrl) {
+                window.AndroidAI.openExternalUrl(shareUrl);
+            } else {
+                window.open(shareUrl, '_blank');
+            }
+        }
+
         function downloadPDF(filenameOverride) {
             const btn = document.getElementById('download-btn');
             if (btn) {
@@ -6249,51 +6392,72 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             };
 
             setTimeout(() => {
-                const worker = html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
-                    const totalPages = pdf.internal.getNumberOfPages();
-                    for (let i = 1; i <= totalPages; i++) {
-                        pdf.setPage(i);
+                if (typeof html2pdf !== 'function') {
+                    showToast("Directing to print/save as PDF...", "🖨️");
+                    printWorksheet();
+                    restoreState();
+                    return;
+                }
 
-                        // Draw centered translucent watermark if enabled
-                        if (watermarkText) {
-                            try {
-                                pdf.saveState();
-                                pdf.setFontSize(54);
-                                pdf.setTextColor(170, 180, 195);
-                                if (pdf.setGState && pdf.GState) {
-                                    pdf.setGState(new pdf.GState({ opacity: 0.18 }));
+                try {
+                    const worker = html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+                        const totalPages = pdf.internal.getNumberOfPages();
+                        for (let i = 1; i <= totalPages; i++) {
+                            pdf.setPage(i);
+
+                            // Draw centered translucent watermark if enabled
+                            if (watermarkText) {
+                                try {
+                                    pdf.saveState();
+                                    pdf.setFontSize(54);
+                                    pdf.setTextColor(170, 180, 195);
+                                    if (pdf.setGState && pdf.GState) {
+                                        pdf.setGState(new pdf.GState({ opacity: 0.18 }));
+                                    }
+                                    const pageWidth = pdf.internal.pageSize.getWidth();
+                                    const pageHeight = pdf.internal.pageSize.getHeight();
+                                    pdf.text(watermarkText, pageWidth / 2, pageHeight / 2, {
+                                        align: 'center',
+                                        angle: 35
+                                    });
+                                    pdf.restoreState();
+                                } catch(e) {
+                                    console.log("PDF watermark error", e);
                                 }
-                                const pageWidth = pdf.internal.pageSize.getWidth();
-                                const pageHeight = pdf.internal.pageSize.getHeight();
-                                pdf.text(watermarkText, pageWidth / 2, pageHeight / 2, {
-                                    align: 'center',
-                                    angle: 35
-                                });
-                                pdf.restoreState();
-                            } catch(e) {
-                                console.log("PDF watermark error", e);
                             }
+
+                            pdf.setFontSize(10);
+                            pdf.setTextColor(100);
+                            const text = 'Page ' + i + ' of ' + totalPages;
+                            const pageWidth = pdf.internal.pageSize.getWidth();
+                            const pageHeight = pdf.internal.pageSize.getHeight();
+                            // Calculate position: right-aligned, 5mm from bottom right
+                            pdf.text(text, pageWidth - 10, pageHeight - 5, { align: 'right' });
                         }
+                    });
 
-                        pdf.setFontSize(10);
-                        pdf.setTextColor(100);
-                        const text = 'Page ' + i + ' of ' + totalPages;
-                        const pageWidth = pdf.internal.pageSize.getWidth();
-                        const pageHeight = pdf.internal.pageSize.getHeight();
-                        // Calculate position: right-aligned, 5mm from bottom right
-                        pdf.text(text, pageWidth - 10, pageHeight - 5, { align: 'right' });
+                    if (window.AndroidAI && window.AndroidAI.savePdf) {
+                        worker.output('datauristring').then(function(pdfAsString) {
+                            window.AndroidAI.savePdf(pdfAsString, opt.filename);
+                            restoreState();
+                        }).catch((e) => {
+                            console.error("PDF datauri generation failed, using native print", e);
+                            printWorksheet();
+                            restoreState();
+                        });
+                    } else {
+                        worker.save().then(() => {
+                            restoreState();
+                        }).catch((e) => {
+                            console.error("PDF save failed, using print", e);
+                            printWorksheet();
+                            restoreState();
+                        });
                     }
-                });
-
-                if (window.AndroidAI && window.AndroidAI.savePdf) {
-                    worker.output('datauristring').then(function(pdfAsString) {
-                        window.AndroidAI.savePdf(pdfAsString, opt.filename);
-                        restoreState();
-                    }).catch(restoreState);
-                } else {
-                    worker.save().then(() => {
-                        restoreState();
-                    }).catch(restoreState);
+                } catch (pdfErr) {
+                    console.error("PDF processing failed, falling back to system print", pdfErr);
+                    printWorksheet();
+                    restoreState();
                 }
             }, 100);
         }
