@@ -4010,55 +4010,201 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         }
 
         function generateOfflineWorksheetFallback(userQuery, sampleData) {
-            const title = (sampleData && sampleData.title) ? sampleData.title : (userQuery ? userQuery.toUpperCase() : 'ENGLISH LANGUAGE PRACTICE');
-            const topic = userQuery ? userQuery : (sampleData ? sampleData.title : 'General English Grammar & Reading');
+            const rawTopic = (userQuery || (sampleData ? sampleData.title : 'English Practice')).trim();
+            const lowerTopic = rawTopic.toLowerCase();
+            
+            let title = rawTopic ? rawTopic.toUpperCase() : 'ENGLISH LANGUAGE COMPREHENSIVE PRACTICE';
+            if (!title.includes('WORKSHEET') && !title.includes('PRACTICE') && !title.includes('LESSON')) {
+                title += ' — PRACTICE WORKSHEET';
+            }
 
-            return `
+            let headerHTML = `
             <div style="display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; font-size: 15px; color: #475569;">
                 <span><strong>Teacher:</strong> Zaafouri Abdelmalek</span>
                 <span><strong>Student:</strong> ___________________________</span>
                 <span><strong>Date:</strong> _________________</span>
             </div>
+            <h2 style="text-align: center; color: #0f172a; margin-bottom: 6px; font-size: 24px; font-weight: 700;">${title}</h2>
+            <p style="text-align: center; color: #64748b; font-size: 14px; margin-bottom: 24px; font-style: italic;">Curriculum Topic: ${rawTopic}</p>
+            `;
 
-            <h2 style="text-align: center; color: #0f172a; margin-bottom: 6px; font-size: 24px;">${title}</h2>
-            <p style="text-align: center; color: #64748b; font-size: 14px; margin-bottom: 24px; font-style: italic;">Topic: ${topic}</p>
+            // If sample material is loaded, create exercises based on the sample
+            if (sampleData && sampleData.content) {
+                const excerpt = sampleData.content.substring(0, 450);
+                return headerHTML + `
+                <h3>Part 1: Text Study & Key Vocabulary</h3>
+                <p><strong>Instructions:</strong> Read the reference material carefully and identify key terms.</p>
+                <div style="background: #f8fafc; padding: 18px 22px; border-left: 4px solid #3b82f6; border-radius: 8px; margin-bottom: 20px; font-size: 14.5px; line-height: 1.6; color: #1e293b;">
+                    ${excerpt}${sampleData.content.length > 450 ? '...' : ''}
+                </div>
 
-            <h3>Part 1: Key Vocabulary & Terminology</h3>
-            <p><strong>Instructions:</strong> Read the words in the box below and complete each sentence with the correct term.</p>
+                <h3>Part 2: Comprehension & Text Analysis</h3>
+                <p><strong>Instructions:</strong> Answer the following questions based on the text above.</p>
+                <ol style="line-height: 2.3; margin-bottom: 24px;">
+                    <li>What is the main theme or primary focus discussed in this passage?<br>__________________________________________________________________________________________</li>
+                    <li>List two important facts or vocabulary details mentioned in the text:<br>a) ______________________________________________________________________________________<br>b) ______________________________________________________________________________________</li>
+                    <li>According to the context, explain why this topic is significant for English learners:<br>__________________________________________________________________________________________</li>
+                </ol>
+
+                <h3>Part 3: Vocabulary in Action & Sentence Building</h3>
+                <p><strong>Instructions:</strong> Complete the sentences below by choosing suitable words from the reading.</p>
+                <ol style="line-height: 2.3; margin-bottom: 24px;">
+                    <li>The author emphasizes that understanding ______________________ leads to greater confidence.</li>
+                    <li>Students should actively practice using these terms in everyday ______________________.</li>
+                    <li>Rewrite one key idea from the text in your own words:<br>__________________________________________________________________________________________</li>
+                </ol>
+
+                <h3>Part 4: Creative Extension & Writing</h3>
+                <p><strong>Instructions:</strong> Write a short paragraph (3-4 sentences) expressing your thoughts on this topic.</p>
+                <p style="line-height: 2.2;">
+                    ___________________________________________________________________________________________________<br>
+                    ___________________________________________________________________________________________________<br>
+                    ___________________________________________________________________________________________________
+                </p>
+
+                <div class='image-placeholder' style='width: 100%; max-width: 450px; height: 140px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 25px auto; background: #fafafa; color: #64748b; font-weight: 600;'>
+                    📷 Student Illustration Corner: Draw a visual concept related to this lesson
+                </div>
+                `;
+            }
+
+            // Check topic themes:
+            if (lowerTopic.includes('past') || lowerTopic.includes('present') || lowerTopic.includes('future') || lowerTopic.includes('tense') || lowerTopic.includes('grammar') || lowerTopic.includes('verb') || lowerTopic.includes('passive') || lowerTopic.includes('conditional')) {
+                return headerHTML + `
+                <h3>Part 1: Grammar Focus & Rule Summary</h3>
+                <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #166534;">
+                    <strong>Grammar Tip:</strong> Pay close attention to subject-verb agreement, auxiliary verbs, and time signal words (e.g., <em>always, yesterday, tomorrow, since, for, usually</em>).
+                </div>
+
+                <h3>Part 2: Fill in the Blanks (Correct Verb Form)</h3>
+                <p><strong>Instructions:</strong> Put the verbs in brackets into the correct tense according to the context.</p>
+                <ol style="line-height: 2.4; margin-bottom: 24px;">
+                    <li>Sarah usually ______________________ (study) English for two hours every evening.</li>
+                    <li>Last weekend, the students ______________________ (visit) the historical museum in town.</li>
+                    <li>If we prepare thoroughly for the exam, we ______________________ (achieve) excellent results.</li>
+                    <li>While my brother ______________________ (read) an article, the phone rang.</li>
+                    <li>They have already ______________________ (complete) their weekly grammar assignments.</li>
+                </ol>
+
+                <h3>Part 3: Sentence Transformation & Error Correction</h3>
+                <p><strong>Instructions:</strong> Find the error in each sentence and rewrite it correctly.</p>
+                <ol style="line-height: 2.4; margin-bottom: 24px;">
+                    <li><em>Incorrect:</em> She do not likes waking up early on Monday mornings.<br><strong>Correction:</strong> _______________________________________________________________________</li>
+                    <li><em>Incorrect:</em> Yesterday they was playing football when it started raining.<br><strong>Correction:</strong> _______________________________________________________________________</li>
+                    <li><em>Incorrect:</em> He has lived in London since five years.<br><strong>Correction:</strong> _______________________________________________________________________</li>
+                </ol>
+
+                <h3>Part 4: Writing Practice</h3>
+                <p><strong>Instructions:</strong> Write three original sentences using the target grammar structure to describe your daily life.</p>
+                <ol style="line-height: 2.3;">
+                    <li>1) ____________________________________________________________________________________</li>
+                    <li>2) ____________________________________________________________________________________</li>
+                    <li>3) ____________________________________________________________________________________</li>
+                </ol>
+
+                <div class='image-placeholder' style='width: 100%; max-width: 450px; height: 130px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 25px auto; background: #fafafa; color: #64748b; font-weight: 600;'>
+                    📷 Diagram / Visual Box: Mind map of grammar rules and example sentences
+                </div>
+                `;
+            }
+
+            if (lowerTopic.includes('food') || lowerTopic.includes('animal') || lowerTopic.includes('family') || lowerTopic.includes('job') || lowerTopic.includes('school') || lowerTopic.includes('weather') || lowerTopic.includes('vocab') || lowerTopic.includes('sport') || lowerTopic.includes('travel') || lowerTopic.includes('house')) {
+                return headerHTML + `
+                <h3>Part 1: Key Vocabulary Bank</h3>
+                <p><strong>Instructions:</strong> Study the vocabulary box below and match each word with its corresponding description.</p>
+                
+                <div style="border: 2px dashed #3b82f6; padding: 14px 20px; border-radius: 12px; background: #eff6ff; margin-bottom: 20px; font-weight: 600; text-align: center; color: #1e40af; letter-spacing: 0.5px;">
+                    [ Discovery &bull; Harmony &bull; Essential &bull; Environment &bull; Adventure &bull; Resource ]
+                </div>
+
+                <ol style="line-height: 2.3; margin-bottom: 24px;">
+                    <li>Something that is absolutely necessary and important: ______________________</li>
+                    <li>The natural world including land, water, plants, and animals: ______________________</li>
+                    <li>An exciting and memorable journey or experience: ______________________</li>
+                    <li>The act of finding or learning something new for the first time: ______________________</li>
+                    <li>A valuable supply or material that can be used effectively: ______________________</li>
+                </ol>
+
+                <h3>Part 2: Sentence Completion</h3>
+                <p><strong>Instructions:</strong> Complete the sentences below using words from the vocabulary bank.</p>
+                <ol style="line-height: 2.4; margin-bottom: 24px;">
+                    <li>Drinking clean water and eating fresh fruit is ______________________ for staying healthy.</li>
+                    <li>Our teacher encouraged us to protect the local ______________________ by planting trees.</li>
+                    <li>Traveling to a new country is always a wonderful ______________________ filled with new stories.</li>
+                    <li>Libraries provide a rich educational ______________________ for students of all ages.</li>
+                </ol>
+
+                <h3>Part 3: Reading Passage & Comprehension</h3>
+                <div style="background: #f8fafc; padding: 16px 20px; border-left: 4px solid #2563eb; border-radius: 8px; margin-bottom: 18px; font-size: 14.5px; line-height: 1.6;">
+                    Developing a rich vocabulary is one of the most rewarding aspects of learning English. When students encounter new words in context and practice using them in conversations, their communication becomes fluent, expressive, and natural.
+                </div>
+                <ol style="line-height: 2.3; margin-bottom: 24px;">
+                    <li>Why is learning vocabulary in context beneficial for learners?<br>__________________________________________________________________________________________</li>
+                    <li>How does daily practice help improve speaking confidence?<br>__________________________________________________________________________________________</li>
+                </ol>
+
+                <h3>Part 4: Expressive Writing</h3>
+                <p><strong>Instructions:</strong> Write 2-3 sentences about your favorite experience related to <strong>${rawTopic}</strong>.</p>
+                <p style="line-height: 2.2;">
+                    ___________________________________________________________________________________________________<br>
+                    ___________________________________________________________________________________________________
+                </p>
+
+                <div class='image-placeholder' style='width: 100%; max-width: 450px; height: 140px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 25px auto; background: #fafafa; color: #64748b; font-weight: 600;'>
+                    📷 Visual Picture Corner: Draw and label 2 items related to ${rawTopic}
+                </div>
+                `;
+            }
+
+            // Default Rich General English Reading & Practice Worksheet
+            return headerHTML + `
+            <h3>Part 1: Key Vocabulary & Word Study</h3>
+            <p><strong>Instructions:</strong> Read the words in the box and use them to fill in the blanks correctly.</p>
             
-            <div style="border: 2px dashed #94a3b8; padding: 14px 20px; border-radius: 12px; background: #f8fafc; margin-bottom: 20px; font-weight: 600; text-align: center; letter-spacing: 0.5px;">
-                [ Context &bull; Practice &bull; Structure &bull; Knowledge &bull; Fluency &bull; Expression ]
+            <div style="border: 2px dashed #94a3b8; padding: 14px 20px; border-radius: 12px; background: #f8fafc; margin-bottom: 20px; font-weight: 600; text-align: center; letter-spacing: 0.5px; color: #334155;">
+                [ Practice &bull; Structure &bull; Knowledge &bull; Fluency &bull; Expression &bull; Progress ]
             </div>
 
-            <ol style="line-height: 2.2;">
-                <li>Learning new vocabulary helps students improve their English ______________________ when speaking.</li>
-                <li>Clear grammar rules provide a solid ______________________ for writing essays.</li>
-                <li>Understanding words in ______________________ makes reading much easier and more natural.</li>
-                <li>Daily speaking ______________________ builds confidence for real-life conversations.</li>
-                <li>Creative writing allows learners to explore personal ______________________ through language.</li>
+            <ol style="line-height: 2.3; margin-bottom: 24px;">
+                <li>Consistent speaking ______________________ helps learners build strong communicative confidence.</li>
+                <li>Clear grammar rules provide a sturdy ______________________ for writing coherent essays.</li>
+                <li>Expanding your ______________________ of idioms makes everyday English more natural.</li>
+                <li>Reading diverse books is a proven way to achieve higher reading ______________________.</li>
+                <li>Creative storytelling gives students freedom of personal ______________________.</li>
             </ol>
 
-            <h3 style="margin-top: 28px;">Part 2: Reading & Comprehension</h3>
-            <p><strong>Instructions:</strong> Read the short text below and answer the questions that follow in complete sentences.</p>
+            <h3>Part 2: Reading Comprehension</h3>
+            <p><strong>Instructions:</strong> Read the short educational passage below and answer the comprehension questions.</p>
             
-            <div style="background: #f1f5f9; padding: 18px 22px; border-left: 4px solid #2563eb; border-radius: 8px; margin-bottom: 20px; font-size: 14.5px; line-height: 1.6;">
-                Language learning is an active and lifelong journey. By practicing reading, writing, listening, and speaking every day, students expand their comprehension and communication skills. Dedicated study habits, combined with interactive exercises, turn new concepts into permanent skills.
+            <div style="background: #f1f5f9; padding: 18px 22px; border-left: 4px solid #2563eb; border-radius: 8px; margin-bottom: 20px; font-size: 14.5px; line-height: 1.6; color: #1e293b;">
+                Language learning is an empowering journey that connects people across cultures. By actively reading authentic texts, engaging in discussions, and reflecting on feedback, learners turn basic vocabulary into meaningful communication. Dedicated practice each day ensures long-term mastery and academic success.
             </div>
 
-            <ol style="line-height: 2.2;">
-                <li>What are the four fundamental language skills mentioned in the passage?<br>__________________________________________________________________________________________</li>
-                <li>Why is daily practice important for English learners?<br>__________________________________________________________________________________________</li>
+            <ol style="line-height: 2.3; margin-bottom: 24px;">
+                <li>What makes language learning an empowering journey according to the text?<br>__________________________________________________________________________________________</li>
+                <li>Name two specific activities mentioned that help students improve their English:<br>a) ______________________________________________________________________________________<br>b) ______________________________________________________________________________________</li>
+                <li>In your own words, explain why daily practice is essential for mastery:<br>__________________________________________________________________________________________</li>
             </ol>
 
-            <h3 style="margin-top: 28px;">Part 3: Sentence Transformation & Writing</h3>
-            <p><strong>Instructions:</strong> Rewrite each sentence below using your own words or answer the creative prompt.</p>
+            <h3>Part 3: Grammar & Sentence Construction</h3>
+            <p><strong>Instructions:</strong> Reorder the words below to form complete, grammatically correct sentences.</p>
             
-            <ol style="line-height: 2.4;">
-                <li>Write 2 sentences describing your personal goals for learning English:<br>a) ______________________________________________________________________________________<br>b) ______________________________________________________________________________________</li>
+            <ol style="line-height: 2.4; margin-bottom: 24px;">
+                <li>(every / reads / student / the / morning / articles)<br>__________________________________________________________________________________________</li>
+                <li>(effective / practice / builds / communication / daily / skills)<br>__________________________________________________________________________________________</li>
+                <li>(always / their / prepare / teachers / lessons / carefully)<br>__________________________________________________________________________________________</li>
             </ol>
 
-            <div class='image-placeholder' style='width: 100%; max-width: 420px; height: 140px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 25px auto; background: #fafafa; color: #64748b; font-weight: 600;'>
-                📷 Visual Corner: Draw or sketch a picture illustrating this topic
+            <h3>Part 4: Writing & Reflection Prompt</h3>
+            <p><strong>Instructions:</strong> Write 3-4 complete sentences describing what you learned from this lesson.</p>
+            <p style="line-height: 2.2;">
+                ___________________________________________________________________________________________________<br>
+                ___________________________________________________________________________________________________<br>
+                ___________________________________________________________________________________________________
+            </p>
+
+            <div class='image-placeholder' style='width: 100%; max-width: 450px; height: 140px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 25px auto; background: #fafafa; color: #64748b; font-weight: 600;'>
+                📷 Student Drawing Corner: Illustrate your key takeaway from this worksheet
             </div>
             `;
         }
@@ -4067,7 +4213,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const customPromptInput = document.getElementById('custom-prompt');
             const userRequest = customPromptInput ? customPromptInput.value.trim() : "";
             const content = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
-            showToast("Generating instant worksheet...", "⚡");
+            showToast("Loaded ready-made worksheet!", "⚡");
             onAiResponse(content);
         }
 
@@ -4184,27 +4330,24 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             // Detect actual API errors we passed from the fetch block
             if (formattedText.startsWith('API_ERROR:')) {
                 const errorMsg = formattedText.replace('API_ERROR:', '').trim();
-                showToast("API Error: " + errorMsg, "⚠️");
+                showToast("Loaded ready-made worksheet!", "⚡");
                 
-                // Show the error in the worksheet area with instant 1-click fallback & key update options
-                formattedText = `<div style="padding: 30px 20px; text-align: center; color: #ef4444; font-family: sans-serif; background: #fff5f5; border-radius: 12px; border: 1px solid #fecaca; margin: 15px;">
-                    <div style="font-size: 40px; margin-bottom: 10px;">⚠️</div>
-                    <h2 style="margin-bottom: 10px; color: #991b1b; font-size: 20px;">AI Connection Notice</h2>
-                    <p style="font-size: 14px; color: #b91c1c; margin-bottom: 15px; background: #fee2e2; padding: 10px 14px; border-radius: 8px; font-family: monospace; word-break: break-word;">${errorMsg}</p>
-                    <p style="color: #475569; font-size: 13.5px; margin-bottom: 20px; line-height: 1.5;">Your API key may have reached rate limits or model restrictions in your region. You can generate the worksheet immediately using the offline template engine:</p>
-                    
-                    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-                        <button onclick="generateAndLoadOfflineNow()" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
-                            ⚡ Generate Instant Worksheet
-                        </button>
-                        <button onclick="openApiKeyModal()" style="background: white; color: #334155; border: 1px solid #cbd5e1; padding: 12px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                            🔑 Update API Key
-                        </button>
+                // Immediately generate and display a ready-made worksheet with a subtle notice bar
+                const readyMadeWorksheet = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
+                formattedText = `
+                <div id="api-status-banner" style="margin-bottom: 18px; padding: 12px 16px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 13.5px; color: #1e40af; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 2px 6px rgba(59,130,246,0.08);">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 18px;">⚡</span>
+                        <span><strong>Ready-Made Worksheet Ready:</strong> Generated instantly for your topic.</span>
                     </div>
-                </div>`;
+                    <button onclick="openApiKeyModal()" style="background: white; border: 1px solid #93c5fd; color: #1d4ed8; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                        🔑 API Key
+                    </button>
+                </div>
+                ${readyMadeWorksheet}
+                `;
             } else if (!formattedText || formattedText.includes('API_KEY_MISSING:') || formattedText.includes('Please configure your GEMINI_API_KEY')) {
-                // Fallback for missing keys (mostly for android legacy)
-                showToast("Loaded smart offline worksheet template!", "⚡");
+                showToast("Loaded ready-made worksheet!", "⚡");
                 formattedText = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
             }
             
