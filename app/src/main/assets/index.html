@@ -198,42 +198,114 @@
             --tag-border: rgba(234, 88, 12, 0.25);
         }
 
-        /* MIDNIGHT OBSIDIAN THEME (DARK) */
+        /* MIDNIGHT OBSIDIAN THEME (DARK / HIGH-CONTRAST) */
         body.theme-obsidian, body.dark-mode {
             --theme-name: 'Midnight Obsidian';
-            --bg-main: #0b0f19;
-            --bg-main-gradient: radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.25) 0px, transparent 50%),
-                                radial-gradient(at 90% 10%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
-                                radial-gradient(at 50% 95%, rgba(16, 185, 129, 0.18) 0px, transparent 50%),
-                                linear-gradient(135deg, #050811 0%, #0b0f19 50%, #0f172a 100%);
-            --bg-card: #151d30;
-            --text-main: #f1f5f9;
+            --bg-main: #060913;
+            --bg-main-gradient: radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.3) 0px, transparent 55%),
+                                radial-gradient(at 90% 10%, rgba(236, 72, 153, 0.22) 0px, transparent 50%),
+                                radial-gradient(at 50% 95%, rgba(16, 185, 129, 0.2) 0px, transparent 55%),
+                                linear-gradient(135deg, #030712 0%, #090e1a 50%, #0f172a 100%);
+            --bg-card: #0f172a;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --text-reading: #cbd5e1;
+            --text-reading: #e2e8f0;
             --text-accent: #38bdf8;
-            --header-bg: linear-gradient(135deg, #090d16 0%, #1e293b 100%);
+            --header-bg: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
             --input-bg: #1e293b;
-            --input-border: #334155;
+            --input-border: #475569;
             --primary-box-bg: #1e293b;
             --middle-box-bg: #0f172a;
             --card-border: #334155;
             --title-color: #ffffff;
             --accent-primary: #6366f1;
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --accent-glow: rgba(99, 102, 241, 0.4);
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --accent-glow: rgba(99, 102, 241, 0.45);
             
-            --glass-bg: rgba(17, 24, 39, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.14);
-            --glass-input-bg: rgba(15, 23, 42, 0.65);
-            --glass-input-focus-bg: rgba(15, 23, 42, 0.9);
-            --glass-input-border: rgba(99, 102, 241, 0.5);
-            --glass-chip-bg: rgba(30, 41, 59, 0.7);
-            --glass-chip-hover-bg: rgba(51, 65, 85, 0.9);
-            --glass-chip-border: rgba(255, 255, 255, 0.18);
-            --glass-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
-            --tag-bg: rgba(99, 102, 241, 0.2);
-            --tag-color: #a5b4fc;
-            --tag-border: rgba(129, 140, 248, 0.35);
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-input-bg: rgba(30, 41, 59, 0.85);
+            --glass-input-focus-bg: #1e293b;
+            --glass-input-border: rgba(129, 140, 248, 0.7);
+            --glass-chip-bg: rgba(30, 41, 59, 0.85);
+            --glass-chip-hover-bg: rgba(51, 65, 85, 1);
+            --glass-chip-border: rgba(255, 255, 255, 0.22);
+            --glass-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.75), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+            --tag-bg: rgba(99, 102, 241, 0.28);
+            --tag-color: #c7d2fe;
+            --tag-border: rgba(129, 140, 248, 0.5);
+        }
+
+        /* High-Contrast Dark Mode Element Overrides */
+        body.dark-mode select,
+        body.theme-obsidian select {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #475569 !important;
+        }
+
+        body.dark-mode option,
+        body.theme-obsidian option {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .accordion-item,
+        body.theme-obsidian .accordion-item {
+            background: #0f172a !important;
+            border-color: #334155 !important;
+        }
+
+        body.dark-mode .accordion-header,
+        body.theme-obsidian .accordion-header {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .studio-card,
+        body.theme-obsidian .studio-card,
+        body.dark-mode .modal-card,
+        body.theme-obsidian .modal-card {
+            border-color: #334155 !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        /* Global Header Dark Mode Switch Button */
+        .dark-mode-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .dark-mode-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            border-color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .dark-mode-toggle-btn:active {
+            transform: translateY(0);
+        }
+
+        body.dark-mode .dark-mode-toggle-btn,
+        body.theme-obsidian .dark-mode-toggle-btn {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: #818cf8;
+            color: #e0e7ff;
+            box-shadow: 0 0 14px rgba(99, 102, 241, 0.4);
         }
 
         body {
@@ -1506,41 +1578,41 @@
             box-shadow: 0 2px 8px var(--accent-glow);
         }
 
-        /* Worksheet Decorative Borders */
+        /* Worksheet Decorative Borders with Dynamic Outer Border Thickness (--ws-border-width) */
         .a4-preview.border-none {
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            outline: none;
+            border: none !important;
+            outline: none !important;
         }
         .a4-preview.border-classic {
-            border: 2px solid #2d3748 !important;
+            border: var(--ws-border-width, 2px) solid #2d3748 !important;
             outline: none;
         }
         .a4-preview.border-double {
-            border: 4px double #1a202c !important;
+            border: var(--ws-border-width, 4px) double #1a202c !important;
             outline: 1.5px solid #4a5568 !important;
             outline-offset: 6px;
         }
         .a4-preview.border-dashed {
-            border: 2.5px dashed #4a5568 !important;
+            border: var(--ws-border-width, 2.5px) dashed #4a5568 !important;
             outline: none;
         }
         .a4-preview.border-dotted {
-            border: 3px dotted #4b5563 !important;
+            border: var(--ws-border-width, 3px) dotted #4b5563 !important;
             outline: none;
         }
         .a4-preview.border-certificate {
-            border: 3px solid #1e293b !important;
+            border: var(--ws-border-width, 3px) solid #1e293b !important;
             outline: 1.5px solid #1e293b !important;
             outline-offset: 8px;
             box-shadow: inset 0 0 0 3px #cbd5e1, 0 10px 30px rgba(0, 0, 0, 0.08) !important;
         }
         .a4-preview.border-modern {
-            border: 2px solid #4338ca !important;
+            border: var(--ws-border-width, 2px) solid #4338ca !important;
             border-radius: 16px !important;
             box-shadow: inset 0 0 0 2px rgba(67, 56, 202, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08) !important;
         }
         .a4-preview.border-bold {
-            border: 4.5px solid #0f172a !important;
+            border: var(--ws-border-width, 4.5px) solid #0f172a !important;
             border-radius: 4px !important;
         }
 
@@ -3037,6 +3109,12 @@
         </div>
         
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <!-- Global Dark Mode Toggle Button -->
+            <button type="button" class="dark-mode-toggle-btn" id="global-dark-mode-toggle" onclick="toggleGlobalDarkMode()" title="Toggle High-Contrast Dark Mode">
+                <span id="dark-mode-icon">🌙</span>
+                <span id="dark-mode-label">Dark Mode</span>
+            </button>
+
             <!-- Direct Quick Theme Palette -->
             <div class="header-theme-strip" title="Change Theme Palette">
                 <button type="button" class="theme-chip-btn active" id="swatch-sapphire" onclick="setTheme('sapphire')" title="Sapphire Theme">
@@ -3167,6 +3245,18 @@
                             <option value="border-certificate">Certificate</option>
                             <option value="border-dashed">Dashed Line</option>
                             <option value="border-modern">Modern Blue</option>
+                        </select>
+                    </div>
+                    <div class="format-item" style="display: flex; align-items: center; gap: 4px;">
+                        <label class="format-label" title="Adjust outer border thickness in pixels">Thickness:</label>
+                        <select id="border-thickness-select" class="style-dropdown" onchange="updateWorksheetStyle()" style="font-size: 12px; padding: 4px 8px;" title="Outer border width in pixels">
+                            <option value="1px">1 px (Thin)</option>
+                            <option value="2px" selected>2 px (Normal)</option>
+                            <option value="3px">3 px (Medium)</option>
+                            <option value="4px">4 px (Thick)</option>
+                            <option value="5px">5 px (Heavy)</option>
+                            <option value="6px">6 px (Extra Bold)</option>
+                            <option value="8px">8 px (Poster Frame)</option>
                         </select>
                     </div>
                     <div class="format-item">
@@ -4297,11 +4387,13 @@
             const fontSizeSelect = document.getElementById('font-size-select');
             const fontFamilySelect = document.getElementById('font-family-select');
             const colorPicker = document.getElementById('text-color-picker');
+            const borderThicknessSelect = document.getElementById('border-thickness-select');
             if (fontSizeSelect) fontSizeSelect.value = '18px';
             if (fontFamilySelect) fontFamilySelect.value = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             if (colorPicker) colorPicker.value = '#1e293b';
+            if (borderThicknessSelect) borderThicknessSelect.value = '2px';
             updateWorksheetStyle();
-            showToast("Font styling reset to default", "↺");
+            showToast("Font & border styling reset to default", "↺");
         }
 
         function triggerBorderDrawAnimation() {
@@ -4331,12 +4423,21 @@
 
         function updateWorksheetStyle() {
             const borderStyle = document.getElementById('border-style-select').value;
+            const borderThickness = document.getElementById('border-thickness-select') ? document.getElementById('border-thickness-select').value : '2px';
             const fontFamily = document.getElementById('font-family-select').value;
             const fontSize = document.getElementById('font-size-select').value;
             const pageColor = document.getElementById('page-color-select').value;
             const colorTheme = document.getElementById('color-theme-select') ? document.getElementById('color-theme-select').value : 'theme-default';
             const previewArea = document.getElementById('a4-preview-area');
             
+            // Apply border thickness CSS custom property and direct style
+            previewArea.style.setProperty('--ws-border-width', borderThickness);
+            if (borderStyle !== 'border-none') {
+                previewArea.style.borderWidth = borderThickness;
+            } else {
+                previewArea.style.borderWidth = '0px';
+            }
+
             // Remove previous border classes and apply selected one
             const borderClasses = ['border-none', 'border-classic', 'border-double', 'border-dashed', 'border-dotted', 'border-certificate', 'border-modern', 'border-bold'];
             borderClasses.forEach(cls => previewArea.classList.remove(cls));
@@ -6255,6 +6356,47 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }
 
+        function updateDarkModeToggleButton(isDark) {
+            const btn = document.getElementById('global-dark-mode-toggle');
+            const icon = document.getElementById('dark-mode-icon');
+            const label = document.getElementById('dark-mode-label');
+            if (icon) icon.innerText = isDark ? '☀️' : '🌙';
+            if (label) label.innerText = isDark ? 'Light Mode' : 'Dark Mode';
+            if (btn) {
+                if (isDark) {
+                    btn.title = 'Switch to Light Mode';
+                    btn.classList.add('active');
+                } else {
+                    btn.title = 'Switch to High-Contrast Dark Mode';
+                    btn.classList.remove('active');
+                }
+            }
+        }
+
+        function toggleGlobalDarkMode() {
+            const isCurrentlyDark = document.body.classList.contains('dark-mode') || document.body.classList.contains('theme-obsidian');
+            if (isCurrentlyDark) {
+                // Switch back to saved light theme or Sapphire
+                let lastLightTheme = 'sapphire';
+                try {
+                    const savedLight = localStorage.getItem('user_last_light_theme');
+                    if (savedLight && savedLight !== 'obsidian' && THEMES_CONFIG[savedLight]) {
+                        lastLightTheme = savedLight;
+                    }
+                } catch(e) {}
+                setTheme(lastLightTheme, true);
+            } else {
+                // Remember current theme as light theme before switching to dark
+                try {
+                    const current = localStorage.getItem('user_app_theme') || 'sapphire';
+                    if (current !== 'obsidian') {
+                        localStorage.setItem('user_last_light_theme', current);
+                    }
+                } catch(e) {}
+                setTheme('obsidian', true);
+            }
+        }
+
         function setTheme(themeKey, showNotification = true) {
             if (!THEMES_CONFIG[themeKey]) themeKey = 'sapphire';
             const body = document.body;
@@ -6265,9 +6407,13 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             
             // Apply new theme
             body.classList.add(`theme-${themeKey}`);
-            if (themeKey === 'obsidian') {
+            const isDark = (themeKey === 'obsidian');
+            if (isDark) {
                 body.classList.add('dark-mode');
             }
+
+            // Update Dark Mode Toggle Button UI
+            updateDarkModeToggleButton(isDark);
 
             // Update Header Display
             const label = document.getElementById('current-theme-label');
@@ -6298,12 +6444,15 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             // Persist to local storage
             try {
                 localStorage.setItem('user_app_theme', themeKey);
+                if (!isDark) {
+                    localStorage.setItem('user_last_light_theme', themeKey);
+                }
             } catch (e) {
                 // Ignore storage errors in restricted contexts
             }
 
             if (showNotification) {
-                showToast(`Applied ${THEMES_CONFIG[themeKey].name} Theme`, "🎨");
+                showToast(`Applied ${THEMES_CONFIG[themeKey].name} Theme`, isDark ? "🌙" : "🎨");
             }
         }
 
@@ -6672,6 +6821,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             if (wasEditing) cleanWorksheetForPreview();
 
             const borderVal = document.getElementById('border-style-select') ? document.getElementById('border-style-select').value : 'border-classic';
+            const borderThicknessVal = document.getElementById('border-thickness-select') ? document.getElementById('border-thickness-select').value : '2px';
             const fontVal = document.getElementById('font-family-select') ? document.getElementById('font-family-select').value : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             const sizeVal = document.getElementById('font-size-select') ? document.getElementById('font-size-select').value : '18px';
             const pageColorVal = document.getElementById('page-color-select') ? document.getElementById('page-color-select').value : 'white';
@@ -6684,6 +6834,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 date: new Date().toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now(),
                 borderStyle: borderVal,
+                borderThickness: borderThicknessVal,
                 fontFamily: fontVal,
                 fontSize: sizeVal,
                 pageColor: pageColorVal,
@@ -7179,6 +7330,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const category = (catInput && catInput.value.trim()) ? catInput.value.trim() : "General";
 
             const borderVal = document.getElementById('border-style-select') ? document.getElementById('border-style-select').value : 'border-classic';
+            const borderThicknessVal = document.getElementById('border-thickness-select') ? document.getElementById('border-thickness-select').value : '2px';
             const fontVal = document.getElementById('font-family-select') ? document.getElementById('font-family-select').value : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             const sizeVal = document.getElementById('font-size-select') ? document.getElementById('font-size-select').value : '18px';
             const pageColorVal = document.getElementById('page-color-select') ? document.getElementById('page-color-select').value : 'white';
@@ -7191,6 +7343,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 date: new Date().toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now(),
                 borderStyle: borderVal,
+                borderThickness: borderThicknessVal,
                 fontFamily: fontVal,
                 fontSize: sizeVal,
                 pageColor: pageColorVal,
@@ -7312,6 +7465,9 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             // Restore style configurations
             if (item.borderStyle && document.getElementById('border-style-select')) {
                 document.getElementById('border-style-select').value = item.borderStyle;
+            }
+            if (item.borderThickness && document.getElementById('border-thickness-select')) {
+                document.getElementById('border-thickness-select').value = item.borderThickness;
             }
             if (item.fontFamily && document.getElementById('font-family-select')) {
                 document.getElementById('font-family-select').value = item.fontFamily;
