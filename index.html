@@ -1616,6 +1616,65 @@
             border-radius: 4px !important;
         }
 
+        /* Content Formatting Visual Themes: Standard, Minimalist, High-Contrast */
+        .a4-preview.formatting-standard .ws-block {
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .a4-preview.formatting-minimalist {
+            background-color: #ffffff !important;
+        }
+        .a4-preview.formatting-minimalist .ws-block {
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 1.5px solid #cbd5e1 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+            margin-bottom: 16px !important;
+        }
+        .a4-preview.formatting-minimalist .middle-box {
+            border-style: solid !important;
+            border-width: 1px !important;
+            border-color: #cbd5e1 !important;
+            background: #fafafa !important;
+        }
+
+        .a4-preview.formatting-high-contrast {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        .a4-preview.formatting-high-contrast .ws-block {
+            background: #ffffff !important;
+            border: 2px solid #000000 !important;
+            border-radius: 4px !important;
+            box-shadow: none !important;
+            padding: 14px !important;
+            margin-bottom: 18px !important;
+        }
+        .a4-preview.formatting-high-contrast h1,
+        .a4-preview.formatting-high-contrast h2,
+        .a4-preview.formatting-high-contrast h3,
+        .a4-preview.formatting-high-contrast p,
+        .a4-preview.formatting-high-contrast span,
+        .a4-preview.formatting-high-contrast li,
+        .a4-preview.formatting-high-contrast label,
+        .a4-preview.formatting-high-contrast input,
+        .a4-preview.formatting-high-contrast textarea {
+            color: #000000 !important;
+        }
+        .a4-preview.formatting-high-contrast h2,
+        .a4-preview.formatting-high-contrast h3 {
+            font-weight: 800 !important;
+            border-bottom: 2px solid #000000 !important;
+        }
+        .a4-preview.formatting-high-contrast .middle-box {
+            border: 2px solid #000000 !important;
+            background: #ffffff !important;
+        }
+
         /* Presentation Slides Presentation Styles */
         .slide-card-container {
             display: flex;
@@ -3300,6 +3359,14 @@
                         </select>
                     </div>
                     <div class="format-item">
+                        <label class="format-label">Visual Style:</label>
+                        <select id="formatting-theme-select" class="style-dropdown" onchange="updateWorksheetStyle()" style="font-size: 12px; padding: 4px 8px; font-weight: 600;" title="Switch worksheet content formatting theme">
+                            <option value="formatting-standard" selected>Standard</option>
+                            <option value="formatting-minimalist">Minimalist</option>
+                            <option value="formatting-high-contrast">High-Contrast</option>
+                        </select>
+                    </div>
+                    <div class="format-item">
                         <label class="format-label">Layout:</label>
                         <select id="layout-columns-select" class="style-dropdown" onchange="updateWorksheetStyle()" style="font-size: 12px; padding: 4px 8px;">
                             <option value="layout-1col" selected>1 Column</option>
@@ -4448,6 +4515,12 @@
             themeClasses.forEach(cls => previewArea.classList.remove(cls));
             previewArea.classList.add(colorTheme);
 
+            // Apply Visual Formatting Theme (Standard, Minimalist, High-Contrast)
+            const formattingTheme = document.getElementById('formatting-theme-select') ? document.getElementById('formatting-theme-select').value : 'formatting-standard';
+            const formattingClasses = ['formatting-standard', 'formatting-minimalist', 'formatting-high-contrast'];
+            formattingClasses.forEach(cls => previewArea.classList.remove(cls));
+            previewArea.classList.add(formattingTheme);
+
             // Remove previous layout classes and apply selected one
             const layoutColumns = document.getElementById('layout-columns-select') ? document.getElementById('layout-columns-select').value : 'layout-1col';
             const layoutClasses = ['layout-1col', 'layout-2col'];
@@ -4455,7 +4528,11 @@
             previewArea.classList.add(layoutColumns);
 
             previewArea.style.fontFamily = fontFamily;
-            previewArea.style.backgroundColor = pageColor;
+            if (formattingTheme === 'formatting-high-contrast' || formattingTheme === 'formatting-minimalist') {
+                previewArea.style.backgroundColor = '#ffffff';
+            } else {
+                previewArea.style.backgroundColor = pageColor;
+            }
 
             // Define theme color maps for stunning colorization of blocks & headers
             const themePalettes = {
@@ -4471,30 +4548,51 @@
 
             const blocks = previewArea.querySelectorAll('.ws-block');
             blocks.forEach(block => {
-                block.style.backgroundColor = palette.bg;
-                block.style.borderColor = palette.border;
-                block.style.borderWidth = '1px';
-                block.style.borderStyle = 'solid';
+                if (formattingTheme === 'formatting-minimalist') {
+                    block.style.backgroundColor = 'transparent';
+                    block.style.borderColor = '#cbd5e1';
+                    block.style.borderWidth = '0 0 1.5px 0';
+                    block.style.borderStyle = 'solid';
+                } else if (formattingTheme === 'formatting-high-contrast') {
+                    block.style.backgroundColor = '#ffffff';
+                    block.style.borderColor = '#000000';
+                    block.style.borderWidth = '2px';
+                    block.style.borderStyle = 'solid';
+                } else {
+                    block.style.backgroundColor = palette.bg;
+                    block.style.borderColor = palette.border;
+                    block.style.borderWidth = '1px';
+                    block.style.borderStyle = 'solid';
+                }
             });
 
             const h2s = previewArea.querySelectorAll('h2');
             h2s.forEach(h2 => {
-                h2.style.color = palette.h2;
+                h2.style.color = (formattingTheme === 'formatting-high-contrast') ? '#000000' : palette.h2;
                 h2.style.fontSize = `calc(${fontSize} + 8px)`;
                 h2.style.fontFamily = fontFamily;
+                if (formattingTheme === 'formatting-high-contrast') {
+                    h2.style.fontWeight = '800';
+                }
             });
 
             const h3s = previewArea.querySelectorAll('h3');
             h3s.forEach(h3 => {
-                h3.style.color = palette.h3;
+                h3.style.color = (formattingTheme === 'formatting-high-contrast') ? '#000000' : palette.h3;
                 h3.style.fontSize = `calc(${fontSize} + 4px)`;
                 h3.style.fontFamily = fontFamily;
+                if (formattingTheme === 'formatting-high-contrast') {
+                    h3.style.fontWeight = '700';
+                }
             });
             
-            const textElements = previewArea.querySelectorAll('p, span, input, textarea, li');
+            const textElements = previewArea.querySelectorAll('p, span, input, textarea, li, label');
             textElements.forEach(el => {
                 el.style.fontSize = fontSize;
                 el.style.fontFamily = fontFamily;
+                if (formattingTheme === 'formatting-high-contrast') {
+                    el.style.color = '#000000';
+                }
             });
         }
 
@@ -6535,6 +6633,12 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const source = document.getElementById('a4-preview-area');
             const target = document.getElementById('modal-a4-preview-frame');
             if (!source || !target) return;
+            
+            target.className = 'a4-preview ' + source.className.replace('a4-preview', '');
+            target.style.fontFamily = source.style.fontFamily || '';
+            target.style.backgroundColor = source.style.backgroundColor || '';
+            target.style.borderWidth = source.style.borderWidth || '';
+            target.style.borderColor = source.style.borderColor || '';
             target.innerHTML = source.innerHTML;
 
             const orientationSel = document.getElementById('preview-orientation-select');
@@ -6545,7 +6649,6 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                     target.classList.remove('orientation-landscape');
                 }
             }
-
         }
 
         function closePrintPreviewModal() {
@@ -6825,6 +6928,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const fontVal = document.getElementById('font-family-select') ? document.getElementById('font-family-select').value : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             const sizeVal = document.getElementById('font-size-select') ? document.getElementById('font-size-select').value : '18px';
             const pageColorVal = document.getElementById('page-color-select') ? document.getElementById('page-color-select').value : 'white';
+            const formattingThemeVal = document.getElementById('formatting-theme-select') ? document.getElementById('formatting-theme-select').value : 'formatting-standard';
             const layoutVal = document.getElementById('layout-columns-select') ? document.getElementById('layout-columns-select').value : 'layout-1col';
 
             const newItem = {
@@ -6838,6 +6942,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 fontFamily: fontVal,
                 fontSize: sizeVal,
                 pageColor: pageColorVal,
+                formattingTheme: formattingThemeVal,
                 layoutColumns: layoutVal,
                 html: root.innerHTML,
                 originalRaw: originalWorksheetHTML || root.innerHTML
@@ -7334,6 +7439,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const fontVal = document.getElementById('font-family-select') ? document.getElementById('font-family-select').value : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             const sizeVal = document.getElementById('font-size-select') ? document.getElementById('font-size-select').value : '18px';
             const pageColorVal = document.getElementById('page-color-select') ? document.getElementById('page-color-select').value : 'white';
+            const formattingThemeVal = document.getElementById('formatting-theme-select') ? document.getElementById('formatting-theme-select').value : 'formatting-standard';
             const layoutVal = document.getElementById('layout-columns-select') ? document.getElementById('layout-columns-select').value : 'layout-1col';
 
             const newItem = {
@@ -7347,6 +7453,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 fontFamily: fontVal,
                 fontSize: sizeVal,
                 pageColor: pageColorVal,
+                formattingTheme: formattingThemeVal,
                 layoutColumns: layoutVal,
                 html: root.innerHTML,
                 originalRaw: originalWorksheetHTML || root.innerHTML
@@ -7477,6 +7584,9 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
             if (item.pageColor && document.getElementById('page-color-select')) {
                 document.getElementById('page-color-select').value = item.pageColor;
+            }
+            if (item.formattingTheme && document.getElementById('formatting-theme-select')) {
+                document.getElementById('formatting-theme-select').value = item.formattingTheme;
             }
             if (item.layoutColumns && document.getElementById('layout-columns-select')) {
                 document.getElementById('layout-columns-select').value = item.layoutColumns;
@@ -8184,17 +8294,26 @@ Each object in the array must strictly have:
                 </html>
             `;
 
-            const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.href = url;
-            downloadAnchor.download = filename;
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            setTimeout(() => {
-                document.body.removeChild(downloadAnchor);
-                URL.revokeObjectURL(url);
-            }, 200);
+            if (window.AndroidAI && (window.AndroidAI.saveDoc || window.AndroidAI.saveFile)) {
+                const base64Data = 'data:application/msword;base64,' + btoa(unescape(encodeURIComponent('\ufeff' + wordHtml)));
+                if (window.AndroidAI.saveDoc) {
+                    window.AndroidAI.saveDoc(base64Data, filename);
+                } else {
+                    window.AndroidAI.saveFile(base64Data, filename, 'application/msword');
+                }
+            } else {
+                const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.href = url;
+                downloadAnchor.download = filename;
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                setTimeout(() => {
+                    document.body.removeChild(downloadAnchor);
+                    URL.revokeObjectURL(url);
+                }, 200);
+            }
 
             if (wasEditing) setWorksheetEditMode(true);
             showToast(`Worksheet exported as editable Microsoft Word document (.doc)! 📄`, "✨");
@@ -8235,23 +8354,33 @@ Each object in the array must strictly have:
                 previewArea.classList.remove('rendering-pdf');
                 if (wasEditing) setWorksheetEditMode(true);
 
-                canvas.toBlob(blob => {
-                    if (!blob) {
-                        showToast("Failed to generate image file", "⚠️");
-                        return;
+                const dataUrl = canvas.toDataURL('image/png');
+                if (window.AndroidAI && (window.AndroidAI.saveImage || window.AndroidAI.saveFile)) {
+                    if (window.AndroidAI.saveImage) {
+                        window.AndroidAI.saveImage(dataUrl, filename);
+                    } else {
+                        window.AndroidAI.saveFile(dataUrl, filename, 'image/png');
                     }
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }, 200);
-                    showToast(`Worksheet saved as high-resolution printable PNG image! 🖼️`, "✨");
-                }, 'image/png');
+                    showToast(`Worksheet saved to Pictures as PNG image! 🖼️`, "✨");
+                } else {
+                    canvas.toBlob(blob => {
+                        if (!blob) {
+                            showToast("Failed to generate image file", "⚠️");
+                            return;
+                        }
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 200);
+                        showToast(`Worksheet saved as high-resolution printable PNG image! 🖼️`, "✨");
+                    }, 'image/png');
+                }
             }).catch(err => {
                 previewArea.classList.remove('rendering-pdf');
                 if (wasEditing) setWorksheetEditMode(true);
@@ -8321,17 +8450,26 @@ Each object in the array must strictly have:
                 </html>
             `;
 
-            const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 200);
+            if (window.AndroidAI && (window.AndroidAI.saveDoc || window.AndroidAI.saveFile)) {
+                const base64Data = 'data:application/msword;base64,' + btoa(unescape(encodeURIComponent('\ufeff' + wordHtml)));
+                if (window.AndroidAI.saveDoc) {
+                    window.AndroidAI.saveDoc(base64Data, filename);
+                } else {
+                    window.AndroidAI.saveFile(base64Data, filename, 'application/msword');
+                }
+            } else {
+                const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 200);
+            }
             showToast(`Slide deck exported as editable Microsoft Word document (.doc)! 📄`, "✨");
         }
 
@@ -8366,23 +8504,33 @@ Each object in the array must strictly have:
                 backgroundColor: '#f8fafc',
                 logging: false
             }).then(canvas => {
-                canvas.toBlob(blob => {
-                    if (!blob) {
-                        showToast("Failed to generate slide image file", "⚠️");
-                        return;
+                const dataUrl = canvas.toDataURL('image/png');
+                if (window.AndroidAI && (window.AndroidAI.saveImage || window.AndroidAI.saveFile)) {
+                    if (window.AndroidAI.saveImage) {
+                        window.AndroidAI.saveImage(dataUrl, filename);
+                    } else {
+                        window.AndroidAI.saveFile(dataUrl, filename, 'image/png');
                     }
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }, 200);
-                    showToast(`Slide ${currentSlideIndex + 1} saved as high-resolution PNG image! 🖼️`, "✨");
-                }, 'image/png');
+                    showToast(`Slide ${currentSlideIndex + 1} saved to Pictures as PNG image! 🖼️`, "✨");
+                } else {
+                    canvas.toBlob(blob => {
+                        if (!blob) {
+                            showToast("Failed to generate slide image file", "⚠️");
+                            return;
+                        }
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 200);
+                        showToast(`Slide ${currentSlideIndex + 1} saved as high-resolution PNG image! 🖼️`, "✨");
+                    }, 'image/png');
+                }
             }).catch(err => {
                 console.error("Slide image capture error:", err);
                 showToast("Failed to capture slide image.", "⚠️");
@@ -8415,7 +8563,11 @@ Each object in the array must strictly have:
             document.body.classList.add('printing-slides');
             
             setTimeout(() => {
-                window.print();
+                if (window.AndroidAI && window.AndroidAI.printWorksheet) {
+                    window.AndroidAI.printWorksheet("Presentation_Deck");
+                } else {
+                    window.print();
+                }
                 setTimeout(() => {
                     document.body.classList.remove('printing-slides');
                 }, 500);

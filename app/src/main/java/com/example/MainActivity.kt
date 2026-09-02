@@ -86,8 +86,9 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
         coroutineScope.launch(Dispatchers.Main) {
             try {
                 val printManager = webView.context.getSystemService(Context.PRINT_SERVICE) as PrintManager
-                val printAdapter = webView.createPrintDocumentAdapter(documentName)
-                val jobName = "Worksheet - $documentName"
+                val safeName = documentName.ifBlank { "Worksheet" }
+                val printAdapter = webView.createPrintDocumentAdapter(safeName)
+                val jobName = "Worksheet - $safeName"
                 printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
             } catch (e: Exception) {
                 android.widget.Toast.makeText(webView.context, "Print error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
@@ -97,45 +98,165 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
 
     @JavascriptInterface
     fun savePdf(base64Data: String, filename: String) {
+        saveFileInternal(base64Data, filename, "application/pdf", "PDF file")
+    }
+
+    @JavascriptInterface
+    fun saveImage(base64Data: String, filename: String) {
+        saveFileInternal(base64Data, filename, "image/png", "PNG Image")
+    }
+
+    @JavascriptInterface
+    fun saveDoc(contentOrBase64: String, filename: String) {
+        saveFileInternal(contentOrBase64, filename, "application/msword", "Word Document")
+    }
+
+    @JavascriptInterface
+    fun saveFile(data: String, filename: String, mimeType: String) {
+        saveFileInternal(data, filename, mimeType, "File")
+    }
+
+    private fun saveFileInternal(data: String, filename: String, mimeType: String, label: String) {
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val base64String = base64Data.substringAfter("base64,")
-                val pdfAsBytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
-                
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    val contentValues = android.content.ContentValues().apply {
-                        put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                        put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
-                        put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_DOWNLOADS)
+                val fileBytes = if (data.contains("base64,")) {
+                    android.util.Base64.decode(data.substringAfter("base64,"), android.util.Base64.DEFAULT)
+                } else if (data.startsWith("data:") && data.contains(",")) {
+                    android.util.Base64.decode(data.substringAfter(","), android.util.Base64.DEFAULT)
+                } else {
+                    // Try decode as Base64; if invalid, treat as raw UTF-8 string
+                    try {
+                        android.util.Base64.decode(data, android.util.Base64.DEFAULT)
+                    } catch (e: Exception) {
+                        data.toByteArray(Charsets.UTF_8)
                     }
-                    
-                    val uri = webView.context.contentResolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-                    uri?.let {
-                        webView.context.contentResolver.openOutputStream(it)?.use { outputStream ->
-                            outputStream.write(pdfAsBytes)
+                }
+
+                val safeFilename = filename.ifBlank { "Exported_$label" }
+                var savedSuccess = false
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    val isImage = mimeType.startsWith("image/")
+                    val collection = if (isImage) {
+                        android.provider.MediaStore.Images.Media.getContentUri(android.provider.MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                    } else {
+                        android.provider.MediaStore.Downloads.getContentUri(android.provider.MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                    }
+                    val relativePath = if (isImage) {
+                        android.os.Environment.DIRECTORY_PICTURES + "/Worksheets"
+                    } else {
+                        android.os.Environment.DIRECTORY_DOWNLOADS + "/Worksheets"
+                    }
+
+                    val contentValues = android.content.ContentValues().apply {
+                        put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, safeFilename)
+                        put(android.provider.MediaStore.MediaColumns.MIME_TYPE, mimeType)
+                        put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                        put(android.provider.MediaStore.MediaColumns.IS_PENDING, 1)
+                    }
+
+                    val uri = webView.context.contentResolver.insert(collection, contentValues)
+                    uri?.let { itemUri ->
+                        webView.context.contentResolver.openOutputStream(itemUri)?.use { outputStream ->
+                            outputStream.write(fileBytes)
                         }
-                        withContext(Dispatchers.Main) {
-                            android.widget.Toast.makeText(webView.context, "PDF saved to Downloads folder!", android.widget.Toast.LENGTH_SHORT).show()
-                        }
-                    } ?: run {
-                        withContext(Dispatchers.Main) {
-                            android.widget.Toast.makeText(webView.context, "Failed to create PDF file.", android.widget.Toast.LENGTH_SHORT).show()
-                        }
+                        contentValues.clear()
+                        contentValues.put(android.provider.MediaStore.MediaColumns.IS_PENDING, 0)
+                        webView.context.contentResolver.update(itemUri, contentValues, null, null)
+                        savedSuccess = true
                     }
                 } else {
                     @Suppress("DEPRECATION")
-                    val downloadDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
-                    val file = java.io.File(downloadDir, filename)
-                    file.outputStream().use { outputStream ->
-                        outputStream.write(pdfAsBytes)
+                    val isImage = mimeType.startsWith("image/")
+                    val baseDir = if (isImage) {
+                        android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES)
+                    } else {
+                        android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
                     }
-                    withContext(Dispatchers.Main) {
-                        android.widget.Toast.makeText(webView.context, "PDF saved to Downloads folder!", android.widget.Toast.LENGTH_SHORT).show()
+                    val targetDir = java.io.File(baseDir, "Worksheets")
+                    targetDir.mkdirs()
+                    val file = java.io.File(targetDir, safeFilename)
+                    file.outputStream().use { outputStream ->
+                        outputStream.write(fileBytes)
+                    }
+                    // Trigger Android Media Scanner so Gallery indexes the photo immediately
+                    android.media.MediaScannerConnection.scanFile(
+                        webView.context,
+                        arrayOf(file.absolutePath),
+                        arrayOf(mimeType),
+                        null
+                    )
+                    savedSuccess = true
+                }
+
+                // Also save to app cache for immediate share intent access
+                try {
+                    val cacheDir = java.io.File(webView.context.cacheDir, "exports")
+                    cacheDir.mkdirs()
+                    val cacheFile = java.io.File(cacheDir, safeFilename)
+                    cacheFile.outputStream().use { it.write(fileBytes) }
+                } catch (e: Exception) {
+                    // Ignore cache errors
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (savedSuccess) {
+                        android.widget.Toast.makeText(
+                            webView.context,
+                            "Saved $safeFilename to Downloads/Pictures!",
+                            android.widget.Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        android.widget.Toast.makeText(
+                            webView.context,
+                            "Failed to save $safeFilename",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    android.widget.Toast.makeText(webView.context, "PDF Export: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                    android.widget.Toast.makeText(webView.context, "Export error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun shareFile(data: String, filename: String, mimeType: String) {
+        coroutineScope.launch(Dispatchers.IO) {
+            try {
+                val fileBytes = if (data.contains("base64,")) {
+                    android.util.Base64.decode(data.substringAfter("base64,"), android.util.Base64.DEFAULT)
+                } else {
+                    data.toByteArray(Charsets.UTF_8)
+                }
+
+                val cacheDir = java.io.File(webView.context.cacheDir, "exports")
+                cacheDir.mkdirs()
+                val cacheFile = java.io.File(cacheDir, filename)
+                cacheFile.outputStream().use { it.write(fileBytes) }
+
+                val fileUri = androidx.core.content.FileProvider.getUriForFile(
+                    webView.context,
+                    "${webView.context.packageName}.fileprovider",
+                    cacheFile
+                )
+
+                withContext(Dispatchers.Main) {
+                    val sendIntent = android.content.Intent().apply {
+                        action = android.content.Intent.ACTION_SEND
+                        putExtra(android.content.Intent.EXTRA_STREAM, fileUri)
+                        type = mimeType
+                        addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    val shareIntent = android.content.Intent.createChooser(sendIntent, "Share $filename")
+                    shareIntent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    webView.context.startActivity(shareIntent)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    android.widget.Toast.makeText(webView.context, "Share error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
         }
