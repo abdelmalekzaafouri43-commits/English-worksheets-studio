@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EduWorksheets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -2970,6 +2971,61 @@
         #font-size-select:hover {
             transform: scale(1.03);
         }
+    
+        /* Presentation Slide Grid & Adaptive Layout System */
+        .slide-body-grid {
+            display: grid;
+            gap: 24px;
+            align-items: center;
+            width: 100%;
+        }
+        .slide-body-grid.layout-split {
+            grid-template-columns: 1.4fr 1fr;
+        }
+        .slide-body-grid.layout-stacked {
+            grid-template-columns: 1fr;
+        }
+
+        /* Enhanced Responsive Rules for Slides & Worksheets */
+        @media (max-width: 768px) {
+            #slide-viewport-canvas {
+                padding: 18px !important;
+                min-height: auto !important;
+                aspect-ratio: auto !important;
+            }
+            .slide-card-container {
+                gap: 12px;
+            }
+            .slide-body-grid.layout-split {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            .slide-body-grid.layout-stacked {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            .slide-visual-panel {
+                min-height: 120px !important;
+                padding: 14px !important;
+                order: 2;
+            }
+            .slide-bullets-panel {
+                padding: 16px !important;
+                order: 1;
+            }
+            #slide-viewport-canvas h1 {
+                font-size: 20px !important;
+                line-height: 1.3 !important;
+            }
+            #slide-viewport-canvas ul li {
+                font-size: 14px !important;
+                margin-bottom: 8px !important;
+            }
+            .a4-preview {
+                padding: 1.2cm 0.8cm !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -3191,6 +3247,12 @@
                 <button type="button" class="download-btn" onclick="downloadPDFFromAccordion()" style="padding: 7px 18px; font-size: 13px; font-weight: 700; border-radius: 12px; background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
                     <span>📥 Download PDF</span>
                 </button>
+                <button type="button" class="editor-btn" onclick="exportWorksheetWordDoc()" style="padding: 7px 16px; font-size: 13px; font-weight: 700; border-radius: 12px; background: #1e40af; color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" title="Export editable Microsoft Word document (.doc) for offline teaching">
+                    <span>📄 Export Word (.doc)</span>
+                </button>
+                <button type="button" class="editor-btn" onclick="exportWorksheetImage()" style="padding: 7px 16px; font-size: 13px; font-weight: 700; border-radius: 12px; background: #059669; color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" title="Save worksheet as high-resolution PNG image">
+                    <span>🖼️ Save PNG Image</span>
+                </button>
                 <button type="button" class="editor-btn" onclick="openDigitalShareModal(event)" style="padding: 7px 16px; font-size: 13px; font-weight: 700; border-radius: 12px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--tag-border); cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
                     <span>📱 Digital Link</span>
                 </button>
@@ -3380,9 +3442,17 @@
                             <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px;">Embeds a scannable QR code on A4 page linking to an interactive, editable version.</div>
                             <input type="text" id="acc-pdf-qr-label" class="primary-input bento-input" placeholder="📱 Digital Version Link" oninput="updateQRCodePreview()" style="padding: 6px 10px; font-size: 12px;">
                         </div>
-                        <button class="download-btn bento-full-btn" id="download-btn" onclick="downloadPDFFromAccordion()">
-                            <span>📥 Download PDF</span>
-                        </button>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                            <button class="download-btn" id="download-btn" onclick="downloadPDFFromAccordion()" style="flex: 1; min-width: 140px; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700;">
+                                <span>📥 Download PDF</span>
+                            </button>
+                            <button type="button" class="editor-btn" onclick="exportWorksheetWordDoc()" style="flex: 1; min-width: 140px; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; background: #1e40af; color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" title="Export editable Word document">
+                                <span>📄 Word (.doc)</span>
+                            </button>
+                            <button type="button" class="editor-btn" onclick="exportWorksheetImage()" style="flex: 1; min-width: 140px; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; background: #059669; color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" title="Save printable PNG image">
+                                <span>🖼️ PNG Image</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -3654,6 +3724,12 @@
                         <button type="button" onclick="downloadPDFFromPreviewModal()" class="editor-btn primary" style="padding: 7px 16px; font-size: 13px;">
                             <span>📥 Download PDF</span>
                         </button>
+                        <button type="button" onclick="exportWorksheetWordDoc()" class="editor-btn" style="padding: 7px 14px; font-size: 13px; background: #1e40af; color: white; border: none;">
+                            <span>📄 Word (.doc)</span>
+                        </button>
+                        <button type="button" onclick="exportWorksheetImage()" class="editor-btn" style="padding: 7px 14px; font-size: 13px; background: #059669; color: white; border: none;">
+                            <span>🖼️ PNG Image</span>
+                        </button>
                         <button type="button" onclick="confirmPrintFromPreview()" class="print-btn" style="padding: 7px 18px; font-size: 13px;">
                             <span>🖨️ Print Now</span>
                         </button>
@@ -3882,6 +3958,8 @@
                         <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">◀ Previous</button>
                         <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">Next ▶</button>
                         <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px;">📥 Export Slides PDF</button>
+                        <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #1e40af; color: white; border: none; cursor: pointer;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Export Word (.doc)</button>
+                        <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #059669; color: white; border: none; cursor: pointer;" title="Save current slide as a high-resolution PNG image">🖼️ Save Slide Image</button>
                     </div>
                 </div>
 
@@ -7789,16 +7867,16 @@ Each object in the array must strictly have:
                     </div>
 
                     <!-- Slide Body with Bullets and Optional Visual Panel -->
-                    <div style="display: grid; grid-template-columns: ${isHorizontal ? '1.4fr 1fr' : '1fr'}; gap: 24px; align-items: center; flex: 1;">
+                    <div class="slide-body-grid ${isHorizontal ? 'layout-split' : 'layout-stacked'}" style="flex: 1;">
                         <!-- Bullets Column -->
-                        <div style="background: rgba(255, 255, 255, 0.85); padding: 22px; border-radius: 14px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div class="slide-bullets-panel" style="background: rgba(255, 255, 255, 0.85); padding: 22px; border-radius: 14px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
                             <ul style="list-style: none; padding: 0; margin: 0;">
                                 ${bulletItems}
                             </ul>
                         </div>
 
                         <!-- Graphic Visual Concept Box -->
-                        <div style="background: linear-gradient(135deg, white 0%, #f8fafc 100%); border: 1.5px solid ${slide.accent}33; border-radius: 14px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; box-shadow: 0 6px 20px rgba(0,0,0,0.04);">
+                        <div class="slide-visual-panel" style="background: linear-gradient(135deg, white 0%, #f8fafc 100%); border: 1.5px solid ${slide.accent}33; border-radius: 14px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; box-shadow: 0 6px 20px rgba(0,0,0,0.04);">
                             <div style="font-size: 42px; margin-bottom: 8px;">
                                 ${index === 0 ? '🎯' : index === total - 1 ? '🎓' : (index % 3 === 0 ? '💡' : index % 2 === 0 ? '🗣️' : '📝')}
                             </div>
@@ -7865,6 +7943,296 @@ Each object in the array must strictly have:
         }
 
         
+        
+        // Offline Teaching Export Functions: Microsoft Word (.doc) & PNG Images
+        function exportWorksheetWordDoc() {
+            const previewArea = document.getElementById('a4-preview-area');
+            if (!previewArea) {
+                showToast("No worksheet content found to export!", "⚠️");
+                return;
+            }
+            
+            const wasEditing = isEditMode;
+            if (wasEditing) setWorksheetEditMode(false);
+
+            const titleInput = document.getElementById('acc-save-title');
+            const defaultDocTitle = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : "Classroom_Worksheet";
+            const filename = defaultDocTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '.doc';
+
+            const cleanClone = previewArea.cloneNode(true);
+            cleanClone.querySelectorAll('.no-print, .action-btn, .delete-btn, .drag-handle, .add-section-btn').forEach(el => el.remove());
+
+            const docContent = cleanClone.innerHTML;
+
+            const wordHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>${escapeHtml(defaultDocTitle)}</title>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <w:WordDocument>
+                            <w:View>Print</w:View>
+                            <w:Zoom>100</w:Zoom>
+                            <w:DoNotOptimizeForBrowser/>
+                        </w:WordDocument>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        @page Section1 {
+                            size: 595.3pt 841.9pt;
+                            margin: 0.8in 0.8in 0.8in 0.8in;
+                            mso-header-margin: 36pt;
+                            mso-footer-margin: 36pt;
+                            mso-paper-source: 0;
+                        }
+                        div.Section1 { page: Section1; }
+                        body {
+                            font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+                            font-size: 12pt;
+                            line-height: 1.5;
+                            color: #1e293b;
+                            background-color: #ffffff;
+                        }
+                        h1, h2, h3, h4 {
+                            color: #0f172a;
+                            font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+                            margin-top: 14pt;
+                            margin-bottom: 6pt;
+                        }
+                        h1 { font-size: 20pt; font-weight: bold; }
+                        h2 { font-size: 14pt; font-weight: bold; border-bottom: 1.5pt solid #cbd5e1; padding-bottom: 4pt; }
+                        p, li { font-size: 11.5pt; margin-bottom: 6pt; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 10pt 0;
+                        }
+                        th, td {
+                            border: 1pt solid #cbd5e1;
+                            padding: 8pt;
+                            text-align: left;
+                            font-size: 11pt;
+                        }
+                        th {
+                            background-color: #f1f5f9;
+                            font-weight: bold;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="Section1">
+                        ${docContent}
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            downloadAnchor.download = filename;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            setTimeout(() => {
+                document.body.removeChild(downloadAnchor);
+                URL.revokeObjectURL(url);
+            }, 200);
+
+            if (wasEditing) setWorksheetEditMode(true);
+            showToast(`Worksheet exported as editable Microsoft Word document (.doc)! 📄`, "✨");
+        }
+
+        function exportWorksheetImage() {
+            const previewArea = document.getElementById('a4-preview-area');
+            if (!previewArea) {
+                showToast("No worksheet content found to export!", "⚠️");
+                return;
+            }
+
+            const wasEditing = isEditMode;
+            if (wasEditing) setWorksheetEditMode(false);
+
+            showToast("Generating high-resolution PNG image of worksheet...", "⏳");
+
+            const titleInput = document.getElementById('acc-save-title');
+            const defaultTitle = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : "Classroom_Worksheet";
+            const filename = defaultTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '.png';
+
+            const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
+
+            if (!captureCanvas) {
+                showToast("Image renderer is loading, please try again in a moment...", "⚠️");
+                if (wasEditing) setWorksheetEditMode(true);
+                return;
+            }
+
+            previewArea.classList.add('rendering-pdf');
+
+            captureCanvas(previewArea, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(canvas => {
+                previewArea.classList.remove('rendering-pdf');
+                if (wasEditing) setWorksheetEditMode(true);
+
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        showToast("Failed to generate image file", "⚠️");
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 200);
+                    showToast(`Worksheet saved as high-resolution printable PNG image! 🖼️`, "✨");
+                }, 'image/png');
+            }).catch(err => {
+                previewArea.classList.remove('rendering-pdf');
+                if (wasEditing) setWorksheetEditMode(true);
+                console.error("Image export error:", err);
+                showToast("Error generating image. You can use Print / PDF export.", "⚠️");
+            });
+        }
+
+        function exportSlidesWordDoc() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate presentation slides first!", "⚠️");
+                return;
+            }
+
+            const titleEl = document.getElementById('slide-deck-title');
+            const deckTitle = (titleEl && titleEl.innerText) ? titleEl.innerText : "Lesson_Presentation_Deck";
+            const filename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '.doc';
+
+            let slidesHtmlContent = `
+                <div style="text-align: center; border-bottom: 2pt solid #2563eb; padding-bottom: 12pt; margin-bottom: 18pt;">
+                    <h1 style="color: #1e3a8a; font-size: 22pt; margin: 0 0 6pt 0;">${escapeHtml(deckTitle)}</h1>
+                    <p style="color: #64748b; font-size: 12pt; margin: 0;">ESL Classroom Presentation Deck & Lesson Plan • Total Slides: ${currentSlidesData.length}</p>
+                </div>
+            `;
+
+            currentSlidesData.forEach((slide, idx) => {
+                const bulletItems = (slide.bullets || []).map(b => `<li style="font-size: 11.5pt; margin-bottom: 6pt; color: #1e293b;">${escapeHtml(b)}</li>`).join('');
+                slidesHtmlContent += `
+                    <div style="border: 1pt solid #cbd5e1; border-left: 6pt solid ${slide.accent}; border-radius: 6pt; padding: 14pt; margin-bottom: 16pt; background-color: #f8fafc;">
+                        <div style="font-size: 10pt; font-weight: bold; color: ${slide.accent}; text-transform: uppercase;">Slide ${idx + 1} of ${currentSlidesData.length}</div>
+                        <h2 style="color: #0f172a; font-size: 16pt; margin: 4pt 0 4pt 0;">${escapeHtml(slide.title)}</h2>
+                        <div style="color: #64748b; font-size: 11pt; font-style: italic; margin-bottom: 10pt;">${escapeHtml(slide.subtitle || '')}</div>
+                        <ul style="padding-left: 18pt; margin: 0 0 10pt 0;">
+                            ${bulletItems}
+                        </ul>
+                        <div style="background-color: #ffffff; border: 1pt dashed #cbd5e1; padding: 8pt; border-radius: 4pt; font-size: 10pt; color: #475569;">
+                            <strong>👨‍🏫 Teaching & Pronunciation Focus:</strong> Practice active repetition and sentence construction with a partner.
+                        </div>
+                    </div>
+                `;
+            });
+
+            const wordHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>${escapeHtml(deckTitle)}</title>
+                    <style>
+                        @page Section1 {
+                            size: 595.3pt 841.9pt;
+                            margin: 0.8in 0.8in 0.8in 0.8in;
+                        }
+                        div.Section1 { page: Section1; }
+                        body {
+                            font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+                            font-size: 11.5pt;
+                            line-height: 1.5;
+                            color: #1e293b;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="Section1">
+                        ${slidesHtmlContent}
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 200);
+            showToast(`Slide deck exported as editable Microsoft Word document (.doc)! 📄`, "✨");
+        }
+
+        function exportSlideImage() {
+            const viewport = document.getElementById('slide-viewport-canvas');
+            if (!viewport) {
+                showToast("No slide canvas found!", "⚠️");
+                return;
+            }
+
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate presentation slides first!", "⚠️");
+                return;
+            }
+
+            const slide = currentSlidesData[currentSlideIndex];
+            const slideTitle = (slide && slide.title) ? slide.title.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 25) : `Slide_${currentSlideIndex + 1}`;
+            const filename = `Slide_${currentSlideIndex + 1}_${slideTitle}.png`;
+
+            showToast(`Capturing Slide ${currentSlideIndex + 1} as printable PNG image... 🖼️`, "⏳");
+
+            const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
+
+            if (!captureCanvas) {
+                showToast("Image renderer is loading, please try again in a moment...", "⚠️");
+                return;
+            }
+
+            captureCanvas(viewport, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#f8fafc',
+                logging: false
+            }).then(canvas => {
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        showToast("Failed to generate slide image file", "⚠️");
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 200);
+                    showToast(`Slide ${currentSlideIndex + 1} saved as high-resolution PNG image! 🖼️`, "✨");
+                }, 'image/png');
+            }).catch(err => {
+                console.error("Slide image capture error:", err);
+                showToast("Failed to capture slide image.", "⚠️");
+            });
+        }
+
         function downloadSlidesPDF() {
             if (!currentSlidesData || currentSlidesData.length === 0) {
                 showToast("Please generate slides first!", "⚠️");
