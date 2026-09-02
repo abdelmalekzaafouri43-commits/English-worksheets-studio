@@ -274,7 +274,8 @@
             background: rgba(255, 255, 255, 0.15);
             border: 1.5px solid rgba(255, 255, 255, 0.35);
             color: #ffffff;
-            padding: 7px 14px;
+            padding: 8px 16px;
+            min-height: 40px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
@@ -287,6 +288,10 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
+            touch-action: manipulation;
         }
 
         .dark-mode-toggle-btn:hover {
@@ -317,11 +322,11 @@
             color: var(--text-main);
             -webkit-tap-highlight-color: transparent;
             transition: background 0.3s ease, color 0.3s ease;
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4' fill='%2360a5fa' opacity='0.8'/%3E%3Ccircle cx='12' cy='12' r='8' stroke='%233b82f6' stroke-width='1.5' stroke-dasharray='2 2'/%3E%3C/svg%3E") 12 12, auto;
+            cursor: default;
         }
 
         button, a, input[type="button"], input[type="submit"], select, .topic-chip, .editor-btn, .mode-switch-btn, .grade-seg-btn, .theme-option-btn, .theme-selector-btn, .illustration-preset-card, .template-card, label {
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='6' fill='%2393c5fd' opacity='0.9'/%3E%3Ccircle cx='12' cy='12' r='10' stroke='%232563eb' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, pointer !important;
+            cursor: pointer !important;
         }
 
         input[type="text"], input[type="search"], textarea {
@@ -330,7 +335,7 @@
         .header {
             background: var(--header-bg);
             color: white;
-            padding: 14px 18px;
+            padding: max(24px, env(safe-area-inset-top, 24px)) 18px 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -341,7 +346,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             transition: background 0.4s ease;
             position: relative;
-            z-index: 100;
+            z-index: 1000;
         }
         .header-title {
             display: flex;
@@ -367,7 +372,8 @@
             background: transparent;
             border: 1px solid transparent;
             color: white;
-            padding: 5px 9px;
+            padding: 6px 11px;
+            min-height: 36px;
             border-radius: 14px;
             font-size: 11.5px;
             font-weight: 700;
@@ -379,6 +385,9 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
         }
         .theme-chip-btn:hover {
             background: rgba(255, 255, 255, 0.22);
@@ -403,12 +412,14 @@
         .theme-selector-container {
             position: relative;
             display: inline-block;
+            z-index: 1001;
         }
         .theme-selector-btn {
             background: rgba(255, 255, 255, 0.22);
             border: 1px solid rgba(255, 255, 255, 0.45);
             color: white;
-            padding: 7px 14px;
+            padding: 8px 16px;
+            min-height: 40px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 13px;
@@ -422,6 +433,9 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
             user-select: none;
             touch-action: manipulation;
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
         }
         .theme-selector-btn:hover {
             background: rgba(255, 255, 255, 0.35);
@@ -2554,7 +2568,8 @@
             background: var(--glass-chip-bg);
             border: 1.5px solid var(--glass-border);
             color: var(--text-main);
-            padding: 7px 14px;
+            padding: 8px 16px;
+            min-height: 40px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
@@ -2566,6 +2581,9 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
+            touch-action: manipulation;
             overflow: hidden;
         }
         .saved-manager-btn:hover {
