@@ -373,10 +373,20 @@ fun HtmlAppWebView() {
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
+            // Pre-create cache directories to prevent Chromium code cache directory creation warnings
+            try {
+                val codeCacheDir = java.io.File(context.cacheDir, "WebView/Default/HTTP Cache/Code Cache/js")
+                if (!codeCacheDir.exists()) {
+                    codeCacheDir.mkdirs()
+                }
+            } catch (e: Exception) {
+                // Ignore directory creation errors
+            }
+
             WebView(context).apply {
-                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
+                settings.databaseEnabled = true
                 settings.allowContentAccess = true
                 settings.allowFileAccess = true
                 settings.loadWithOverviewMode = true
