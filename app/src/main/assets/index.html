@@ -274,7 +274,8 @@
             background: rgba(255, 255, 255, 0.15);
             border: 1.5px solid rgba(255, 255, 255, 0.35);
             color: #ffffff;
-            padding: 7px 14px;
+            padding: 8px 16px;
+            min-height: 40px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
@@ -287,6 +288,10 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
+            touch-action: manipulation;
         }
 
         .dark-mode-toggle-btn:hover {
@@ -317,11 +322,11 @@
             color: var(--text-main);
             -webkit-tap-highlight-color: transparent;
             transition: background 0.3s ease, color 0.3s ease;
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4' fill='%2360a5fa' opacity='0.8'/%3E%3Ccircle cx='12' cy='12' r='8' stroke='%233b82f6' stroke-width='1.5' stroke-dasharray='2 2'/%3E%3C/svg%3E") 12 12, auto;
+            cursor: default;
         }
 
         button, a, input[type="button"], input[type="submit"], select, .topic-chip, .editor-btn, .mode-switch-btn, .grade-seg-btn, .theme-option-btn, .theme-selector-btn, .illustration-preset-card, .template-card, label {
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='6' fill='%2393c5fd' opacity='0.9'/%3E%3Ccircle cx='12' cy='12' r='10' stroke='%232563eb' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, pointer !important;
+            cursor: pointer !important;
         }
 
         input[type="text"], input[type="search"], textarea {
@@ -330,7 +335,7 @@
         .header {
             background: var(--header-bg);
             color: white;
-            padding: 14px 18px;
+            padding: max(24px, env(safe-area-inset-top, 24px)) 18px 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -341,7 +346,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             transition: background 0.4s ease;
             position: relative;
-            z-index: 100;
+            z-index: 1000;
         }
         .header-title {
             display: flex;
@@ -367,7 +372,8 @@
             background: transparent;
             border: 1px solid transparent;
             color: white;
-            padding: 5px 9px;
+            padding: 6px 11px;
+            min-height: 36px;
             border-radius: 14px;
             font-size: 11.5px;
             font-weight: 700;
@@ -379,6 +385,9 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
         }
         .theme-chip-btn:hover {
             background: rgba(255, 255, 255, 0.22);
@@ -403,56 +412,69 @@
         .theme-selector-container {
             position: relative;
             display: inline-block;
+            z-index: 1001;
         }
         .theme-selector-btn {
             background: rgba(255, 255, 255, 0.22);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.45);
             color: white;
-            padding: 7px 13px;
+            padding: 8px 16px;
+            min-height: 40px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
             transition: all 0.25s ease;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
             user-select: none;
             touch-action: manipulation;
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
         }
         .theme-selector-btn:hover {
             background: rgba(255, 255, 255, 0.35);
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
         }
         .theme-selector-btn:active {
             transform: translateY(0);
         }
         .theme-dot {
-            width: 11px;
-            height: 11px;
+            width: 13px;
+            height: 13px;
             border-radius: 50%;
             display: inline-block;
             background: #60a5fa;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
             transition: all 0.3s ease;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(255, 255, 255, 0.6);
         }
         .theme-dropdown-menu {
             display: none;
             position: absolute;
-            top: calc(100% + 8px);
+            top: calc(100% + 10px);
             right: 0;
             background: var(--bg-card);
-            border: 1.5px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 10px;
-            width: 240px;
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+            border: 1.5px solid var(--tag-border);
+            border-radius: 20px;
+            padding: 14px;
+            width: 410px;
+            max-width: 92vw;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
             z-index: 999999;
-            animation: menuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: menuFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-sizing: border-box;
         }
         @keyframes menuFadeIn {
             from { opacity: 0; transform: translateY(-8px) scale(0.96); }
@@ -461,74 +483,216 @@
         .theme-dropdown-menu.show {
             display: block;
         }
-        .theme-menu-title {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: var(--text-muted);
-            padding: 4px 8px 8px;
-            border-bottom: 1px solid var(--input-border);
-            margin-bottom: 6px;
+        .theme-menu-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--tag-border);
+            margin-bottom: 12px;
         }
-        .theme-option-btn {
-            width: 100%;
+        .theme-menu-close-btn {
+            background: var(--primary-box-bg);
+            border: 1px solid var(--tag-border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 9px 12px;
-            border-radius: 12px;
-            border: none;
-            background: transparent;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .theme-menu-close-btn:hover {
             color: var(--text-main);
+            background: var(--accent-glow);
+        }
+        .theme-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 480px) {
+            .theme-cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .theme-dropdown-menu {
+                width: 320px;
+            }
+        }
+        .theme-preview-card {
+            background: var(--primary-box-bg);
+            border: 1.5px solid var(--tag-border);
+            border-radius: 14px;
+            padding: 10px;
             cursor: pointer;
             text-align: left;
-            transition: all 0.18s ease;
-            margin-bottom: 2px;
-            box-sizing: border-box;
-            touch-action: manipulation;
-        }
-        .theme-option-btn:hover {
-            background: var(--primary-box-bg);
-            transform: translateX(2px);
-        }
-        .theme-option-btn.active {
-            background: var(--primary-box-bg);
-            font-weight: 700;
-        }
-        .theme-option-dot {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .theme-option-info {
-            flex: 1;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
+            gap: 8px;
+            position: relative;
+            user-select: none;
+            box-sizing: border-box;
         }
-        .theme-option-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-main);
+        .theme-preview-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 6px 18px var(--accent-glow);
         }
-        .theme-option-sub {
-            font-size: 10.5px;
-            color: var(--text-muted);
+        .theme-preview-card.active {
+            border-color: var(--accent-primary);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 2px var(--accent-primary), 0 8px 20px var(--accent-glow);
         }
-        .theme-check {
+
+        /* Mini Window Mockup */
+        .mini-mock-window {
+            height: 52px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+        .mini-mock-header {
+            height: 14px;
+            padding: 0 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .mini-mock-header-dots {
+            display: flex;
+            gap: 3px;
+        }
+        .mini-mock-header-dots span {
+            width: 3.5px;
+            height: 3.5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .mini-mock-body {
+            flex: 1;
+            padding: 5px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            justify-content: center;
+        }
+        .mini-mock-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .mini-mock-pill {
+            height: 5px;
+            width: 22px;
+            border-radius: 3px;
+        }
+        .mini-mock-line {
+            height: 4px;
+            border-radius: 2px;
+            flex: 1;
+            background: rgba(0, 0, 0, 0.15);
+        }
+        .mini-mock-box {
+            height: 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            gap: 3px;
+        }
+
+        .theme-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .theme-card-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .theme-card-name {
             font-size: 13px;
             font-weight: 800;
-            color: var(--accent-primary);
-            opacity: 0;
-            transition: opacity 0.2s ease;
+            color: var(--title-color);
         }
-        .theme-option-btn.active .theme-check {
-            opacity: 1;
+        .theme-card-sub {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            line-height: 1.25;
+        }
+
+        /* Swatches bar */
+        .theme-swatches-bar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+        .theme-color-swatch-circle {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .theme-card-active-badge {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent-primary);
+            background: var(--primary-box-bg);
+            border: 1px solid var(--tag-border);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            gap: 3px;
+        }
+        .theme-preview-card.active .theme-card-active-badge {
+            display: inline-flex;
+        }
+
+        .theme-menu-footer {
+            border-top: 1px solid var(--tag-border);
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .theme-quick-dark-btn {
+            background: var(--primary-box-bg);
+            border: 1px solid var(--tag-border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            width: 100%;
+            justify-content: center;
+        }
+        .theme-quick-dark-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
         }
         .container {
             padding: 20px;
@@ -2404,7 +2568,8 @@
             background: var(--glass-chip-bg);
             border: 1.5px solid var(--glass-border);
             color: var(--text-main);
-            padding: 7px 14px;
+            padding: 8px 16px;
+            min-height: 40px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
@@ -2416,6 +2581,9 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
+            touch-action: manipulation;
             overflow: hidden;
         }
         .saved-manager-btn:hover {
@@ -3117,6 +3285,187 @@
             grid-template-columns: 1fr;
         }
 
+        /* Presentation Slides CSS Transition Animations & Keyframes */
+        #slide-viewport-canvas {
+            overflow: hidden;
+            position: relative;
+            perspective: 1200px;
+            transition: border-left-color 0.35s ease;
+        }
+
+        .slide-stage-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            will-change: transform, opacity;
+            transform-style: preserve-3d;
+        }
+
+        /* 1. Slide Horizontal Transitions (Direction-Aware) */
+        @keyframes slideInFromRight {
+            0% {
+                opacity: 0;
+                transform: translate3d(60px, 0, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                opacity: 0;
+                transform: translate3d(-60px, 0, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .anim-slide-forward {
+            animation: slideInFromRight 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .anim-slide-backward {
+            animation: slideInFromLeft 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* 2. Fade & Soft Glow Transition */
+        @keyframes slideFadeIn {
+            0% {
+                opacity: 0;
+                filter: blur(5px);
+                transform: scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: scale(1);
+            }
+        }
+
+        .anim-fade {
+            animation: slideFadeIn 0.38s ease-out both;
+        }
+
+        /* 3. Zoom / Dynamic Scale Transitions */
+        @keyframes slideZoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideZoomOut {
+            0% {
+                opacity: 0;
+                transform: scale(1.15);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .anim-zoom-forward {
+            animation: slideZoomIn 0.44s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        }
+
+        .anim-zoom-backward {
+            animation: slideZoomOut 0.44s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+        }
+
+        /* 4. Slide Vertical (Up / Down) */
+        @keyframes slideInFromBottom {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 50px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @keyframes slideInFromTop {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, -50px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .anim-vertical-forward {
+            animation: slideInFromBottom 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .anim-vertical-backward {
+            animation: slideInFromTop 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* 5. Flip 3D Perspective Transition */
+        @keyframes slideFlipInForward {
+            0% {
+                opacity: 0;
+                transform: perspective(1200px) rotateY(-18deg) scale(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: perspective(1200px) rotateY(0deg) scale(1);
+            }
+        }
+
+        @keyframes slideFlipInBackward {
+            0% {
+                opacity: 0;
+                transform: perspective(1200px) rotateY(18deg) scale(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: perspective(1200px) rotateY(0deg) scale(1);
+            }
+        }
+
+        .anim-flip-forward {
+            animation: slideFlipInForward 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .anim-flip-backward {
+            animation: slideFlipInBackward 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* Staggered Bullet Points Entrance Effect */
+        .slide-bullets-panel li {
+            animation: slideItemStagger 0.38s ease-out backwards;
+        }
+        .slide-bullets-panel li:nth-child(1) { animation-delay: 0.05s; }
+        .slide-bullets-panel li:nth-child(2) { animation-delay: 0.11s; }
+        .slide-bullets-panel li:nth-child(3) { animation-delay: 0.17s; }
+        .slide-bullets-panel li:nth-child(4) { animation-delay: 0.23s; }
+        .slide-bullets-panel li:nth-child(5) { animation-delay: 0.29s; }
+
+        @keyframes slideItemStagger {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 10px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
         /* Enhanced Responsive Rules for Slides & Worksheets */
         @media (max-width: 768px) {
             #slide-viewport-canvas {
@@ -3157,6 +3506,377 @@
             }
         }
 
+        /* AI Co-Pilot Chat Studio Styles */
+        #copilot-app-container {
+            animation: slideFadeIn 0.3s ease-out;
+        }
+
+        .copilot-chat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--tag-border);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 190px);
+            min-height: 580px;
+            overflow: hidden;
+        }
+
+        .copilot-header {
+            padding: 16px 22px;
+            background: var(--primary-box-bg);
+            border-bottom: 1px solid var(--tag-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .copilot-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .copilot-avatar-main {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .copilot-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        .copilot-quick-prompts-bar {
+            padding: 10px 20px;
+            background: var(--bg-main);
+            border-bottom: 1px solid var(--tag-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+        }
+
+        .copilot-chip-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--tag-border);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .copilot-chip-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(37,99,235,0.06);
+            transform: translateY(-1px);
+        }
+
+        .copilot-messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-main) 100%);
+            scroll-behavior: smooth;
+        }
+
+        .copilot-message-row {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: slideInFromBottom 0.25s ease-out;
+        }
+
+        .copilot-message-row.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .copilot-message-row.assistant {
+            align-self: flex-start;
+        }
+
+        .copilot-bubble-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .copilot-message-row.user .copilot-bubble-avatar {
+            background: linear-gradient(135deg, #475569, #334155);
+            color: white;
+        }
+
+        .copilot-message-row.assistant .copilot-bubble-avatar {
+            background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+            color: white;
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+
+        .copilot-bubble-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .copilot-bubble-body {
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 14.5px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .copilot-message-row.user .copilot-bubble-body {
+            background: linear-gradient(135deg, var(--accent-primary), #1d4ed8);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+        }
+
+        .copilot-message-row.assistant .copilot-bubble-body {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--tag-border);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+        }
+
+        .copilot-bubble-body h3, .copilot-bubble-body h4 {
+            margin: 10px 0 6px 0;
+            color: var(--accent-primary);
+        }
+
+        .copilot-bubble-body ul, .copilot-bubble-body ol {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .copilot-bubble-body li {
+            margin-bottom: 4px;
+        }
+
+        .copilot-bubble-body code {
+            background: rgba(0,0,0,0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .copilot-bubble-body pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        .copilot-bubble-body blockquote {
+            border-left: 3px solid var(--accent-primary);
+            padding-left: 12px;
+            margin: 8px 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .copilot-action-bar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .copilot-action-btn {
+            background: var(--primary-box-bg);
+            border: 1px solid var(--tag-border);
+            color: var(--text-main);
+            padding: 5px 11px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .copilot-action-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(37,99,235,0.08);
+        }
+
+        .copilot-action-btn.btn-apply-ws {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+        }
+        .copilot-action-btn.btn-apply-ws:hover {
+            opacity: 0.92;
+            color: white;
+        }
+
+        .copilot-action-btn.btn-apply-slides {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            border: none;
+        }
+        .copilot-action-btn.btn-apply-slides:hover {
+            opacity: 0.92;
+            color: white;
+        }
+
+        .copilot-composer-area {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--tag-border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .copilot-input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            background: var(--primary-box-bg);
+            border: 1.5px solid var(--tag-border);
+            border-radius: 16px;
+            padding: 8px 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .copilot-input-wrapper:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .copilot-textarea {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 14.5px;
+            color: var(--text-main);
+            resize: none;
+            max-height: 140px;
+            outline: none;
+            line-height: 1.45;
+            padding: 4px;
+        }
+
+        .copilot-send-btn {
+            background: linear-gradient(135deg, var(--accent-primary), #1d4ed8);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .copilot-send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .copilot-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .copilot-typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--tag-border);
+            border-radius: 14px;
+            width: fit-content;
+        }
+
+        .copilot-typing-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: copilotTypingBounce 1.4s infinite ease-in-out both;
+        }
+        .copilot-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .copilot-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes copilotTypingBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .copilot-chat-card {
+                height: calc(100vh - 160px);
+                min-height: 480px;
+                border-radius: 14px;
+            }
+            .copilot-message-row {
+                max-width: 95%;
+            }
+            .copilot-header {
+                padding: 12px 14px;
+            }
+            .copilot-messages-container {
+                padding: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3174,29 +3894,66 @@
                 <span id="dark-mode-label">Dark Mode</span>
             </button>
 
+            <!-- Theme Selector Popover with Visual Cards & Color Swatches -->
+            <div class="theme-selector-container">
+                <button type="button" class="theme-selector-btn" id="theme-menu-trigger" onclick="toggleThemeMenu(event)" title="Choose Theme Palette with Visual Preview Cards">
+                    <span class="theme-dot" id="header-theme-dot" style="background: #38bdf8;"></span>
+                    <span style="display: flex; align-items: center; gap: 4px;">
+                        <span style="opacity: 0.85; font-weight: 600;">Theme:</span>
+                        <span id="current-theme-label" style="font-weight: 800;">Sapphire</span>
+                    </span>
+                    <span style="font-size: 9px; margin-left: 2px; opacity: 0.85;">▼</span>
+                </button>
+
+                <!-- Visual Preview Cards Dropdown Menu -->
+                <div class="theme-dropdown-menu" id="theme-dropdown-menu" onclick="event.stopPropagation()">
+                    <div class="theme-menu-header">
+                        <div>
+                            <div style="font-weight: 800; font-size: 13px; color: var(--title-color); display: flex; align-items: center; gap: 6px;">
+                                <span>🎨 Theme Palettes</span>
+                                <span class="premium-pill" style="font-size: 9.5px; padding: 2px 7px;">LIVE PREVIEW</span>
+                            </div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Visual cards & color styling preview</div>
+                        </div>
+                        <button type="button" class="theme-menu-close-btn" onclick="closeThemeMenu()" title="Close theme menu">✕</button>
+                    </div>
+
+                    <div class="theme-cards-grid" id="theme-cards-container">
+                        <!-- Populated by renderThemeCards() with visual cards & swatches -->
+                    </div>
+
+                    <div class="theme-menu-footer">
+                        <button type="button" class="theme-quick-dark-btn" onclick="toggleGlobalDarkMode(); closeThemeMenu();">
+                            <span id="theme-menu-dark-icon">🌙</span>
+                            <span id="theme-menu-dark-label">Toggle High-Contrast Dark Mode</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Direct Quick Theme Palette -->
-            <div class="header-theme-strip" title="Change Theme Palette">
-                <button type="button" class="theme-chip-btn active" id="swatch-sapphire" onclick="setTheme('sapphire')" title="Sapphire Theme">
+            <div class="header-theme-strip" title="Quick Palette Swatches">
+                <button type="button" class="theme-chip-btn active" id="swatch-sapphire" onclick="setTheme('sapphire')" title="Sapphire Theme (Academic Blue)">
                     <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #1e40af, #0284c7);"></span>
                     <span>Sapphire</span>
                 </button>
-                <button type="button" class="theme-chip-btn" id="swatch-icewhite" onclick="setTheme('icewhite')" title="Ice White Theme">
+                <button type="button" class="theme-chip-btn" id="swatch-icewhite" onclick="setTheme('icewhite')" title="Ice White Theme (Arctic Frost)">
                     <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #ffffff, #38bdf8); border: 1px solid #cbd5e1;"></span>
                     <span>Ice White</span>
                 </button>
-                <button type="button" class="theme-chip-btn" id="swatch-emerald" onclick="setTheme('emerald')" title="Emerald Theme">
+                <button type="button" class="theme-chip-btn" id="swatch-emerald" onclick="setTheme('emerald')" title="Emerald Theme (Botanical Green)">
                     <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #047857, #10b981);"></span>
                     <span>Emerald</span>
                 </button>
-                <button type="button" class="theme-chip-btn" id="swatch-amethyst" onclick="setTheme('amethyst')" title="Amethyst Theme">
+                <button type="button" class="theme-chip-btn" id="swatch-amethyst" onclick="setTheme('amethyst')" title="Amethyst Theme (Royal Violet)">
                     <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #6b21a8, #9333ea);"></span>
                     <span>Amethyst</span>
                 </button>
-                <button type="button" class="theme-chip-btn" id="swatch-amber" onclick="setTheme('amber')" title="Sunset Amber Theme">
+                <button type="button" class="theme-chip-btn" id="swatch-amber" onclick="setTheme('amber')" title="Sunset Amber Theme (Warm Terracotta)">
                     <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #c2410c, #d97706);"></span>
                     <span>Amber</span>
                 </button>
-                <button type="button" class="theme-chip-btn" id="swatch-obsidian" onclick="setTheme('obsidian')" title="Obsidian Dark Theme">
+                <button type="button" class="theme-chip-btn" id="swatch-obsidian" onclick="setTheme('obsidian')" title="Obsidian Dark Theme (High-Contrast)">
                     <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #090d16, #6366f1); border: 1px solid #334155;"></span>
                     <span>Dark</span>
                 </button>
@@ -3224,6 +3981,9 @@
                 </button>
                 <button type="button" class="mode-switch-btn" id="tab-mode-slides" onclick="switchAppMode('slides')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
                     <span>📊 Presentation Slides</span>
+                </button>
+                <button type="button" class="mode-switch-btn" id="tab-mode-copilot" onclick="switchAppMode('copilot')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
+                    <span>🤖 AI Co-Pilot Chat</span>
                 </button>
             </div>
         </div>
@@ -3282,7 +4042,10 @@
             <div class="prompt-composer">
                 <textarea id="custom-prompt" class="composer-textarea" rows="3" placeholder="Describe the English worksheet you want... (e.g. 'Past Simple vs Past Continuous story with 5 fill-in blanks, a word bank, and 4 reading comprehension questions')"></textarea>
                 
-                <div class="composer-toolbar" style="justify-content: flex-end;">
+                <div class="composer-toolbar" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="editor-btn" onclick="openCopilotWithTopic(document.getElementById('custom-prompt').value, 'worksheet')" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 10px 16px; border-radius: 12px; background: rgba(124,58,237,0.08); border-color: #8b5cf6; color: #7c3aed;" title="Open conversational AI Co-Pilot chat to brainstorm or refine">
+                        🤖 Chat with Co-Pilot
+                    </button>
                     <button class="ai-btn composer-ai-btn" id="ai-button" onclick="askAITutor()">
                         ✨ Generate Worksheet
                     </button>
@@ -4023,6 +4786,81 @@
             </div>
         </div>
 
+        <!-- Slide Deck Video Export Modal -->
+        <div id="slide-video-export-modal" class="sample-modal-overlay" onclick="if(event.target.id === 'slide-video-export-modal') closeSlideVideoModal()">
+            <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 620px;">
+                <div class="sample-modal-header">
+                    <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span>🎬 Export Slide Deck as Narrated Video</span>
+                        <span class="educator-pill" style="font-size: 10px; background: #7c3aed; color: white;">FULL HD</span>
+                    </div>
+                    <button type="button" onclick="closeSlideVideoModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✖</button>
+                </div>
+                <div class="sample-modal-body" style="padding: 20px 24px;">
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+                        Convert your slide presentation deck into a video file (.webm / .mp4) complete with synchronized voice narration for each slide. Perfect for online classes, YouTube, or asynchronous teaching!
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;">
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🗣️ Voice Speed:</label>
+                            <select id="video-voice-rate" class="primary-input" style="width: 100%; font-size: 13px; border-radius: 10px; padding: 8px 12px;">
+                                <option value="0.85">ESL Paced (0.85x) — Clear</option>
+                                <option value="0.95" selected>Normal Educator (0.95x)</option>
+                                <option value="1.10">Faster Pace (1.10x)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">⏱️ Post-Slide Pause:</label>
+                            <select id="video-slide-pause" class="primary-input" style="width: 100%; font-size: 13px; border-radius: 10px; padding: 8px 12px;">
+                                <option value="1">1 Second Pause</option>
+                                <option value="2" selected>2 Seconds Pause</option>
+                                <option value="3">3 Seconds Pause</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📐 Video Resolution:</label>
+                            <select id="video-resolution-select" class="primary-input" style="width: 100%; font-size: 13px; border-radius: 10px; padding: 8px 12px;">
+                                <option value="1080p" selected>Full HD 1080p (1920x1080)</option>
+                                <option value="720p">HD 720p (1280x720)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📹 Video Format:</label>
+                            <select id="video-format-select" class="primary-input" style="width: 100%; font-size: 13px; border-radius: 10px; padding: 8px 12px;">
+                                <option value="webm" selected>WebM Video (.webm)</option>
+                                <option value="mp4">MP4 Container (.mp4)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Progress Box (Shown during rendering) -->
+                    <div id="video-export-progress-box" style="display: none; background: var(--primary-box-bg); border: 1.5px solid var(--tag-border); border-radius: 14px; padding: 16px; margin-bottom: 18px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-weight: 700; font-size: 13px; color: var(--title-color);" id="video-export-status-label">Initializing Video Recorder...</span>
+                            <span style="font-weight: 800; font-size: 13px; color: var(--accent-primary);" id="video-export-percent-label">0%</span>
+                        </div>
+                        <div style="width: 100%; height: 8px; background: var(--input-border); border-radius: 4px; overflow: hidden; margin-bottom: 12px;">
+                            <div id="video-export-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #7c3aed, #3b82f6); transition: width 0.3s ease;"></div>
+                        </div>
+                        <!-- Real-time frame preview -->
+                        <div style="text-align: center;">
+                            <img id="video-export-frame-preview" style="max-width: 100%; max-height: 140px; border-radius: 8px; border: 1px solid var(--tag-border); box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none;" />
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+                        <button type="button" onclick="closeSlideVideoModal()" id="video-export-cancel-btn" class="editor-btn" style="padding: 10px 18px; font-size: 13.5px;">
+                            Cancel
+                        </button>
+                        <button type="button" onclick="startSlideVideoExportProcess()" id="video-export-start-btn" class="print-btn" style="padding: 10px 24px; font-size: 13.5px; width: auto; margin-top: 0; background: linear-gradient(135deg, #7c3aed, #9333ea); border: none; color: white;">
+                            🎬 Start Video Generation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Floating Toast Notification -->
         <div id="toast-notification" class="toast-notification">
             <span id="toast-icon">💾</span>
@@ -4091,10 +4929,18 @@
                         </div>
                     </div>
 
-                    <div class="composer-toolbar" style="justify-content: space-between;">
-                        <button type="button" class="editor-btn" onclick="openSlidesTemplateModal()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px;">
-                            📚 Slide Templates
-                        </button>
+                    <div class="composer-toolbar" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" class="editor-btn" onclick="openSlidesTemplateModal()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px;">
+                                📚 Slide Templates
+                            </button>
+                            <button type="button" class="editor-btn" onclick="convertActiveWorksheetToSlides()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px; background: rgba(37,99,235,0.08); border-color: var(--accent-primary); color: var(--accent-primary);" title="Generate matching presentation slides from the active worksheet">
+                                🔄 Convert Active Worksheet
+                            </button>
+                            <button type="button" class="editor-btn" onclick="openCopilotWithTopic(document.getElementById('slides-prompt').value, 'slides')" style="display: flex; align-items: center; gap: 6px; font-weight: 700; padding: 10px 16px; border-radius: 12px; background: rgba(124,58,237,0.08); border-color: #8b5cf6; color: #7c3aed;" title="Open conversational AI Co-Pilot to plan and draft slides">
+                                🤖 Chat with Co-Pilot
+                            </button>
+                        </div>
                         <button class="ai-btn composer-ai-btn" onclick="generatePresentationDeck()">
                             ✨ Generate Slides Deck
                         </button>
@@ -4111,12 +4957,24 @@
                         <span class="educator-pill" id="slide-counter-badge" style="font-size: 12px; font-weight: 700; background: var(--accent-primary); color: white; padding: 2px 10px; border-radius: 10px;">Slide 1 of 5</span>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <label for="slide-transition-select" style="font-size: 12px; font-weight: 700; color: var(--text-muted);">✨ Animation:</label>
+                            <select id="slide-transition-select" onchange="setSlideTransition(this.value)" class="editor-btn" style="padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px;" title="Select CSS slide transition animation effect">
+                                <option value="slide">Slide Horizontal ↔️</option>
+                                <option value="fade">Fade & Soft Blur 🌫️</option>
+                                <option value="zoom">Dynamic Zoom 🔍</option>
+                                <option value="vertical">Slide Vertical ↕️</option>
+                                <option value="flip">3D Flip 🎴</option>
+                            </select>
+                        </div>
                         <button type="button" class="editor-btn" onclick="toggleSlideLayout()" id="slide-layout-toggle-btn" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Toggle between Horizontal Split and Vertical Stacked layout">Layout: Horizontal ↔️</button>
-                        <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">◀ Previous</button>
-                        <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">Next ▶</button>
-                        <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px;">📥 Export Slides PDF</button>
-                        <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #1e40af; color: white; border: none; cursor: pointer;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Export Word (.doc)</button>
-                        <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #059669; color: white; border: none; cursor: pointer;" title="Save current slide as a high-resolution PNG image">🖼️ Save Slide Image</button>
+                        <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Previous slide (Left Arrow)">◀ Prev</button>
+                        <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Next slide (Right Arrow / Space)">Next ▶</button>
+                        <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px;" title="Standard PDF Export">📥 PDF</button>
+                        <button type="button" class="editor-btn" onclick="exportSlidesAudioPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);" title="Export interactive PDF presentation with embedded voice narration">🎧 Audio PDF</button>
+                        <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);" title="Export complete slide deck as a WebM / MP4 video with synthesized voice narration">🎬 Export Video</button>
+                        <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #1e40af; color: white; border: none; cursor: pointer;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Word</button>
+                        <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #059669; color: white; border: none; cursor: pointer;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
                     </div>
                 </div>
 
@@ -4128,6 +4986,86 @@
                 <!-- Player Footer Navigation -->
                 <div style="display: flex; justify-content: center; align-items: center; padding: 12px; background: var(--primary-box-bg); border-top: 1px solid var(--tag-border); gap: 6px;" id="slide-dots-container">
                     <!-- Dots -->
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Co-Pilot Chat Studio Container -->
+        <div id="copilot-app-container" style="display: none;">
+            <div class="copilot-chat-card no-print">
+                <!-- Co-Pilot Header -->
+                <div class="copilot-header">
+                    <div class="copilot-header-info">
+                        <div class="copilot-avatar-main">🤖</div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 16px; color: var(--title-color); display: flex; align-items: center; gap: 8px;">
+                                <span>AI Lesson Co-Pilot</span>
+                                <span class="premium-pill" style="font-size: 11px;">ESL AGENT</span>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; margin-top: 2px;">
+                                <span class="copilot-status-dot"></span>
+                                <span id="copilot-status-text">Gemini AI Assistant • Ready to help plan, refine, and generate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="editor-btn" onclick="exportCopilotChatHistory()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px;" title="Export chat transcript to text">
+                            📥 Export Chat
+                        </button>
+                        <button type="button" class="editor-btn" onclick="clearCopilotChat()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px; color: #ef4444;" title="Clear conversation history">
+                            🗑️ Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Action Prompt Chips Bar -->
+                <div class="copilot-quick-prompts-bar">
+                    <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-right: 4px;">⚡ Quick Prompts:</span>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('Suggest 5 engaging warm-up speaking questions for B1 ESL learners about everyday hobbies.')">💡 5 Warm-Up Questions (B1)</button>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('Generate a 5-question fill-in-the-blanks exercise on Past Simple vs Past Continuous with a clear word bank and answer key.')">📝 Fill-in-Blanks Exercise</button>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('Create a 4-question Multiple Choice reading comprehension quiz about travel and airports.')">🔘 4-Item MCQ Quiz</button>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('Generate a 5-slide interactive presentation deck about Ordering Food & Drinks at a Restaurant with dialogues, vocabulary, and grammar tips.')">📊 5-Slide Restaurant Deck</button>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('Write an authentic 6-line everyday conversational roleplay dialogue for A2 students about buying tickets at a train station.')">🗣️ Ticket Office Roleplay</button>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('Explain the difference between Present Perfect and Past Simple in simple terms for English learners with 3 examples.')">🔍 Grammar Rule Explainer</button>
+                    <button type="button" class="copilot-chip-btn" onclick="sendQuickCopilotPrompt('How can I adapt and simplify the active worksheet for beginner A1 students?')">🎯 Adapt for Beginners (A1)</button>
+                </div>
+
+                <!-- Messages Stream Area -->
+                <div class="copilot-messages-container" id="copilot-messages-stream">
+                    <!-- Default Welcome Message -->
+                    <div class="copilot-message-row assistant">
+                        <div class="copilot-bubble-avatar">🤖</div>
+                        <div class="copilot-bubble-content">
+                            <div class="copilot-bubble-body">
+                                <h3 style="margin-top: 0; font-size: 15px;">Hello Educator! I'm your AI ESL Co-Pilot. 👋</h3>
+                                <p style="margin: 6px 0 10px;">I'm here to collaborate with you in real-time while you create and edit worksheets or presentation slides. Here is what we can do together:</p>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li><strong>Draft & Refine Worksheets:</strong> Ask me to write reading passages, grammar drills, dialogues, or answer keys.</li>
+                                    <li><strong>Build Presentation Slides:</strong> Ask me to outline or generate complete slide decks for speaking, vocabulary, or grammar.</li>
+                                    <li><strong>One-Click Integration:</strong> Any worksheet or slide deck I generate can be inserted directly into your workspace with a single click.</li>
+                                </ul>
+                                <p style="margin-top: 10px; font-size: 13px; color: var(--text-muted); font-style: italic;">Ask me any English teaching question or click one of the quick prompt chips above!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Composer Area -->
+                <div class="copilot-composer-area">
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); margin-bottom: -4px;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="copilot-include-context" checked style="cursor: pointer;">
+                            <span>📎 Attach active worksheet & slide context to your prompt</span>
+                        </label>
+                        <span id="copilot-char-counter" style="font-size: 11px;">0 chars</span>
+                    </div>
+                    <div class="copilot-input-wrapper">
+                        <textarea id="copilot-user-input" class="copilot-textarea" rows="2" placeholder="Message AI Co-Pilot... (e.g. 'Generate 4 reading comprehension questions', 'Create a 5-slide deck on job interviews')" onkeydown="handleCopilotKeyDown(event)" oninput="updateCopilotInputStats()"></textarea>
+                        <button type="button" class="copilot-send-btn" id="copilot-send-btn" onclick="sendCopilotMessage()" title="Send message (Enter)">
+                            ➤
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -6415,34 +7353,124 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         const THEMES_CONFIG = {
             sapphire: {
                 name: 'Sapphire',
-                dotColor: '#38bdf8'
+                dotColor: '#38bdf8',
+                desc: 'Academic Blue & Crisp Whites',
+                headerGradient: 'linear-gradient(135deg, #1e40af, #0284c7)',
+                bgGradient: 'linear-gradient(135deg, #eff6ff, #e0f2fe)',
+                accentColor: '#2563eb',
+                swatches: ['#1e40af', '#0284c7', '#2563eb', '#eff6ff']
             },
             icewhite: {
                 name: 'Ice White',
-                dotColor: '#7dd3fc'
+                dotColor: '#7dd3fc',
+                desc: 'Arctic Frost & Clean Slate',
+                headerGradient: 'linear-gradient(135deg, #0284c7, #38bdf8)',
+                bgGradient: 'linear-gradient(135deg, #ffffff, #f1f5f9)',
+                accentColor: '#0284c7',
+                swatches: ['#0284c7', '#38bdf8', '#0ea5e9', '#ffffff']
             },
             emerald: {
                 name: 'Emerald',
-                dotColor: '#34d399'
+                dotColor: '#34d399',
+                desc: 'Botanical Green & Mint Canvas',
+                headerGradient: 'linear-gradient(135deg, #047857, #10b981)',
+                bgGradient: 'linear-gradient(135deg, #ecfdf5, #d1fae5)',
+                accentColor: '#059669',
+                swatches: ['#047857', '#10b981', '#059669', '#ecfdf5']
             },
             amethyst: {
                 name: 'Amethyst',
-                dotColor: '#c084fc'
+                dotColor: '#c084fc',
+                desc: 'Royal Violet & Soft Purple',
+                headerGradient: 'linear-gradient(135deg, #6b21a8, #9333ea)',
+                bgGradient: 'linear-gradient(135deg, #faf5ff, #f3e8ff)',
+                accentColor: '#7c3aed',
+                swatches: ['#6b21a8', '#9333ea', '#7c3aed', '#faf5ff']
             },
             amber: {
                 name: 'Sunset Amber',
-                dotColor: '#fbbf24'
+                dotColor: '#fbbf24',
+                desc: 'Warm Terracotta & Golden Glow',
+                headerGradient: 'linear-gradient(135deg, #c2410c, #d97706)',
+                bgGradient: 'linear-gradient(135deg, #fff7ed, #ffedd5)',
+                accentColor: '#ea580c',
+                swatches: ['#c2410c', '#d97706', '#ea580c', '#fff7ed']
             },
             obsidian: {
                 name: 'Midnight Obsidian',
-                dotColor: '#818cf8'
+                dotColor: '#818cf8',
+                desc: 'High-Contrast Dark Canvas',
+                headerGradient: 'linear-gradient(135deg, #0f172a, #1e1b4b)',
+                bgGradient: 'linear-gradient(135deg, #090d16, #1e293b)',
+                accentColor: '#6366f1',
+                swatches: ['#0f172a', '#1e1b4b', '#6366f1', '#090d16']
             }
         };
+
+        function renderThemeCards() {
+            const container = document.getElementById('theme-cards-container');
+            if (!container) return;
+
+            let currentTheme = 'sapphire';
+            try {
+                currentTheme = localStorage.getItem('user_app_theme') || 'sapphire';
+            } catch(e) {}
+
+            let html = '';
+            for (const [key, cfg] of Object.entries(THEMES_CONFIG)) {
+                const isActive = (key === currentTheme) || (document.body.classList.contains(`theme-${key}`));
+
+                html += `
+                    <div class="theme-preview-card ${isActive ? 'active' : ''}" onclick="setTheme('${key}'); closeThemeMenu();" title="Apply ${cfg.name} Theme">
+                        <!-- Mini Window Mockup Preview -->
+                        <div class="mini-mock-window" style="background: ${cfg.bgGradient};">
+                            <div class="mini-mock-header" style="background: ${cfg.headerGradient};">
+                                <div class="mini-mock-header-dots">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div style="font-size: 7.5px; color: rgba(255,255,255,0.95); font-weight: 800; letter-spacing: 0.4px;">${cfg.name.toUpperCase()}</div>
+                            </div>
+                            <div class="mini-mock-body">
+                                <div class="mini-mock-row">
+                                    <div class="mini-mock-pill" style="background: ${cfg.accentColor};"></div>
+                                    <div class="mini-mock-line" style="background: ${cfg.accentColor}; opacity: 0.35;"></div>
+                                </div>
+                                <div class="mini-mock-box" style="background: rgba(255,255,255,0.75);">
+                                    <div style="width: 4px; height: 4px; border-radius: 50%; background: ${cfg.accentColor};"></div>
+                                    <div style="height: 3px; width: 60%; background: ${cfg.accentColor}; opacity: 0.75; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Info & Color Swatches -->
+                        <div class="theme-card-info">
+                            <div class="theme-card-title-row">
+                                <span class="theme-card-name">${cfg.name}</span>
+                                ${isActive ? `<span class="theme-card-active-badge">✓ ACTIVE</span>` : ''}
+                            </div>
+                            <div class="theme-card-sub">${cfg.desc || ''}</div>
+                            
+                            <!-- Swatches Bar -->
+                            <div class="theme-swatches-bar">
+                                ${(cfg.swatches || []).map(color => `
+                                    <span class="theme-color-swatch-circle" style="background: ${color};" title="Color swatch ${color}"></span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
 
         function toggleThemeMenu(event) {
             if (event) event.stopPropagation();
             const menu = document.getElementById('theme-dropdown-menu');
             if (menu) {
+                const isShowing = menu.classList.contains('show');
+                if (!isShowing) {
+                    renderThemeCards();
+                }
                 menu.classList.toggle('show');
             }
         }
@@ -6529,15 +7557,8 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 }
             });
 
-            // Update Active State in Menu (if present)
-            const optionBtns = document.querySelectorAll('.theme-option-btn');
-            optionBtns.forEach(btn => {
-                if (btn.getAttribute('data-theme') === themeKey) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
+            // Update Active State in Menu Cards
+            renderThemeCards();
 
             // Persist to local storage
             try {
@@ -7674,6 +8695,8 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             checkAndLoadSharedWorksheetHash();
             updateQRCodePreview();
             restoreAutoSavedWorksheet();
+            initSlideTouchAndKeyboardControls();
+            restoreCopilotChatFromStorage();
         });
         window.addEventListener('hashchange', checkAndLoadSharedWorksheetHash);
         
@@ -7758,25 +8781,496 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         function switchAppMode(mode) {
             const btnWs = document.getElementById('tab-mode-worksheet');
             const btnSl = document.getElementById('tab-mode-slides');
+            const btnCp = document.getElementById('tab-mode-copilot');
             const containerWs = document.getElementById('worksheet-app-container');
             const containerSl = document.getElementById('slides-app-container');
+            const containerCp = document.getElementById('copilot-app-container');
+
+            if (btnWs) btnWs.classList.remove('active');
+            if (btnSl) btnSl.classList.remove('active');
+            if (btnCp) btnCp.classList.remove('active');
+            if (containerWs) containerWs.style.display = 'none';
+            if (containerSl) containerSl.style.display = 'none';
+            if (containerCp) containerCp.style.display = 'none';
 
             if (mode === 'worksheet') {
                 if (btnWs) btnWs.classList.add('active');
-                if (btnSl) btnSl.classList.remove('active');
                 if (containerWs) containerWs.style.display = 'block';
-                if (containerSl) containerSl.style.display = 'none';
                 showToast("Switched to Worksheets Studio 📄", "✨");
-            } else {
+            } else if (mode === 'slides') {
                 if (btnSl) btnSl.classList.add('active');
-                if (btnWs) btnWs.classList.remove('active');
                 if (containerSl) containerSl.style.display = 'block';
-                if (containerWs) containerWs.style.display = 'none';
                 renderCurrentSlide();
                 showToast("Switched to Presentation Slides 📊", "✨");
+            } else if (mode === 'copilot') {
+                if (btnCp) btnCp.classList.add('active');
+                if (containerCp) containerCp.style.display = 'block';
+                const input = document.getElementById('copilot-user-input');
+                if (input) {
+                    setTimeout(() => input.focus(), 150);
+                }
+                scrollCopilotToBottom();
+                showToast("AI Lesson Co-Pilot active 🤖", "✨");
             }
         }
 
+        // ==========================================
+        // AI LESSON CO-PILOT CHAT SYSTEM
+        // ==========================================
+        let copilotChatHistory = [];
+        let isCopilotGenerating = false;
+
+        function openCopilotWithTopic(topic, originMode) {
+            switchAppMode('copilot');
+            const input = document.getElementById('copilot-user-input');
+            if (input) {
+                if (topic && topic.trim().length > 0) {
+                    const cleanTopic = topic.trim();
+                    if (originMode === 'slides') {
+                        input.value = `Help me plan and brainstorm 5 interactive presentation slides about: "${cleanTopic}". Include speaking dialogues and pronunciation tips.`;
+                    } else {
+                        input.value = `Help me create an engaging English worksheet with exercises, vocabulary bank, and answers for: "${cleanTopic}".`;
+                    }
+                    updateCopilotInputStats();
+                }
+                setTimeout(() => input.focus(), 150);
+            }
+        }
+
+        function updateCopilotInputStats() {
+            const input = document.getElementById('copilot-user-input');
+            const counter = document.getElementById('copilot-char-counter');
+            if (!input) return;
+            
+            // Auto resize
+            input.style.height = 'auto';
+            input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+
+            if (counter) {
+                counter.innerText = `${input.value.length} chars`;
+            }
+        }
+
+        function handleCopilotKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendCopilotMessage();
+            }
+        }
+
+        function sendQuickCopilotPrompt(promptText) {
+            const input = document.getElementById('copilot-user-input');
+            if (input) {
+                input.value = promptText;
+                updateCopilotInputStats();
+                sendCopilotMessage();
+            }
+        }
+
+        function getActiveLessonContext() {
+            let contextParts = [];
+            
+            // 1. Active Worksheet details
+            const previewArea = document.getElementById('a4-preview-area');
+            const wsTitleInput = document.getElementById('acc-save-title');
+            const wsPromptInput = document.getElementById('custom-prompt');
+            let wsTitle = wsTitleInput && wsTitleInput.value.trim() ? wsTitleInput.value.trim() : "";
+            if (!wsTitle && previewArea) {
+                const h2 = previewArea.querySelector('h2, h1');
+                if (h2) wsTitle = h2.innerText.trim();
+            }
+            let wsPrompt = wsPromptInput && wsPromptInput.value.trim() ? wsPromptInput.value.trim() : "";
+            let wsTextSnippet = "";
+            if (previewArea) {
+                const levelBody = document.getElementById('level-body');
+                if (levelBody && levelBody.innerText) {
+                    wsTextSnippet = levelBody.innerText.replace(/\s+/g, ' ').slice(0, 350);
+                }
+            }
+
+            if (wsTitle || wsPrompt || wsTextSnippet) {
+                contextParts.push(`Active Worksheet Context:\n- Title: "${wsTitle || 'Untitled Worksheet'}"\n- Current Prompt: "${wsPrompt}"\n- Content Excerpt: "${wsTextSnippet}"`);
+            }
+
+            // 2. Active Presentation Slide Deck details
+            if (currentSlidesData && currentSlidesData.length > 0) {
+                const currentSlide = currentSlidesData[currentSlideIndex];
+                const slidesPromptInput = document.getElementById('slides-prompt');
+                const slidesPrompt = slidesPromptInput ? slidesPromptInput.value.trim() : "";
+                contextParts.push(`Active Presentation Deck Context:\n- Topic: "${slidesPrompt || 'Current Deck'}"\n- Total Slides: ${currentSlidesData.length}\n- Active Slide (${currentSlideIndex + 1}): "${currentSlide ? currentSlide.title : ''}"\n- Slide Bullets: ${currentSlide ? (currentSlide.bullets || []).join('; ') : ''}`);
+            }
+
+            return contextParts.length > 0 ? contextParts.join('\n\n') : "No active worksheet or slides loaded yet.";
+        }
+
+        async function sendCopilotMessage() {
+            if (isCopilotGenerating) return;
+
+            const input = document.getElementById('copilot-user-input');
+            const sendBtn = document.getElementById('copilot-send-btn');
+            const includeContextCb = document.getElementById('copilot-include-context');
+            
+            if (!input) return;
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            // Clear input
+            input.value = '';
+            updateCopilotInputStats();
+
+            // Append User Message to UI
+            appendCopilotMessage('user', userText);
+            copilotChatHistory.push({ role: 'user', content: userText, timestamp: Date.now() });
+
+            // Prepare System Context & AI Prompt
+            isCopilotGenerating = true;
+            if (sendBtn) sendBtn.disabled = true;
+            showCopilotTypingIndicator();
+
+            let contextPayload = "";
+            if (includeContextCb && includeContextCb.checked) {
+                contextPayload = `\n\n--- CURRENT WORKSPACE CONTEXT ---\n${getActiveLessonContext()}\n---------------------------------`;
+            }
+
+            const systemPrompt = `You are an elite, highly pedagogically skilled AI ESL / EFL Teacher and Educational Content Co-Pilot.
+Your purpose is to collaborate with educators to brainstorm, draft, refine, and structure English worksheets, grammar explanations, reading comprehension tasks, vocabulary banks, and interactive presentation slide decks.
+
+Key Guidelines:
+1. Provide accurate, CEFR-aligned English learning content (A1, A2, B1, B2, C1).
+2. When the user asks for a worksheet or specific exercises (Fill in Blanks, MCQs, Dialogues, Grammar drills, Word banks):
+   - Provide impeccably formatted HTML or clean structured sections with clear instructions, numbered items, blank underlines (_______), and answer keys.
+   - You can enclose HTML blocks inside <div class="ws-block" style="margin-bottom: 16px; padding: 12px 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;"><h3 style="color: #1e40af; margin-top:0;">Part Title</h3>...</div> so they can be injected into the worksheet with 1 click.
+3. When the user asks for presentation slides:
+   - Provide a clear breakdown of slide titles, key talking points, vocabulary badges, and speaking focus notes.
+4. Keep explanations conversational, encouraging, professional, and practical for English language teachers.
+${contextPayload}`;
+
+            try {
+                const aiResponseText = await callUnifiedGeminiAi(userText, systemPrompt);
+                hideCopilotTypingIndicator();
+                appendCopilotMessage('assistant', aiResponseText);
+                copilotChatHistory.push({ role: 'assistant', content: aiResponseText, timestamp: Date.now() });
+                saveCopilotChatToStorage();
+            } catch (err) {
+                hideCopilotTypingIndicator();
+                console.error("Co-Pilot AI Error:", err);
+                const errorMsg = `⚠️ **Could not connect to Gemini AI:** ${err.message || 'Please check your internet connection or configure an API key in the 🔑 API Key settings.'}\n\n*Tip:* You can also click one of the quick prompts above to use the offline smart lesson generator!`;
+                appendCopilotMessage('assistant', errorMsg);
+            } finally {
+                isCopilotGenerating = false;
+                if (sendBtn) sendBtn.disabled = false;
+                scrollCopilotToBottom();
+            }
+        }
+
+        function showCopilotTypingIndicator() {
+            const stream = document.getElementById('copilot-messages-stream');
+            if (!stream) return;
+            const existing = document.getElementById('copilot-typing-row');
+            if (existing) existing.remove();
+
+            const row = document.createElement('div');
+            row.id = 'copilot-typing-row';
+            row.className = 'copilot-message-row assistant';
+            row.innerHTML = `
+                <div class="copilot-bubble-avatar">🤖</div>
+                <div class="copilot-bubble-content">
+                    <div class="copilot-typing-indicator">
+                        <span class="copilot-typing-dot"></span>
+                        <span class="copilot-typing-dot"></span>
+                        <span class="copilot-typing-dot"></span>
+                        <span style="font-size: 12px; color: var(--text-muted); margin-left: 6px; font-weight: 600;">Co-Pilot is typing...</span>
+                    </div>
+                </div>
+            `;
+            stream.appendChild(row);
+            scrollCopilotToBottom();
+        }
+
+        function hideCopilotTypingIndicator() {
+            const existing = document.getElementById('copilot-typing-row');
+            if (existing) existing.remove();
+        }
+
+        function scrollCopilotToBottom() {
+            const stream = document.getElementById('copilot-messages-stream');
+            if (stream) {
+                setTimeout(() => {
+                    stream.scrollTop = stream.scrollHeight;
+                }, 50);
+            }
+        }
+
+        function renderCopilotMarkdown(raw) {
+            if (!raw) return '';
+            let s = raw;
+
+            // If raw is already wrapped in HTML or contains structured HTML blocks, preserve standard tags
+            // Escape basic special entities only in plain text parts
+            s = s.replace(/```html([\s\S]*?)```/gi, (match, code) => {
+                return `<pre style="background: #0f172a; color: #38bdf8; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>${escapeHtml(code.trim())}</code></pre>`;
+            });
+
+            s = s.replace(/```json([\s\S]*?)```/gi, (match, code) => {
+                return `<pre style="background: #0f172a; color: #a7f3d0; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>${escapeHtml(code.trim())}</code></pre>`;
+            });
+
+            s = s.replace(/```([\s\S]*?)```/gi, (match, code) => {
+                return `<pre style="background: #0f172a; color: #f8fafc; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code>${escapeHtml(code.trim())}</code></pre>`;
+            });
+
+            // Headers
+            s = s.replace(/^### (.*$)/gim, '<h4 style="color: var(--accent-primary); margin: 8px 0 4px;">$1</h4>');
+            s = s.replace(/^## (.*$)/gim, '<h3 style="color: var(--accent-primary); margin: 12px 0 6px;">$1</h3>');
+            s = s.replace(/^# (.*$)/gim, '<h2 style="color: var(--accent-primary); margin: 14px 0 8px;">$1</h2>');
+
+            // Bold and Italic
+            s = s.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            s = s.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Blockquotes
+            s = s.replace(/^\> (.*$)/gim, '<blockquote style="border-left: 3px solid var(--accent-primary); padding-left: 10px; margin: 8px 0; color: var(--text-muted);">$1</blockquote>');
+
+            // Lists
+            s = s.replace(/^\s*[\-\*]\s+(.*$)/gim, '<li style="margin-bottom: 4px;">$1</li>');
+            s = s.replace(/^\s*(\d+)\.\s+(.*$)/gim, '<li style="margin-bottom: 4px;">$2</li>');
+
+            // Wrap consecutive <li> into <ul>
+            s = s.replace(/(<li[\s\S]*?<\/li>)+/gi, (match) => `<ul style="padding-left: 20px; margin: 8px 0;">${match}</ul>`);
+
+            // Convert newlines to paragraphs/breaks when not inside tags
+            s = s.replace(/\n\n/g, '<div style="margin: 8px 0;"></div>');
+
+            return s;
+        }
+
+        function appendCopilotMessage(sender, text) {
+            const stream = document.getElementById('copilot-messages-stream');
+            if (!stream) return;
+
+            const row = document.createElement('div');
+            row.className = `copilot-message-row ${sender}`;
+
+            const avatar = sender === 'user' ? '👤' : '🤖';
+            const renderedContent = sender === 'user' ? escapeHtml(text).replace(/\n/g, '<br>') : renderCopilotMarkdown(text);
+
+            // Detect actionable capabilities in AI responses
+            let actionsHtml = '';
+            if (sender === 'assistant') {
+                const hasHtmlStructure = text.includes('<div') || text.includes('Part 1') || text.includes('ws-block') || text.includes('Fill in the Blanks') || text.includes('Multiple Choice') || text.includes('Word Bank');
+                const hasSlideStructure = text.toLowerCase().includes('slide 1') || text.toLowerCase().includes('presentation') || text.toLowerCase().includes('"bullets":');
+
+                const msgId = 'msg_' + Math.random().toString(36).substring(2, 9);
+                window['__copilot_payload_' + msgId] = text;
+
+                actionsHtml = `
+                    <div class="copilot-action-bar">
+                        ${hasHtmlStructure ? `
+                            <button type="button" class="copilot-action-btn btn-apply-ws" onclick="applyCopilotToWorksheet('${msgId}', 'replace')" title="Replace active worksheet with this content">
+                                📄 Insert into Worksheet
+                            </button>
+                            <button type="button" class="copilot-action-btn" onclick="applyCopilotToWorksheet('${msgId}', 'append')" title="Append to active worksheet">
+                                ➕ Append to Worksheet
+                            </button>
+                        ` : ''}
+                        ${hasSlideStructure ? `
+                            <button type="button" class="copilot-action-btn btn-apply-slides" onclick="applyCopilotToSlides('${msgId}')" title="Create presentation slides from this AI response">
+                                📊 Convert to Slides Deck
+                            </button>
+                        ` : ''}
+                        <button type="button" class="copilot-action-btn" onclick="copyCopilotResponse(this, '${msgId}')" title="Copy text to clipboard">
+                            📋 Copy
+                        </button>
+                        <button type="button" class="copilot-action-btn" onclick="speakCopilotResponse('${msgId}')" title="Listen with voice pronunciation">
+                            🔊 Read Aloud
+                        </button>
+                    </div>
+                `;
+            }
+
+            row.innerHTML = `
+                <div class="copilot-bubble-avatar">${avatar}</div>
+                <div class="copilot-bubble-content">
+                    <div class="copilot-bubble-body">
+                        ${renderedContent}
+                    </div>
+                    ${actionsHtml}
+                </div>
+            `;
+
+            stream.appendChild(row);
+            scrollCopilotToBottom();
+        }
+
+        function applyCopilotToWorksheet(msgId, mode = 'replace') {
+            const rawText = window['__copilot_payload_' + msgId];
+            if (!rawText) {
+                showToast("No content found for this message", "⚠️");
+                return;
+            }
+
+            const levelBody = document.getElementById('level-body');
+            if (!levelBody) return;
+
+            let cleanHtml = rawText.replace(/```html/gi, '').replace(/```/gi, '').trim();
+
+            // If rawText is markdown, wrap it in neat educational worksheet blocks
+            if (!cleanHtml.includes('<div') && !cleanHtml.includes('<h2') && !cleanHtml.includes('<h3')) {
+                const formattedMd = renderCopilotMarkdown(cleanHtml);
+                cleanHtml = `
+                    <div class="ws-block" style="margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h3 style="color: #1e40af; margin-top: 0;">AI Co-Pilot Activity</h3>
+                        ${formattedMd}
+                    </div>
+                `;
+            }
+
+            if (mode === 'replace') {
+                levelBody.innerHTML = `<div id="ws-content-root" style="color: black; padding: 10px;">${cleanHtml}</div>`;
+                showToast("Worksheet updated with AI Co-Pilot content! 📄", "✨");
+            } else {
+                const root = document.getElementById('ws-content-root') || levelBody;
+                root.insertAdjacentHTML('beforeend', `<div style="margin-top: 16px;">${cleanHtml}</div>`);
+                showToast("Appended to active worksheet! ➕", "✨");
+            }
+
+            switchAppMode('worksheet');
+        }
+
+        function applyCopilotToSlides(msgId) {
+            const rawText = window['__copilot_payload_' + msgId];
+            if (!rawText) return;
+
+            const slidesPromptInput = document.getElementById('slides-prompt');
+            if (slidesPromptInput) {
+                // Extract first line or title as prompt
+                const firstLine = rawText.split('\n')[0].replace(/^[#\*\-\s]+/g, '').slice(0, 60);
+                slidesPromptInput.value = firstLine || "Interactive AI Lesson Presentation";
+            }
+
+            switchAppMode('slides');
+            generatePresentationDeck();
+            showToast("Generating slide deck from Co-Pilot content... 📊", "✨");
+        }
+
+        function copyCopilotResponse(btn, msgId) {
+            const rawText = window['__copilot_payload_' + msgId];
+            if (!rawText) return;
+
+            navigator.clipboard.writeText(rawText).then(() => {
+                const orig = btn.innerText;
+                btn.innerText = '✅ Copied!';
+                setTimeout(() => { btn.innerText = orig; }, 2000);
+                showToast("Copied to clipboard! 📋", "✨");
+            }).catch(() => {
+                showToast("Failed to copy to clipboard", "⚠️");
+            });
+        }
+
+        function speakCopilotResponse(msgId) {
+            const rawText = window['__copilot_payload_' + msgId];
+            if (!rawText) return;
+
+            if (!('speechSynthesis' in window)) {
+                showToast("Web Speech API not supported in this browser", "⚠️");
+                return;
+            }
+
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                showToast("Speech stopped", "⏹️");
+                return;
+            }
+
+            // Clean text of HTML tags and markdown symbols
+            const cleanText = rawText.replace(/<[^>]+>/g, ' ').replace(/[#\*\`\_\[\]\(\)]/g, ' ').replace(/\s+/g, ' ').trim();
+            const utterance = new SpeechSynthesisUtterance(cleanText.slice(0, 600));
+            utterance.lang = 'en-US';
+            utterance.rate = 0.95;
+            window.speechSynthesis.speak(utterance);
+            showToast("Reading AI response aloud... 🗣️", "🔊");
+        }
+
+        function exportCopilotChatHistory() {
+            if (!copilotChatHistory || copilotChatHistory.length === 0) {
+                showToast("No chat history to export yet!", "⚠️");
+                return;
+            }
+
+            let transcript = `# English Worksheet Studio — AI Co-Pilot Conversation Transcript\n`;
+            transcript += `Date: ${new Date().toLocaleString()}\n\n---\n\n`;
+
+            copilotChatHistory.forEach((msg, idx) => {
+                const senderName = msg.role === 'user' ? 'Educator' : 'AI Lesson Co-Pilot';
+                transcript += `### ${idx + 1}. [${senderName}] (${new Date(msg.timestamp).toLocaleTimeString()})\n\n`;
+                transcript += `${msg.content}\n\n---\n\n`;
+            });
+
+            const blob = new Blob([transcript], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AI_CoPilot_Transcript_${new Date().toISOString().slice(0,10)}.md`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 200);
+
+            showToast("Chat transcript exported! 📥", "✨");
+        }
+
+        function clearCopilotChat() {
+            if (confirm("Are you sure you want to clear the conversation history?")) {
+                copilotChatHistory = [];
+                localStorage.removeItem('copilot_chat_history_v1');
+                const stream = document.getElementById('copilot-messages-stream');
+                if (stream) {
+                    stream.innerHTML = `
+                        <div class="copilot-message-row assistant">
+                            <div class="copilot-bubble-avatar">🤖</div>
+                            <div class="copilot-bubble-content">
+                                <div class="copilot-bubble-body">
+                                    <h3 style="margin-top: 0; font-size: 15px;">Conversation cleared! 👋</h3>
+                                    <p style="margin: 6px 0 10px;">I'm ready for your next lesson planning or worksheet topic. Type any question below or pick a quick prompt!</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                showToast("Conversation cleared", "🗑️");
+            }
+        }
+
+        function saveCopilotChatToStorage() {
+            try {
+                // Keep last 30 messages in localStorage
+                const recent = copilotChatHistory.slice(-30);
+                localStorage.setItem('copilot_chat_history_v1', JSON.stringify(recent));
+            } catch (e) {
+                console.warn("Could not save copilot chat history", e);
+            }
+        }
+
+        function restoreCopilotChatFromStorage() {
+            try {
+                const saved = localStorage.getItem('copilot_chat_history_v1');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        copilotChatHistory = parsed;
+                        parsed.forEach(msg => {
+                            appendCopilotMessage(msg.role === 'user' ? 'user' : 'assistant', msg.content);
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not restore copilot chat history", e);
+            }
+        }
         
         function openSlidesTemplateModal() {
             const modal = document.getElementById('slides-template-modal');
@@ -7849,182 +9343,489 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }
 
+        async function callUnifiedGeminiAi(promptText, systemPrompt) {
+            const fullPrompt = systemPrompt ? `${systemPrompt}\n\nUser Topic & Instructions:\n${promptText}` : promptText;
+
+            // 1. Android Native WebAppInterface Bridge
+            if (window.AndroidAI && typeof window.AndroidAI.askGemini === 'function') {
+                return new Promise((resolve, reject) => {
+                    const cbName = '__gemini_slide_cb_' + Math.random().toString(36).substring(2, 9);
+                    const timer = setTimeout(() => {
+                        delete window[cbName];
+                        reject(new Error("Gemini AI bridge timed out"));
+                    }, 28000);
+
+                    window[cbName] = function(response) {
+                        clearTimeout(timer);
+                        delete window[cbName];
+                        if (typeof response === 'string' && (response.startsWith('API_KEY_MISSING') || response.startsWith('API_ERROR'))) {
+                            reject(new Error(response));
+                        } else {
+                            resolve(response);
+                        }
+                    };
+
+                    try {
+                        window.AndroidAI.askGemini(fullPrompt, cbName);
+                    } catch (e) {
+                        clearTimeout(timer);
+                        delete window[cbName];
+                        reject(e);
+                    }
+                });
+            }
+
+            // 2. Web Browser Gemini API with Key
+            const webApiKey = (localStorage.getItem('web_gemini_api_key') || '').trim();
+            if (webApiKey) {
+                return fetchGeminiWithFallback(webApiKey, fullPrompt);
+            }
+
+            throw new Error("NO_API_KEY");
+        }
+
+        function extractCleanJsonArray(rawText) {
+            if (!rawText) return null;
+            try {
+                // Remove code fences like ```json ... ```
+                let cleaned = rawText.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+                const firstBracket = cleaned.indexOf('[');
+                const lastBracket = cleaned.lastIndexOf(']');
+                if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+                    cleaned = cleaned.substring(firstBracket, lastBracket + 1);
+                }
+                const parsed = JSON.parse(cleaned);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    return parsed;
+                }
+            } catch (e) {
+                console.warn("JSON array extraction failed:", e);
+            }
+            return null;
+        }
+
+        // Deep Topic-Aware Generator matching Prompt Keywords, Dialogue, and Structure
+        function generatePromptMatchedSlideDeck(rawPrompt, numSlides, imageStyle) {
+            const accents = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0284c7", "#9333ea", "#16a34a", "#ca8a04", "#e11d48"];
+            
+            // Clean up prompt into a focused display topic
+            let displayTopic = rawPrompt
+                .replace(/^(Create|Generate|Make|Design|Write|Build|Give me|I need)\s+(an?\s+)?(English\s+)?(classroom\s+)?(lesson\s+)?(presentation|slides|deck|slide deck)?\s*(for|about|on)?/i, '')
+                .replace(/\(Proficiency Level:[^)]+\)/gi, '')
+                .replace(/\[.*?\]/g, '')
+                .trim();
+            if (!displayTopic) displayTopic = "English Language Masterclass";
+
+            // Extract specific terms, words in quotes, or list items from prompt
+            const quoteMatches = (rawPrompt.match(/"([^"]+)"/g) || []).map(s => s.replace(/"/g, '').trim()).filter(s => s.length > 1);
+            const rawSentences = rawPrompt.split(/[.\n;]/).map(s => s.trim()).filter(s => s.length > 6 && !s.toLowerCase().startsWith('create') && !s.toLowerCase().startsWith('generate'));
+            
+            const lower = rawPrompt.toLowerCase();
+            const isGrammar = lower.includes('grammar') || lower.includes('tense') || lower.includes('passive') || lower.includes('modal') || lower.includes('conditional') || lower.includes('preposition') || lower.includes('verb');
+            const isVocab = lower.includes('vocab') || lower.includes('word') || lower.includes('food') || lower.includes('animal') || lower.includes('weather') || lower.includes('clothes') || lower.includes('family') || lower.includes('color');
+            const isDialogue = lower.includes('dialogue') || lower.includes('conversation') || lower.includes('roleplay') || lower.includes('interview') || lower.includes('restaurant') || lower.includes('travel') || lower.includes('airport');
+            const isBusiness = lower.includes('business') || lower.includes('meeting') || lower.includes('email') || lower.includes('work') || lower.includes('presentation') || lower.includes('career');
+
+            const slides = [];
+
+            for (let i = 0; i < numSlides; i++) {
+                const accent = accents[i % accents.length];
+                let title = "";
+                let subtitle = "";
+                let bullets = [];
+                let icon = "🎯";
+                let focusLabel = "Core Objective";
+                let focusNote = `Focus on active speaking and clear pronunciation of ${displayTopic}.`;
+
+                if (i === 0) {
+                    title = displayTopic;
+                    subtitle = "Interactive Classroom Presentation & Guided Lesson";
+                    icon = "🎯";
+                    focusLabel = "Lesson Objective";
+                    focusNote = `Warm-up: Ask learners what they already know about ${displayTopic}.`;
+                    bullets = [
+                        `🎯 Learning Objective: Master practical usage of "${displayTopic}" in natural communication`,
+                        `🗣️ Key Skill Focus: Fluency, vocabulary recall, and sentence building`,
+                        `📝 Lesson Flow: Warm-up ➔ Key Vocabulary & Rules ➔ Real-World Practice ➔ Interactive Quiz`
+                    ];
+                } else if (i === numSlides - 1) {
+                    title = `${i + 1}. Lesson Wrap-up & Homework`;
+                    subtitle = `Consolidating everything learned about ${displayTopic}`;
+                    icon = "🎓";
+                    focusLabel = "Review & Next Steps";
+                    focusNote = "Encourage students to summarize one new word or pattern they mastered today.";
+                    bullets = [
+                        `✅ Key Takeaway: Regular communicative use of "${displayTopic}" builds effortless confidence`,
+                        `✍️ Homework Task: Create 5 original sentences or a mini-dialogue applying today's lesson patterns`,
+                        `🤝 Peer Discussion: Share one question or real-life scenario with your study partner`
+                    ];
+                } else {
+                    const step = i;
+                    if (step === 1) {
+                        title = `${i + 1}. Foundations & Overview: ${displayTopic}`;
+                        subtitle = "Context, core definitions, and why this matters";
+                        icon = "📖";
+                        focusLabel = "Meaning & Context";
+                        focusNote = "Read through the main concept together as a whole class.";
+                        
+                        if (rawSentences.length > 0) {
+                            bullets = [
+                                `📌 Central Theme: Understanding the rules and applications of "${displayTopic}"`,
+                                `💡 Key Context: ${rawSentences[0]}`,
+                                `🔍 Look & Listen: Notice how native speakers emphasize target words in authentic conversation`
+                            ];
+                        } else {
+                            bullets = [
+                                `📌 Definition: Explains when and why we use "${displayTopic}" in standard English`,
+                                `🌟 Everyday Use: Practical scenarios where accurate language prevents misunderstandings`,
+                                `💡 Pro Tip: Focus on clear stress and intonation when using these target phrases`
+                            ];
+                        }
+                    } else if (step === 2) {
+                        title = isVocab ? `${i + 1}. Target Vocabulary & Essential Words` : `${i + 1}. Essential Rules & Structure Blueprint`;
+                        subtitle = isVocab ? "Key terms, pronunciation, and practical definitions" : "Sentence patterns and structural formulas";
+                        icon = isVocab ? "🔤" : "📐";
+                        focusLabel = isVocab ? "Vocabulary & Phonics" : "Grammar Pattern";
+                        focusNote = isVocab ? "Choral repetition: Repeat each term 3 times with proper word stress." : "Analyze the formula carefully before trying the examples.";
+
+                        if (quoteMatches.length >= 2) {
+                            bullets = quoteMatches.slice(0, 4).map(w => `• "${w}" ➔ Key target phrase for active use in today's lesson`);
+                        } else if (isVocab) {
+                            bullets = [
+                                `🔑 Core Term 1: Primary vocabulary items related directly to "${displayTopic}"`,
+                                `🔑 Core Term 2: Descriptive adjectives and action verbs that pair naturally`,
+                                `🗣️ Pronunciation Note: Pay special attention to silent letters and vowel sounds`,
+                                `💡 Memory Hook: Associate each word with a vivid mental image or personal experience`
+                            ];
+                        } else {
+                            bullets = [
+                                `📐 Standard Formula: Subject + Auxiliary / Modal + Main Action [Context]`,
+                                `🌟 Model Positive Example: "We consistently apply this structure in ${displayTopic}."`,
+                                `⚠️ Question & Negative Pattern: "Do you know how to use this pattern correctly?"`,
+                                `💡 Structural Rule: Always verify subject-verb agreement and proper word order`
+                            ];
+                        }
+                    } else if (step === 3) {
+                        title = `${i + 1}. Real-World Dialogue & Model Sentences`;
+                        subtitle = "Authentic situational usage and natural examples";
+                        icon = "🗣️";
+                        focusLabel = "Conversational Fluency";
+                        focusNote = "Roleplay in pairs: Student A reads Person 1, Student B reads Person 2.";
+
+                        if (isDialogue) {
+                            bullets = [
+                                `🗣️ Person A: "Hello! Could you help me with ${displayTopic}?"`,
+                                `🗣️ Person B: "Certainly! Let's review the most important points together."`,
+                                `🗣️ Person A: "That sounds wonderful! What should I remember first?"`,
+                                `🗣️ Person B: "Always speak clearly and double-check your target vocabulary."`
+                            ];
+                        } else {
+                            bullets = [
+                                `🌟 Example A: "In everyday situations, practicing ${displayTopic} ensures great clarity."`,
+                                `🌟 Example B: "When writing formal messages, this structure shows high proficiency."`,
+                                `❌ Common Error: Avoid translating directly from your native language word-for-word`,
+                                `✔️ Better Alternative: Think in English chunks and use standard collocations`
+                            ];
+                        }
+                    } else if (step === 4) {
+                        title = `${i + 1}. Interactive Classroom Practice & Challenge`;
+                        subtitle = "Pair activity, roleplay prompts, and speed drills";
+                        icon = "👥";
+                        focusLabel = "Interactive Activity";
+                        focusNote = "Pair students up and give them 3 minutes to complete the prompt.";
+
+                        bullets = [
+                            `👥 Pair Challenge: Take turns creating 2 original sentences using "${displayTopic}"`,
+                            `⏱️ 2-Minute Drill: Transform standard sentences into the target grammatical form`,
+                            `🎤 Class Showcase: Volunteer pairs share their dialogue with the class for live feedback`
+                        ];
+                    } else if (step === 5) {
+                        title = `${i + 1}. Quick Check & Concept Quiz`;
+                        subtitle = "Spot the error and test your understanding";
+                        icon = "❓";
+                        focusLabel = "Formative Assessment";
+                        focusNote = "Have students write answers on mini-whiteboards or raise fingers for choices.";
+
+                        bullets = [
+                            `❓ Question 1: What is the main rule to remember when using "${displayTopic}"?`,
+                            `❓ Question 2: Spot and correct the deliberate mistake in the example sentence`,
+                            `❓ Question 3: Fill in the missing word to complete the target phrase accurately`
+                        ];
+                    } else {
+                        title = `${i + 1}. Advanced Extension & Discussion`;
+                        subtitle = "Nuance, idioms, and deeper conversation";
+                        icon = "🚀";
+                        focusLabel = "Advanced Fluency";
+                        focusNote = "Encourage students to express their personal opinions in English.";
+
+                        bullets = [
+                            `🚀 Level Up: Incorporate idiomatic expressions and advanced discourse connectors`,
+                            `🌍 Cultural Context: How tone and body language support "${displayTopic}" in conversation`,
+                            `📖 Self-Study Tip: Listen to native podcasts and note down authentic variations`
+                        ];
+                    }
+                }
+
+                slides.push({
+                    title: title,
+                    subtitle: subtitle,
+                    bullets: bullets,
+                    accent: accent,
+                    imageStyle: imageStyle,
+                    icon: icon,
+                    focusLabel: focusLabel,
+                    focusNote: focusNote
+                });
+            }
+
+            return slides;
+        }
+
         async function generatePresentationDeck() {
             const promptInput = document.getElementById('slides-prompt');
             const countSelect = document.getElementById('slides-count-select');
             const styleSelect = document.getElementById('slides-image-style-select');
-            const generateBtn = document.querySelector('#slides-app-container .generate-btn');
+            const generateBtn = document.querySelector('#slides-app-container .composer-ai-btn') || document.querySelector('#slides-app-container .generate-btn');
             
             const rawPrompt = promptInput ? promptInput.value.trim() : "";
             const numSlides = countSelect ? parseInt(countSelect.value, 10) : 5;
             const imageStyle = styleSelect ? styleSelect.value : "concept";
             
+            if (!rawPrompt) {
+                showToast("Please enter a lesson topic or prompt first!", "⚠️");
+                if (promptInput) promptInput.focus();
+                return;
+            }
+
             let displayTopic = rawPrompt
-                .replace(/^(Create|Generate|Make|Design|Write|Build)\s+(an?\s+)?(English\s+)?(classroom\s+)?(lesson\s+)?(presentation|slides|deck|slide deck)?\s*(for|about|on)?/i, '')
+                .replace(/^(Create|Generate|Make|Design|Write|Build|Give me|I need)\s+(an?\s+)?(English\s+)?(classroom\s+)?(lesson\s+)?(presentation|slides|deck|slide deck)?\s*(for|about|on)?/i, '')
                 .replace(/\(Proficiency Level:[^)]+\)/gi, '')
                 .trim();
             if (!displayTopic) displayTopic = "English Language & Communication";
 
-            showToast(`Generating ${numSlides}-slide presentation deck... 📊`, "✨");
+            showToast(`Generating ${numSlides} presentation slides tailored to your prompt... 📊`, "✨");
             if (generateBtn) {
                 generateBtn.disabled = true;
-                generateBtn.innerHTML = '<span>⏳ Generating Slides...</span>';
+                generateBtn.innerHTML = '<span>⏳ Generating Slides with AI...</span>';
             }
 
             const accents = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0284c7", "#9333ea", "#16a34a", "#ca8a04", "#e11d48"];
             let slidesResult = [];
 
-            // 1. Try Gemini AI if API Key is available
-            const apiKey = getWebApiKey();
-            if (apiKey && rawPrompt) {
-                try {
-                    const systemPrompt = `You are an expert English language educator and slide presentation designer. Create a high-impact, engaging ${numSlides}-slide classroom presentation deck for ESL / English learners based on the user's prompt. 
-Respond ONLY with a JSON array of slide objects (no markdown code blocks, no backticks, just valid JSON). 
-Each object in the array must strictly have:
-- "title": (string, concise engaging slide title)
-- "subtitle": (string, short descriptive subtitle)
-- "bullets": (array of 3-4 strings with concrete examples, rules, tasks, or explanations matching the user's topic)
-`;
-                    const aiRaw = await generateWithGemini(`Topic/Instructions: ${rawPrompt}. Generate exactly ${numSlides} slides.`, systemPrompt, apiKey);
-                    const cleanJson = aiRaw.replace(/```json/gi, '').replace(/```/g, '').trim();
-                    const parsed = JSON.parse(cleanJson);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        slidesResult = parsed.slice(0, numSlides).map((s, idx) => ({
-                            title: s.title || `Slide ${idx + 1}: ${displayTopic}`,
-                            subtitle: s.subtitle || `Key focus and analysis`,
-                            bullets: Array.isArray(s.bullets) ? s.bullets : [s.bullets || "Interactive lesson content"],
-                            accent: accents[idx % accents.length],
-                            imageStyle: imageStyle
-                        }));
-                    }
-                } catch (e) {
-                    console.warn("Gemini slide generation fallback:", e);
+            try {
+                const systemPrompt = `You are an expert English language educator, pedagogical consultant, and slide presentation designer.
+Create a high-impact, engaging, pedagogical ${numSlides}-slide classroom presentation deck for ESL / English learners that PRECISELY matches the user's specific prompt, topic, target vocabulary, grammar rules, dialogues, or questions.
+
+IMPORTANT: Do NOT generate generic or boilerplate slide decks. Every slide must strictly contain the exact grammar points, vocabulary terms, dialogue lines, sentences, or quiz questions mentioned or implied in the user's prompt.
+
+Respond ONLY with a valid JSON array of ${numSlides} slide objects (no markdown fences, no explanatory text, just raw valid JSON).
+Each object MUST strictly contain:
+- "title": (string, engaging specific title for this slide)
+- "subtitle": (string, pedagogical objective or subtitle)
+- "bullets": (array of 3 to 4 rich, informative strings with concrete rules, examples, dialogue quotes, or questions)
+- "icon": (string, 1 relevant emoji such as 🎯, 📖, 🗣️, 🔤, ✈️, 💼, ❓, 🎓)
+- "focusLabel": (string, short 2-3 word focus label, e.g. "Pronunciation Focus", "Grammar Pattern", "Roleplay Challenge")
+- "focusNote": (string, concise teacher tip or student activity instruction for this slide)`;
+
+                const aiRaw = await callUnifiedGeminiAi(rawPrompt, systemPrompt);
+                const parsedArray = extractCleanJsonArray(aiRaw);
+
+                if (Array.isArray(parsedArray) && parsedArray.length > 0) {
+                    slidesResult = parsedArray.slice(0, numSlides).map((s, idx) => ({
+                        title: s.title || `Slide ${idx + 1}: ${displayTopic}`,
+                        subtitle: s.subtitle || `Interactive Analysis & Practice`,
+                        bullets: Array.isArray(s.bullets) ? s.bullets.map(b => typeof b === 'string' ? b : JSON.stringify(b)) : [String(s.bullets || "Interactive lesson content")],
+                        accent: accents[idx % accents.length],
+                        imageStyle: imageStyle,
+                        icon: s.icon || (idx === 0 ? '🎯' : idx === numSlides - 1 ? '🎓' : '💡'),
+                        focusLabel: s.focusLabel || "Interactive Practice",
+                        focusNote: s.focusNote || `Practice active speaking and pronunciation with ${displayTopic}.`
+                    }));
                 }
+            } catch (err) {
+                console.warn("AI slide generation fell back to topic-matching engine:", err);
             }
 
-            // 2. Procedural Topic-Aware Intelligent Generator (Instant Fallback matching Prompt)
-            if (slidesResult.length === 0) {
-                const lower = rawPrompt.toLowerCase();
-                const isTense = lower.includes('tense') || lower.includes('present') || lower.includes('past') || lower.includes('future') || lower.includes('continuous') || lower.includes('perfect') || lower.includes('verb');
-                const isTravel = lower.includes('travel') || lower.includes('airport') || lower.includes('hotel') || lower.includes('vacation') || lower.includes('restaurant') || lower.includes('direction');
-                const isBusiness = lower.includes('business') || lower.includes('interview') || lower.includes('meeting') || lower.includes('email') || lower.includes('career') || lower.includes('work');
-                const isGrammar = lower.includes('grammar') || lower.includes('modal') || lower.includes('preposition') || lower.includes('passive') || lower.includes('clause') || lower.includes('condition');
-                const isVocab = lower.includes('vocab') || lower.includes('word') || lower.includes('idiom') || lower.includes('phrasal');
-
-                for (let i = 0; i < numSlides; i++) {
-                    let slideTitle = "";
-                    let subtitle = "";
-                    let bullets = [];
-                    const accent = accents[i % accents.length];
-
-                    if (i === 0) {
-                        slideTitle = displayTopic;
-                        subtitle = "Interactive Classroom Presentation & Guided Lesson";
-                        bullets = [
-                            `🎯 Lesson Goal: Understand & accurately apply "${displayTopic}" in communication`,
-                            `🗣️ Key Skills: Speaking fluency, contextual comprehension, & grammar accuracy`,
-                            `📝 Structure: Concept introduction ➔ Core rules ➔ Interactive partner practice ➔ Quick quiz`
-                        ];
-                    } else if (i === numSlides - 1) {
-                        slideTitle = `${i + 1}. Wrap-up, Key Takeaways & Homework`;
-                        subtitle = "Summarizing core concepts and next steps";
-                        bullets = [
-                            `✅ Core Takeaway: Regular active use of "${displayTopic}" builds long-term fluency`,
-                            `✍️ Homework Task: Write 5 original sentences/dialogue applying today's lesson patterns`,
-                            `🤝 Open Floor: Questions, clarifications, and peer feedback session`
-                        ];
-                    } else {
-                        const step = i;
-                        if (step === 1) {
-                            slideTitle = `${i + 1}. Foundations & Key Concepts: ${displayTopic}`;
-                            subtitle = "Essential definitions and context overview";
-                            bullets = isTense ? [
-                                `📌 Definition: Explains when and why we use "${displayTopic}" in English`,
-                                `⏰ Time Indicator Signals: Frequently used with specific time markers and context clues`,
-                                `💡 Golden Rule: Match the auxiliary verb with the subject correctly (e.g., singular vs. plural)`
-                            ] : isTravel ? [
-                                `✈️ Core Situations: Asking for assistance, navigating transit, & polite inquiries`,
-                                `🗣️ Politeness Markers: Use "Could you please...", "Excuse me...", "Would it be possible to..."`,
-                                `🔑 Essential Vocabulary: Gates, itineraries, reservations, confirmation numbers`
-                            ] : isBusiness ? [
-                                `💼 Professional Tone: Clear, concise, and structured workplace communication`,
-                                `📊 Key Contexts: Formal emails, stakeholder updates, and collaborative meetings`,
-                                `💡 Pro Tip: Avoid overly casual slang; favor structured bullet points and action items`
-                            ] : [
-                                `📌 Core Concept: Foundational principles of "${displayTopic}"`,
-                                `🔍 Contextual Clues: Recognizing key patterns in authentic texts and spoken English`,
-                                `💡 Learning Focus: Connecting theory directly with everyday practical usage`
-                            ];
-                        } else if (step === 2) {
-                            slideTitle = `${i + 1}. Structural Formulas & Real Examples`;
-                            subtitle = "Grammar blueprint and model sentences";
-                            bullets = isTense ? [
-                                `📐 Standard Formula: Subject + Auxiliary Verb + Main Action [Modifier]`,
-                                `🌟 Positive Model: "They are actively participating in the workshop today."`,
-                                `⚠️ Negative & Question: "She was not informed" / "Did you complete the assignment?"`
-                            ] : [
-                                `📐 Structure Pattern: Identifying the primary elements and connectors in "${displayTopic}"`,
-                                `🌟 Model Example A: "By applying this method, students achieve clarity faster."`,
-                                `🌟 Model Example B: "In formal correspondence, this structure prevents ambiguity."`
-                            ];
-                        } else if (step === 3) {
-                            slideTitle = `${i + 1}. Common Pitfalls & How to Avoid Them`;
-                            subtitle = "Frequent errors made by English learners";
-                            bullets = [
-                                `❌ Common Error: Omitting necessary auxiliary verbs or mixing incompatible tenses`,
-                                `✔️ Correct Pattern: Verify agreement between time markers and the main action`,
-                                `🔍 Diagnostic Check: Ask yourself "Does this sentence sound natural and clear to a native speaker?"`
-                            ];
-                        } else if (step === 4) {
-                            slideTitle = `${i + 1}. Interactive Classroom Practice Activity`;
-                            subtitle = "Pair work, roleplay, and student challenges";
-                            bullets = [
-                                `👥 Partner Task: Take turns creating 2 original scenarios using "${displayTopic}"`,
-                                `⏱️ 2-Minute Speed Drill: Transform 3 basic sentences into the target structure`,
-                                `🎤 Class Showcase: 2 student pairs present their roleplay dialogue to the class`
-                            ];
-                        } else if (step === 5) {
-                            slideTitle = `${i + 1}. Quick Concept Check & Mini-Quiz`;
-                            subtitle = "Testing student understanding on the spot";
-                            bullets = [
-                                `❓ Question 1: What is the main purpose of using "${displayTopic}"?`,
-                                `❓ Question 2: Spot and fix the deliberate mistake in the example sentence`,
-                                `❓ Question 3: Formulate a spontaneous answer using today's target vocabulary`
-                            ];
-                        } else {
-                            slideTitle = `${i + 1}. Advanced Extension & Discussion`;
-                            subtitle = "Expanding fluency and deeper communicative nuance";
-                            bullets = [
-                                `🚀 Level Up: Using idiomatic expressions and advanced transitions with "${displayTopic}"`,
-                                `🌍 Cultural Nuance: How tone changes between informal chats and formal presentations`,
-                                `📖 Self-Study Resource: Recommended reading articles and listening exercises for tonight`
-                            ];
-                        }
-                    }
-
-                    slidesResult.push({
-                        title: slideTitle,
-                        subtitle: subtitle,
-                        bullets: bullets,
-                        accent: accent,
-                        imageStyle: imageStyle
-                    });
-                }
+            // If AI failed or returned invalid response, use topic-matched fallback
+            if (!slidesResult || slidesResult.length === 0) {
+                slidesResult = generatePromptMatchedSlideDeck(rawPrompt, numSlides, imageStyle);
             }
 
             currentSlidesData = slidesResult;
             currentSlideIndex = 0;
             renderCurrentSlide();
-            
+
             if (generateBtn) {
                 generateBtn.disabled = false;
-                generateBtn.innerHTML = '<span>✨ Generate Slide Deck</span>';
+                generateBtn.innerHTML = '✨ Generate Slides Deck';
             }
-            
-            showToast(`Presentation deck generated for "${displayTopic}"! 📽️`, "✨");
+
+            showToast(`Presentation deck created for "${displayTopic}"! 📽️`, "✨");
         }
 
-        
+        // Convert the currently active/loaded worksheet into matching presentation slides
+        function convertActiveWorksheetToSlides() {
+            const previewArea = document.getElementById('a4-preview-area');
+            const titleInput = document.getElementById('acc-save-title');
+            const topicInput = document.getElementById('ai-prompt');
+            const slidesPromptInput = document.getElementById('slides-prompt');
+            
+            let worksheetTitle = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : "";
+            if (!worksheetTitle && previewArea) {
+                const h1 = previewArea.querySelector('h1, h2, .worksheet-main-title');
+                if (h1) worksheetTitle = h1.innerText.trim();
+            }
+            if (!worksheetTitle && topicInput) {
+                worksheetTitle = topicInput.value.trim();
+            }
+            if (!worksheetTitle) {
+                worksheetTitle = "English Classroom Worksheet";
+            }
+
+            // Sync prompt input
+            if (slidesPromptInput) {
+                slidesPromptInput.value = `Interactive presentation deck based on worksheet: "${worksheetTitle}"`;
+            }
+
+            const accents = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0284c7", "#9333ea"];
+            const slides = [];
+
+            // Extract real sections from previewArea
+            let readingTexts = [];
+            let vocabWords = [];
+            let questions = [];
+
+            if (previewArea) {
+                // Find reading paragraphs
+                previewArea.querySelectorAll('p, .reading-text, .story-text').forEach(p => {
+                    const text = p.innerText.trim();
+                    if (text.length > 25 && !text.toLowerCase().includes('name:') && !text.toLowerCase().includes('date:')) {
+                        readingTexts.push(text);
+                    }
+                });
+
+                // Find vocabulary boxes or highlighted spans
+                previewArea.querySelectorAll('.vocab-word, .word-bank, [style*="dashed"], table td').forEach(el => {
+                    const text = el.innerText.trim();
+                    if (text.length > 2 && text.length < 60) {
+                        vocabWords.push(text);
+                    }
+                });
+
+                // Find question items
+                previewArea.querySelectorAll('li, .question-item, ol li').forEach(el => {
+                    const text = el.innerText.trim();
+                    if (text.length > 8 && !text.includes('•')) {
+                        questions.push(text);
+                    }
+                });
+            }
+
+            // Slide 1: Introduction & Topic
+            slides.push({
+                title: worksheetTitle,
+                subtitle: "Classroom Presentation & Worksheet Companion",
+                bullets: [
+                    `🎯 Lesson Theme: Comprehensive walkthrough of "${worksheetTitle}"`,
+                    `📝 Objective: Understand key language points, vocabulary bank, and exercise items`,
+                    `🤝 Instructions: Follow along on the screen and on your printed worksheet`
+                ],
+                accent: accents[0],
+                icon: "🎯",
+                focusLabel: "Lesson Kickoff",
+                focusNote: "Have students look at the matching worksheet in front of them."
+            });
+
+            // Slide 2: Reading / Context Dialogue
+            if (readingTexts.length > 0) {
+                slides.push({
+                    title: "2. Reading Passage & Context",
+                    subtitle: "Authentic text analysis and pronunciation",
+                    bullets: readingTexts.slice(0, 3).map((t, idx) => `• Paragraph ${idx + 1}: "${t.slice(0, 110)}${t.length > 110 ? '...' : ''}"`),
+                    accent: accents[1],
+                    icon: "📖",
+                    focusLabel: "Reading & Listening",
+                    focusNote: "Listen to the pronunciation and follow along sentence by sentence."
+                });
+            }
+
+            // Slide 3: Vocabulary & Word Bank
+            if (vocabWords.length > 0) {
+                slides.push({
+                    title: "3. Target Vocabulary & Word Bank",
+                    subtitle: "Key definitions and words from the worksheet",
+                    bullets: vocabWords.slice(0, 4).map(w => `• ${w}`),
+                    accent: accents[2],
+                    icon: "🔤",
+                    focusLabel: "Vocabulary Drill",
+                    focusNote: "Practice repeating each vocabulary word clearly as a class."
+                });
+            } else {
+                slides.push({
+                    title: "3. Core Rules & Language Blueprint",
+                    subtitle: "Essential patterns from today's worksheet",
+                    bullets: [
+                        `📐 Key Pattern: Master the primary grammatical structure of "${worksheetTitle}"`,
+                        `🌟 Positive Model: Notice how correct collocations provide natural flow`,
+                        `⚠️ Common Trap: Beware of false friends and inconsistent time markers`
+                    ],
+                    accent: accents[2],
+                    icon: "📐",
+                    focusLabel: "Grammar Blueprint",
+                    focusNote: "Highlight the key pattern directly on your worksheet."
+                });
+            }
+
+            // Slide 4: Exercise Walkthrough & Questions
+            if (questions.length > 0) {
+                slides.push({
+                    title: "4. Worksheet Exercises & Practice",
+                    subtitle: "Interactive class problem-solving",
+                    bullets: questions.slice(0, 4).map((q, idx) => `❓ Item ${idx + 1}: ${q}`),
+                    accent: accents[3],
+                    icon: "✏️",
+                    focusLabel: "Active Practice",
+                    focusNote: "Work individually or in pairs to write down your answers."
+                });
+            } else {
+                slides.push({
+                    title: "4. Interactive Pair Challenge",
+                    subtitle: "Apply the worksheet concepts with your partner",
+                    bullets: [
+                        `👥 Pair Task: Formulate 2 original sentences applying today's worksheet topics`,
+                        `⏱️ Speed Check: Complete Section B on your worksheet within 3 minutes`,
+                        `🎤 Class Feedback: Share your answers with the teacher for group review`
+                    ],
+                    accent: accents[3],
+                    icon: "👥",
+                    focusLabel: "Pair Activity",
+                    focusNote: "Collaborate with your partner to double-check spelling and grammar."
+                });
+            }
+
+            // Slide 5: Wrap-up & Solutions
+            slides.push({
+                title: "5. Wrap-up, Answer Key & Homework",
+                subtitle: `Reviewing answers for "${worksheetTitle}"`,
+                bullets: [
+                    `✅ Answer Check: Confirm your written worksheet answers against the class key`,
+                    `🌟 Self-Evaluation: Rate your confidence with today's topic from 1 to 5`,
+                    `✍️ Next Steps: Complete the homework reflection box on page 2 for tomorrow`
+                ],
+                accent: accents[4],
+                icon: "🎓",
+                focusLabel: "Review & Reflect",
+                focusNote: "Congratulate students on completing today's masterclass worksheet!"
+            });
+
+            currentSlidesData = slides;
+            currentSlideIndex = 0;
+            switchAppMode('slides');
+            renderCurrentSlide();
+
+            showToast("Worksheet successfully converted to matching presentation slides! 📊", "✨");
+        }
+
         // Web Speech API Voice synthesis for Presentation Slides
         let isSpeakingSlide = false;
         let slideSpeechUtterance = null;
@@ -8103,7 +9904,45 @@ Each object in the array must strictly have:
             window.speechSynthesis.speak(slideSpeechUtterance);
         }
 
-        function getSlideHTML(slide, index, total, layout) {
+        let currentSlideTransition = localStorage.getItem('slide_transition_style') || 'slide';
+
+        function setSlideTransition(val) {
+            currentSlideTransition = val || 'slide';
+            localStorage.setItem('slide_transition_style', currentSlideTransition);
+            renderCurrentSlide('forward');
+            showToast(`Transition set to ${getSlideTransitionLabel(currentSlideTransition)}! ✨`, "✨");
+        }
+
+        function getSlideTransitionLabel(val) {
+            switch (val) {
+                case 'slide': return 'Slide Horizontal ↔️';
+                case 'fade': return 'Fade & Soft Glow 🌫️';
+                case 'zoom': return 'Dynamic Zoom 🔍';
+                case 'vertical': return 'Slide Vertical ↕️';
+                case 'flip': return '3D Flip 🎴';
+                default: return 'Slide Horizontal ↔️';
+            }
+        }
+
+        function getSlideAnimationClass(transitionType, direction) {
+            const isBack = direction === 'backward';
+            switch (transitionType) {
+                case 'slide':
+                    return isBack ? 'anim-slide-backward' : 'anim-slide-forward';
+                case 'fade':
+                    return 'anim-fade';
+                case 'zoom':
+                    return isBack ? 'anim-zoom-backward' : 'anim-zoom-forward';
+                case 'vertical':
+                    return isBack ? 'anim-vertical-backward' : 'anim-vertical-forward';
+                case 'flip':
+                    return isBack ? 'anim-flip-backward' : 'anim-flip-forward';
+                default:
+                    return isBack ? 'anim-slide-backward' : 'anim-slide-forward';
+            }
+        }
+
+        function getSlideHTML(slide, index, total, layout, animClass = 'anim-slide-forward') {
             const isHorizontal = layout === 'horizontal';
             const bulletItems = (slide.bullets || []).map(b => `
                 <li style="margin-bottom: 12px; font-size: 17px; line-height: 1.6; color: #1e293b; display: flex; align-items: flex-start; gap: 10px;">
@@ -8112,15 +9951,19 @@ Each object in the array must strictly have:
                 </li>
             `).join('');
 
+            const slideIcon = slide.icon || (index === 0 ? '🎯' : index === total - 1 ? '🎓' : (index % 3 === 0 ? '💡' : index % 2 === 0 ? '🗣️' : '📝'));
+            const focusTitle = slide.focusLabel || 'Pronunciation & Practice Focus';
+            const focusDesc = slide.focusNote || 'Listen to the slide pronunciation and practice repeating key sentences with a partner.';
+
             return `
-                <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 380px;">
+                <div class="slide-stage-wrapper ${animClass}" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 380px;">
                     <!-- Top Slide Header -->
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                             <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: ${slide.accent};">
                                 Lesson Presentation • Slide ${index + 1} of ${total}
                             </div>
-                            <button type="button" onclick="speakCurrentSlide()" class="slide-voice-btn" style="background: rgba(37,99,235,0.08); border: 1.5px solid ${slide.accent}; color: ${slide.accent}; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
+                            <button type="button" onclick="speakCurrentSlide()" id="slide-read-aloud-btn" class="slide-voice-btn" style="background: rgba(37,99,235,0.08); border: 1.5px solid ${slide.accent}; color: ${slide.accent}; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
                                 🔊 Pronounce & Read
                             </button>
                         </div>
@@ -8144,13 +9987,13 @@ Each object in the array must strictly have:
                         <!-- Graphic Visual Concept Box -->
                         <div class="slide-visual-panel" style="background: linear-gradient(135deg, white 0%, #f8fafc 100%); border: 1.5px solid ${slide.accent}33; border-radius: 14px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; box-shadow: 0 6px 20px rgba(0,0,0,0.04);">
                             <div style="font-size: 42px; margin-bottom: 8px;">
-                                ${index === 0 ? '🎯' : index === total - 1 ? '🎓' : (index % 3 === 0 ? '💡' : index % 2 === 0 ? '🗣️' : '📝')}
+                                ${slideIcon}
                             </div>
                             <div style="font-weight: 700; font-size: 14px; color: ${slide.accent}; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
-                                Pronunciation & Concept Focus
+                                ${escapeHtml(focusTitle)}
                             </div>
                             <div style="font-size: 12.5px; color: #64748b; line-height: 1.4; max-width: 240px;">
-                                Listen to the slide pronunciation and practice repeating key sentences with a partner.
+                                ${escapeHtml(focusDesc)}
                             </div>
                         </div>
                     </div>
@@ -8164,21 +10007,26 @@ Each object in the array must strictly have:
             `;
         }
 
-        function renderCurrentSlide() {
+        function renderCurrentSlide(direction = 'forward') {
             const viewport = document.getElementById('slide-viewport-canvas');
             const titleEl = document.getElementById('slide-deck-title');
             const counterEl = document.getElementById('slide-counter-badge');
             const dotsContainer = document.getElementById('slide-dots-container');
+            const transitionSelect = document.getElementById('slide-transition-select');
             
-            if (!viewport) return;
+            if (!viewport || !currentSlidesData || currentSlidesData.length === 0) return;
+
+            if (transitionSelect && transitionSelect.value !== currentSlideTransition) {
+                transitionSelect.value = currentSlideTransition;
+            }
 
             const slide = currentSlidesData[currentSlideIndex];
             if (titleEl) titleEl.innerText = slide.title;
             if (counterEl) counterEl.innerText = `Slide ${currentSlideIndex + 1} of ${currentSlidesData.length}`;
 
-            
             viewport.style.borderLeft = `8px solid ${slide.accent}`;
-            viewport.innerHTML = getSlideHTML(slide, currentSlideIndex, currentSlidesData.length, currentSlideLayout);
+            const animClass = getSlideAnimationClass(currentSlideTransition, direction);
+            viewport.innerHTML = getSlideHTML(slide, currentSlideIndex, currentSlidesData.length, currentSlideLayout, animClass);
             
             if (dotsContainer) {
                 dotsContainer.innerHTML = currentSlidesData.map((_, idx) => `
@@ -8190,22 +10038,69 @@ Each object in the array must strictly have:
         function nextSlide() {
             if (currentSlideIndex < currentSlidesData.length - 1) {
                 currentSlideIndex++;
-                renderCurrentSlide();
+                renderCurrentSlide('forward');
             }
         }
 
         function prevSlide() {
             if (currentSlideIndex > 0) {
                 currentSlideIndex--;
-                renderCurrentSlide();
+                renderCurrentSlide('backward');
             }
         }
 
         function goToSlide(idx) {
-            if (idx >= 0 && idx < currentSlidesData.length) {
+            if (idx >= 0 && idx < currentSlidesData.length && idx !== currentSlideIndex) {
+                const direction = idx > currentSlideIndex ? 'forward' : 'backward';
                 currentSlideIndex = idx;
-                renderCurrentSlide();
+                renderCurrentSlide(direction);
             }
+        }
+
+        function initSlideTouchAndKeyboardControls() {
+            const viewport = document.getElementById('slide-viewport-canvas');
+            if (viewport) {
+                let touchStartX = 0;
+                let touchStartY = 0;
+
+                viewport.addEventListener('touchstart', (e) => {
+                    if (e.touches && e.touches.length > 0) {
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+                    }
+                }, { passive: true });
+
+                viewport.addEventListener('touchend', (e) => {
+                    if (e.changedTouches && e.changedTouches.length > 0) {
+                        const touchEndX = e.changedTouches[0].clientX;
+                        const touchEndY = e.changedTouches[0].clientY;
+                        const diffX = touchStartX - touchEndX;
+                        const diffY = touchStartY - touchEndY;
+                        if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+                            if (diffX > 0) {
+                                nextSlide();
+                            } else {
+                                prevSlide();
+                            }
+                        }
+                    }
+                }, { passive: true });
+            }
+
+            // Keyboard Arrow navigation when presentation studio is active
+            document.addEventListener('keydown', (e) => {
+                const slidesContainer = document.getElementById('slides-app-container');
+                if (!slidesContainer || slidesContainer.style.display === 'none') return;
+                if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
+
+                if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === 'Space') {
+                    e.preventDefault();
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    prevSlide();
+                }
+            });
         }
 
         
@@ -8572,6 +10467,500 @@ Each object in the array must strictly have:
                     document.body.classList.remove('printing-slides');
                 }, 500);
             }, 400);
+        }
+
+        // --- Slide Deck Video Export & Audio-Enhanced PDF Export ---
+        function openSlideVideoModal() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate presentation slides first!", "⚠️");
+                return;
+            }
+            const modal = document.getElementById('slide-video-export-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                const progressBox = document.getElementById('video-export-progress-box');
+                if (progressBox) progressBox.style.display = 'none';
+                const startBtn = document.getElementById('video-export-start-btn');
+                if (startBtn) {
+                    startBtn.disabled = false;
+                    startBtn.innerText = '🎬 Start Video Generation';
+                }
+            }
+        }
+
+        function closeSlideVideoModal() {
+            const modal = document.getElementById('slide-video-export-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function playAudioChime(audioCtx, destination) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15); // E5
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
+            } catch(e) {
+                console.error("Audio chime error:", e);
+            }
+        }
+
+        async function startSlideVideoExportProcess() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("No slides available to export!", "⚠️");
+                return;
+            }
+
+            const startBtn = document.getElementById('video-export-start-btn');
+            const cancelBtn = document.getElementById('video-export-cancel-btn');
+            const progressBox = document.getElementById('video-export-progress-box');
+            const statusLabel = document.getElementById('video-export-status-label');
+            const percentLabel = document.getElementById('video-export-percent-label');
+            const progressBar = document.getElementById('video-export-progress-bar');
+            const framePreview = document.getElementById('video-export-frame-preview');
+
+            if (startBtn) {
+                startBtn.disabled = true;
+                startBtn.innerText = '⏳ Generating Video...';
+            }
+            if (cancelBtn) cancelBtn.disabled = true;
+            if (progressBox) progressBox.style.display = 'block';
+
+            const voiceRate = parseFloat(document.getElementById('video-voice-rate')?.value || '0.95');
+            const pauseSec = parseInt(document.getElementById('video-slide-pause')?.value || '2');
+            const res = document.getElementById('video-resolution-select')?.value || '1080p';
+            const width = res === '1080p' ? 1920 : 1280;
+            const height = res === '1080p' ? 1080 : 720;
+
+            const totalSlides = currentSlidesData.length;
+
+            function updateProgress(percent, statusMsg) {
+                if (statusLabel) statusLabel.innerText = statusMsg;
+                if (percentLabel) percentLabel.innerText = `${percent}%`;
+                if (progressBar) progressBar.style.width = `${percent}%`;
+            }
+
+            updateProgress(5, "Setting up 16:9 canvas and WebAudio synthesis stream...");
+
+            const offscreenContainer = document.createElement('div');
+            offscreenContainer.style.position = 'fixed';
+            offscreenContainer.style.top = '-9999px';
+            offscreenContainer.style.left = '-9999px';
+            offscreenContainer.style.width = `${width}px`;
+            offscreenContainer.style.height = `${height}px`;
+            offscreenContainer.style.background = '#f8fafc';
+            document.body.appendChild(offscreenContainer);
+
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = width;
+            exportCanvas.height = height;
+            const ctx = exportCanvas.getContext('2d');
+
+            let audioCtx = null;
+            let dest = null;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                dest = audioCtx.createMediaStreamDestination();
+            } catch(e) {
+                console.warn("AudioContext setup failed:", e);
+            }
+
+            const canvasStream = exportCanvas.captureStream(30);
+            const tracks = [...canvasStream.getVideoTracks()];
+            if (dest && dest.stream) {
+                tracks.push(...dest.stream.getAudioTracks());
+            }
+            const combinedStream = new MediaStream(tracks);
+
+            let mimeType = 'video/webm;codecs=vp9,opus';
+            if (!MediaRecorder.isTypeSupported(mimeType)) {
+                mimeType = 'video/webm;codecs=vp8,opus';
+                if (!MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'video/webm';
+                }
+            }
+
+            const recordedChunks = [];
+            let mediaRecorder = null;
+            try {
+                mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                mediaRecorder.start(100);
+            } catch(e) {
+                console.error("MediaRecorder init error:", e);
+                showToast("Video recording not supported in this browser.", "⚠️");
+                document.body.removeChild(offscreenContainer);
+                if (startBtn) { startBtn.disabled = false; startBtn.innerText = '🎬 Start Video Generation'; }
+                if (cancelBtn) cancelBtn.disabled = false;
+                return;
+            }
+
+            const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
+
+            for (let i = 0; i < totalSlides; i++) {
+                const slide = currentSlidesData[i];
+                const currentPercent = Math.round(((i) / totalSlides) * 85) + 5;
+                updateProgress(currentPercent, `Slide ${i + 1} of ${totalSlides}: "${slide.title}"`);
+
+                offscreenContainer.innerHTML = `
+                    <div style="width:100%; height:100%; padding:48px; box-sizing:border-box; font-family:system-ui, -apple-system, sans-serif; background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left:14px solid ${slide.accent}; display:flex; flex-direction:column; justify-content:space-between;">
+                        ${getSlideHTML(slide, i, totalSlides, currentSlideLayout, '')}
+                    </div>
+                `;
+
+                try {
+                    let renderedCanvas = null;
+                    if (captureCanvas) {
+                        renderedCanvas = await captureCanvas(offscreenContainer, {
+                            width: width,
+                            height: height,
+                            scale: 1,
+                            useCORS: true,
+                            logging: false
+                        });
+                    }
+
+                    if (renderedCanvas) {
+                        ctx.clearRect(0, 0, width, height);
+                        ctx.drawImage(renderedCanvas, 0, 0, width, height);
+
+                        if (framePreview) {
+                            framePreview.src = exportCanvas.toDataURL('image/jpeg', 0.8);
+                            framePreview.style.display = 'inline-block';
+                        }
+                    }
+
+                    if (audioCtx && dest) {
+                        playAudioChime(audioCtx, dest);
+                    }
+
+                    let textToRead = `${slide.title}. ${slide.subtitle || ''}. `;
+                    const cleanBullets = (slide.bullets || []).map(b => b.replace(/<[^>]+>/g, ' ').trim());
+                    if (cleanBullets.length > 0) {
+                        textToRead += cleanBullets.join('. ');
+                    }
+
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(textToRead);
+                        utterance.lang = 'en-US';
+                        utterance.rate = voiceRate;
+                        const voices = window.speechSynthesis.getVoices();
+                        const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('English')));
+                        if (preferredVoice) utterance.voice = preferredVoice;
+                        window.speechSynthesis.speak(utterance);
+                    }
+
+                    const wordCount = textToRead.split(/\s+/).length;
+                    const estimatedSpeechDurationMs = Math.max((wordCount / (150 * voiceRate / 60)) * 1000, 3500);
+                    const totalSlideHoldMs = estimatedSpeechDurationMs + (pauseSec * 1000);
+
+                    const startTime = Date.now();
+                    while (Date.now() - startTime < totalSlideHoldMs) {
+                        if (renderedCanvas) {
+                            ctx.drawImage(renderedCanvas, 0, 0, width, height);
+                        }
+                        await new Promise(r => setTimeout(r, 50));
+                    }
+
+                } catch(err) {
+                    console.error("Error processing slide for video:", err);
+                }
+            }
+
+            updateProgress(95, "Finalizing video container and downloading file...");
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const titleEl = document.getElementById('slide-deck-title');
+                const deckTitle = (titleEl && titleEl.innerText) ? titleEl.innerText : "Lesson_Presentation_Video";
+                const filename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_Narrated.webm';
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 500);
+
+                if (offscreenContainer.parentNode) {
+                    document.body.removeChild(offscreenContainer);
+                }
+                if (audioCtx && audioCtx.state !== 'closed') {
+                    audioCtx.close();
+                }
+
+                updateProgress(100, "Export Complete! Video downloaded.");
+                showToast("Narrated Slide Deck Video exported successfully! 🎬", "✨");
+
+                if (startBtn) {
+                    startBtn.disabled = false;
+                    startBtn.innerText = '🎬 Start Video Generation';
+                }
+                if (cancelBtn) cancelBtn.disabled = false;
+
+                setTimeout(() => {
+                    closeSlideVideoModal();
+                }, 1500);
+            };
+
+            mediaRecorder.stop();
+        }
+
+        function exportSlidesAudioPDF() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate presentation slides first!", "⚠️");
+                return;
+            }
+
+            const titleEl = document.getElementById('slide-deck-title');
+            const deckTitle = (titleEl && titleEl.innerText) ? titleEl.innerText : "Lesson_Presentation_Deck";
+            const filename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_Audio_Enhanced.html';
+
+            let slidesContentHtml = '';
+            currentSlidesData.forEach((slide, idx) => {
+                const bulletItems = (slide.bullets || []).map(b => `<li style="margin-bottom:12px; font-size:18px; line-height:1.6; display:flex; gap:10px; align-items:flex-start;"><span style="width:8px; height:8px; border-radius:50%; background:${slide.accent}; margin-top:9px; flex-shrink:0;"></span><span>${escapeHtml(b)}</span></li>`).join('');
+                const textToRead = `${slide.title}. ${slide.subtitle || ''}. ${(slide.bullets || []).join('. ')}`;
+
+                slidesContentHtml += `
+                    <div class="slide-card-page" id="slide-page-${idx}">
+                        <div class="slide-card-header">
+                            <div>
+                                <div class="slide-meta-label" style="color: ${slide.accent};">SLIDE ${idx + 1} OF ${currentSlidesData.length}</div>
+                                <h1 class="slide-title">${escapeHtml(slide.title)}</h1>
+                                ${slide.subtitle ? `<div class="slide-sub">${escapeHtml(slide.subtitle)}</div>` : ''}
+                            </div>
+                            <button type="button" class="voice-narration-btn" onclick="speakSlideText(\`${escapeHtml(textToRead).replace(/`/g, '\\`')}\`)" style="border-color: ${slide.accent}; color: ${slide.accent};">
+                                🔊 Play Voice Narration
+                            </button>
+                        </div>
+
+                        <div class="slide-body-grid">
+                            <div class="slide-bullets-box">
+                                <ul style="list-style:none; padding:0; margin:0;">${bulletItems}</ul>
+                            </div>
+                            <div class="slide-visual-box" style="border-color:${slide.accent}33;">
+                                <div style="font-size:48px; margin-bottom:8px;">${slide.icon || '💡'}</div>
+                                <div style="font-weight:700; color:${slide.accent}; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; font-size:14px;">${escapeHtml(slide.focusLabel || 'Focus & Practice')}</div>
+                                <div style="font-size:13px; color:#64748b; text-align:center;">${escapeHtml(slide.focusNote || 'Listen and repeat key vocabulary.')}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const fullDoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>\${escapeHtml(deckTitle)} — Audio-Enhanced Interactive Presentation</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .header-bar {
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .header-title {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-action {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-action:hover {
+            background: #1d4ed8;
+        }
+        .slide-card-page {
+            background: white;
+            border-radius: 20px;
+            padding: 36px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            page-break-after: always;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+        .slide-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .slide-meta-label {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+        .slide-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 4px 0;
+        }
+        .slide-sub {
+            font-size: 15px;
+            color: #64748b;
+        }
+        .voice-narration-btn {
+            background: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .voice-narration-btn:hover {
+            transform: scale(1.03);
+            background: #e2e8f0;
+        }
+        .slide-body-grid {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 20px;
+            flex: 1;
+        }
+        .slide-bullets-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+        .slide-visual-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .header-bar { display: none; }
+            .voice-narration-btn { display: none; }
+            .slide-card-page { box-shadow: none; margin: 0; border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <div class="header-title">
+                <span>🎧 \${escapeHtml(deckTitle)}</span>
+                <span style="font-size:12px; background:#2563eb; padding:2px 8px; border-radius:8px;">Audio-Enhanced PDF Presentation</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-action" onclick="playAllNarrationsSequentially()">▶ Auto-Play All Narrations</button>
+                <button class="btn-action" style="background:#475569;" onclick="window.print()">🖨️ Print / Save PDF</button>
+            </div>
+        </div>
+
+        \${slidesContentHtml}
+    </div>
+
+    \x3Cscript\x3E
+        function speakSlideText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.92;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playAllNarrationsSequentially() {
+            const cards = document.querySelectorAll('.slide-card-page');
+            let idx = 0;
+            function playNext() {
+                if (idx >= cards.length) return;
+                const btn = cards[idx].querySelector('.voice-narration-btn');
+                cards[idx].scrollIntoView({ behavior: 'smooth' });
+                if (btn) btn.click();
+                idx++;
+                setTimeout(playNext, 8000);
+            }
+            playNext();
+        }
+    \x3C/script\x3E
+</body>
+</html>`;
+
+            const blob = new Blob([fullDoc], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 200);
+
+            showToast(`Audio-Enhanced Presentation exported! Open file to listen to voice narration 🎧`, "✨");
         }
 
 

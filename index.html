@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root, body.theme-sapphire {
+        :root, :root[data-theme="sapphire"], html.theme-sapphire, body.theme-sapphire {
             --theme-name: 'Sapphire';
             --bg-main: #f0f7ff;
             --bg-main-gradient: radial-gradient(at 10% 15%, rgba(37, 99, 235, 0.18) 0px, transparent 55%),
@@ -47,7 +47,7 @@
         }
 
         /* ICE WHITE THEME */
-        body.theme-icewhite {
+        :root[data-theme="icewhite"], html.theme-icewhite, body.theme-icewhite {
             --theme-name: 'Ice White';
             --bg-main: #f8fafc;
             --bg-main-gradient: radial-gradient(at 15% 20%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
@@ -85,7 +85,7 @@
         }
 
         /* EMERALD THEME */
-        body.theme-emerald {
+        :root[data-theme="emerald"], html.theme-emerald, body.theme-emerald {
             --theme-name: 'Emerald';
             --bg-main: #f0fdf4;
             --bg-main-gradient: radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.18) 0px, transparent 55%),
@@ -123,7 +123,7 @@
         }
 
         /* AMETHYST THEME */
-        body.theme-amethyst {
+        :root[data-theme="amethyst"], html.theme-amethyst, body.theme-amethyst {
             --theme-name: 'Amethyst';
             --bg-main: #faf5ff;
             --bg-main-gradient: radial-gradient(at 10% 20%, rgba(147, 51, 234, 0.18) 0px, transparent 55%),
@@ -161,7 +161,7 @@
         }
 
         /* SUNSET AMBER THEME */
-        body.theme-amber {
+        :root[data-theme="amber"], html.theme-amber, body.theme-amber {
             --theme-name: 'Sunset Amber';
             --bg-main: #fffbeb;
             --bg-main-gradient: radial-gradient(at 10% 20%, rgba(245, 158, 11, 0.18) 0px, transparent 55%),
@@ -199,7 +199,7 @@
         }
 
         /* MIDNIGHT OBSIDIAN THEME (DARK / HIGH-CONTRAST) */
-        body.theme-obsidian, body.dark-mode {
+        :root[data-theme="obsidian"], html.theme-obsidian, body.theme-obsidian, html.dark-mode, body.dark-mode {
             --theme-name: 'Midnight Obsidian';
             --bg-main: #060913;
             --bg-main-gradient: radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.3) 0px, transparent 55%),
@@ -313,15 +313,24 @@
             box-shadow: 0 0 14px rgba(99, 102, 241, 0.4);
         }
 
+        html {
+            min-height: 100%;
+            background: var(--bg-main, #f0f7ff);
+            background-color: var(--bg-main, #f0f7ff);
+            color: var(--text-main, #1e293b);
+            transition: background 0.4s ease, color 0.3s ease;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
             background: var(--bg-main-gradient);
-            background-attachment: fixed;
+            background-color: var(--bg-main);
             color: var(--text-main);
             -webkit-tap-highlight-color: transparent;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.4s ease, color 0.3s ease;
             cursor: default;
         }
 
@@ -7526,16 +7535,27 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         function setTheme(themeKey, showNotification = true) {
             if (!THEMES_CONFIG[themeKey]) themeKey = 'sapphire';
             const body = document.body;
+            const html = document.documentElement;
             
-            // Remove existing theme classes
+            // Remove existing theme classes & attribute
             const allThemeClasses = ['theme-sapphire', 'theme-icewhite', 'theme-emerald', 'theme-amethyst', 'theme-amber', 'theme-obsidian', 'dark-mode'];
-            allThemeClasses.forEach(cls => body.classList.remove(cls));
+            allThemeClasses.forEach(cls => {
+                body.classList.remove(cls);
+                html.classList.remove(cls);
+            });
+
+            // Set data-theme attribute on root html element
+            html.setAttribute('data-theme', themeKey);
             
-            // Apply new theme
+            // Apply new theme class to both body & html
             body.classList.add(`theme-${themeKey}`);
+            html.classList.add(`theme-${themeKey}`);
+
             const isDark = (themeKey === 'obsidian');
             if (isDark) {
                 body.classList.add('dark-mode');
+                html.classList.add('dark-mode');
+                html.setAttribute('data-theme', 'obsidian');
             }
 
             // Update Dark Mode Toggle Button UI
@@ -10765,7 +10785,7 @@ Each object MUST strictly contain:
                 `;
             });
 
-            const fullDoc = \`<!DOCTYPE html>
+            const fullDoc = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10918,7 +10938,7 @@ Each object MUST strictly contain:
         \${slidesContentHtml}
     </div>
 
-    <script>
+    \x3Cscript\x3E
         function speakSlideText(text) {
             if (!('speechSynthesis' in window)) {
                 alert("Speech synthesis is not supported in this browser.");
@@ -10944,9 +10964,9 @@ Each object MUST strictly contain:
             }
             playNext();
         }
-    <\/script>
+    \x3C/script\x3E
 </body>
-</html>\`;
+</html>`;
 
             const blob = new Blob([fullDoc], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
