@@ -985,6 +985,12 @@
             background: #0f172a;
         }
 
+
+        .a4-preview.orientation-landscape,
+        .print-preview-a4-frame.orientation-landscape {
+            max-width: 29.7cm !important;
+            min-height: 21cm !important;
+        }
         .print-preview-a4-frame {
             width: 100%;
             max-width: 21cm;
@@ -1537,7 +1543,7 @@
             border-radius: 4px !important;
         }
 
-        /* PowerPoint & Slides Presentation Styles */
+        /* Presentation Slides Presentation Styles */
         .slide-card-container {
             display: flex;
             flex-direction: column;
@@ -2762,7 +2768,39 @@
             vertical-align: middle;
         }
 
+
         @media print {
+            body.printing-slides { 
+                background: white !important;
+            }
+            body.printing-slides > *:not(#temp-print-slides-container) {
+                display: none !important;
+            }
+            body.printing-slides #temp-print-slides-container {
+                display: block !important;
+                width: 100%;
+            }
+            .slide-print-page {
+                page-break-after: always !important;
+                break-after: page !important;
+                aspect-ratio: 16/9;
+                padding: 40px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
+                color: #0f172a;
+                box-sizing: border-box;
+                border: 2px solid #e2e8f0;
+                margin-bottom: 20px;
+                width: 100%;
+                max-width: 1080px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
             body { 
                 background: white !important; 
                 margin: 0; 
@@ -2921,6 +2959,13 @@
             white-space: pre-wrap;
             transition: color 0.3s ease;
         }
+
+        #font-size-select {
+            transition: transform 0.2s ease;
+        }
+        #font-size-select:hover {
+            transform: scale(1.03);
+        }
     </style>
 </head>
 <body>
@@ -2974,14 +3019,14 @@
     
     <div class="container content-area" id="main-workspace" style="display: block;">
         
-        <!-- App Mode Switcher Tabs: Worksheets vs PowerPoint & Slides -->
+        <!-- App Mode Switcher Tabs: Worksheets vs Presentation Slides -->
         <div class="no-print" style="display: flex; justify-content: center; margin-bottom: 20px;">
             <div class="preview-mode-switch" style="padding: 4px; border-radius: 16px; background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 2px solid var(--tag-border);">
                 <button type="button" class="mode-switch-btn active" id="tab-mode-worksheet" onclick="switchAppMode('worksheet')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
                     <span>📄 Worksheets Studio</span>
                 </button>
                 <button type="button" class="mode-switch-btn" id="tab-mode-slides" onclick="switchAppMode('slides')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
-                    <span>📊 PowerPoint & Slides</span>
+                    <span>📊 Presentation Slides</span>
                 </button>
             </div>
         </div>
@@ -3080,7 +3125,7 @@
                             <option value="18px" selected>Medium</option>
                             <option value="22px">Large</option>
                         </select>
-                        <button type="button" class="reset-font-size-btn" onclick="resetFontSize()" title="Reset font size to default" style="background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; cursor: pointer; padding: 3px 6px; font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease;">↺</button>
+                        <button type="button" class="reset-font-size-btn" onclick="resetFontStyling()" title="Reset font to default" style="background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; cursor: pointer; padding: 3px 6px; font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease;">↺</button>
                     </div>
                     <div class="format-item">
                         <label class="format-label">Paper:</label>
@@ -3327,7 +3372,8 @@
                                 </span>
                                 <input type="checkbox" id="acc-pdf-qr-toggle" onchange="updateQRCodePreview()" style="width: 17px; height: 17px; accent-color: var(--accent-primary); cursor: pointer;">
                             </label>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Embeds a scannable QR code on A4 page linking to an interactive, editable version.</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px;">Embeds a scannable QR code on A4 page linking to an interactive, editable version.</div>
+                            <input type="text" id="acc-pdf-qr-label" class="primary-input bento-input" placeholder="📱 Digital Version Link" oninput="updateQRCodePreview()" style="padding: 6px 10px; font-size: 12px;">
                         </div>
                         <button class="download-btn bento-full-btn" id="download-btn" onclick="downloadPDFFromAccordion()">
                             <span>📥 Download PDF</span>
@@ -3630,6 +3676,15 @@
                         </label>
                     </div>
 
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; margin-left: 12px; border-left: 1px solid var(--input-border); padding-left: 12px;">
+                        <label for="preview-orientation-select" class="bento-label" style="font-size: 11.5px; margin-bottom: 0;">Orientation:</label>
+                        <select id="preview-orientation-select" class="primary-input bento-input" onchange="updatePrintOrientation()" style="padding: 5px 10px; font-size: 12px; cursor: pointer; width: auto;">
+                            <option value="portrait">📄 Portrait</option>
+                            <option value="landscape">📝 Landscape</option>
+                        </select>
+                    </div>
+
                     <div style="margin-left: auto; font-size: 11.5px; color: var(--text-muted); font-weight: 600;">
                         <span>📄 High-DPI Print Alignment</span>
                     </div>
@@ -3651,6 +3706,50 @@
                         <button type="button" onclick="downloadPDFFromPreviewModal()" class="editor-btn primary" style="padding: 8px 18px; font-size: 13.5px;">📥 Save as PDF</button>
                         <button type="button" onclick="confirmPrintFromPreview()" class="print-btn" style="padding: 8px 22px; font-size: 13.5px;">🖨️ Confirm & Print</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Slides Template Library Modal -->
+        <div id="slides-template-modal" class="sample-modal-overlay" onclick="handleSlidesTemplateOverlayClick(event)">
+            <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 540px;">
+                <div class="sample-modal-header">
+                    <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span>📚 Presentation Slide Templates</span>
+                    </div>
+                    <button type="button" onclick="closeSlidesTemplateModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✖</button>
+                </div>
+                <div class="sample-modal-body" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; max-height: 60vh; overflow-y: auto;">
+                    
+                    <div class="template-card" onclick="applySlideTemplate('grammar')" style="padding: 16px; border: 1px solid var(--tag-border); border-radius: 12px; cursor: pointer; transition: 0.2s; background: var(--bg-card);">
+                        <div style="font-weight: 700; font-size: 15px; color: var(--title-color); display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <span style="font-size: 20px;">📘</span> Grammar Explanation
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Structured lesson introducing a new grammar rule, rules of use, examples, and practice exercises.</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="applySlideTemplate('vocab')" style="padding: 16px; border: 1px solid var(--tag-border); border-radius: 12px; cursor: pointer; transition: 0.2s; background: var(--bg-card);">
+                        <div style="font-weight: 700; font-size: 15px; color: var(--title-color); display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <span style="font-size: 20px;">🗣️</span> Vocabulary Introduction
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Thematic vocabulary list, visual associations, context sentences, and matching questions.</div>
+                    </div>
+                    
+                    <div class="template-card" onclick="applySlideTemplate('discussion')" style="padding: 16px; border: 1px solid var(--tag-border); border-radius: 12px; cursor: pointer; transition: 0.2s; background: var(--bg-card);">
+                        <div style="font-weight: 700; font-size: 15px; color: var(--title-color); display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <span style="font-size: 20px;">💬</span> Group Discussion
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Engaging topic introduction, debate prompts, conversation starters, and wrap-up questions.</div>
+                    </div>
+
+                    <div class="template-card" onclick="applySlideTemplate('reading')" style="padding: 16px; border: 1px solid var(--tag-border); border-radius: 12px; cursor: pointer; transition: 0.2s; background: var(--bg-card);">
+                        <div style="font-weight: 700; font-size: 15px; color: var(--title-color); display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <span style="font-size: 20px;">📖</span> Reading Comprehension
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Story or article excerpts followed by structural analysis and comprehension checks.</div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -3697,7 +3796,7 @@
             <div id="a4-qr-footer" class="a4-qr-layer" onclick="openDigitalShareModal(event)" style="cursor: pointer;" title="Click to view and share digital link">
                 <div id="qrcode-box" class="a4-qr-box"></div>
                 <div class="a4-qr-info">
-                    <div class="a4-qr-title">📱 Digital Version Link</div>
+                    <div class="a4-qr-title" id="a4-qr-title-text">📱 Digital Version Link</div>
                     <div class="a4-qr-sub">Scan / click to open & edit online 🔗</div>
                 </div>
             </div>
@@ -3716,14 +3815,14 @@
         </div>
         </div> <!-- End of worksheet-app-container -->
 
-        <!-- PowerPoint & Slides Studio Container -->
+        <!-- Presentation Slides Studio Container -->
         <div id="slides-app-container" style="display: none;">
             <div class="studio-card no-print">
                 <div class="studio-header">
                     <div class="studio-title-group">
                         <div class="studio-icon">📊</div>
                         <div>
-                            <div class="studio-title-text">PowerPoint & Slides Studio</div>
+                            <div class="studio-title-text">Presentation Slides Studio</div>
                             <div class="studio-subtitle">Interactive Presentation Deck Creator & Player for ESL Lessons</div>
                         </div>
                     </div>
@@ -3754,7 +3853,10 @@
                         </div>
                     </div>
 
-                    <div class="composer-toolbar" style="justify-content: flex-end;">
+                    <div class="composer-toolbar" style="justify-content: space-between;">
+                        <button type="button" class="editor-btn" onclick="openSlidesTemplateModal()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px;">
+                            📚 Slide Templates
+                        </button>
                         <button class="ai-btn composer-ai-btn" onclick="generatePresentationDeck()">
                             ✨ Generate Slides Deck
                         </button>
@@ -4108,13 +4210,13 @@
             }, 800);
         }
 
-        function resetFontSize() {
+        function resetFontStyling() {
             const fontSizeSelect = document.getElementById('font-size-select');
-            if (fontSizeSelect) {
-                fontSizeSelect.value = '18px';
-                updateWorksheetStyle();
-                showToast("Font size reset to default (Medium)", "↺");
-            }
+            const fontFamilySelect = document.getElementById('font-family-select');
+            if (fontSizeSelect) fontSizeSelect.value = '18px';
+            if (fontFamilySelect) fontFamilySelect.value = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            updateWorksheetStyle();
+            showToast("Font styling reset to default", "↺");
         }
 
         function triggerBorderDrawAnimation() {
@@ -5060,6 +5162,9 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 const controls = block.querySelector('.ws-block-controls');
                 if (controls) controls.remove();
             });
+            
+            // Dynamically update the QR code content to reflect the new edited worksheet state
+            updateQRCodePreview();
         }
 
         // Smooth FLIP Swap Animation for Block Reordering
@@ -6164,11 +6269,49 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }
 
+        
+        function updatePrintOrientation() {
+            const orientation = document.getElementById('preview-orientation-select').value;
+            const a4Area = document.getElementById('a4-preview-area');
+            const target = document.getElementById('modal-a4-preview-frame');
+            const badge = document.querySelector('#print-preview-modal .sample-badge');
+            
+            let styleBlock = document.getElementById('dynamic-print-orientation');
+            if (!styleBlock) {
+                styleBlock = document.createElement('style');
+                styleBlock.id = 'dynamic-print-orientation';
+                document.head.appendChild(styleBlock);
+            }
+        
+            if (orientation === 'landscape') {
+                styleBlock.innerHTML = `@media print { @page { size: A4 landscape !important; } }`;
+                if (a4Area) a4Area.classList.add('orientation-landscape');
+                if (target) target.classList.add('orientation-landscape');
+                if (badge) badge.innerText = "297 x 210 mm (Landscape)";
+            } else {
+                styleBlock.innerHTML = `@media print { @page { size: A4 portrait !important; } }`;
+                if (a4Area) a4Area.classList.remove('orientation-landscape');
+                if (target) target.classList.remove('orientation-landscape');
+                if (badge) badge.innerText = "210 x 297 mm (Portrait)";
+            }
+        }
+
         function renderPrintPreviewCanvas() {
+            updateQRCodePreview(); // Ensure QR code is up-to-date with current DOM state
             const source = document.getElementById('a4-preview-area');
             const target = document.getElementById('modal-a4-preview-frame');
             if (!source || !target) return;
             target.innerHTML = source.innerHTML;
+
+            const orientationSel = document.getElementById('preview-orientation-select');
+            if (orientationSel) {
+                if (orientationSel.value === 'landscape') {
+                    target.classList.add('orientation-landscape');
+                } else {
+                    target.classList.remove('orientation-landscape');
+                }
+            }
+
         }
 
         function closePrintPreviewModal() {
@@ -6531,7 +6674,20 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const toggle = document.getElementById('acc-pdf-qr-toggle');
             const previewArea = document.getElementById('a4-preview-area');
             const qrBox = document.getElementById('qrcode-box');
+            const modalToggle = document.getElementById('preview-qr-toggle');
+            const labelInput = document.getElementById('acc-pdf-qr-label');
+            const titleText = document.getElementById('a4-qr-title-text');
             if (!previewArea || !qrBox) return;
+            
+            // Sync modal toggle to match main toggle
+            if (modalToggle && toggle) {
+                modalToggle.checked = toggle.checked;
+            }
+            
+            // Update custom label
+            if (labelInput && titleText) {
+                titleText.innerText = labelInput.value.trim() || "📱 Digital Version Link";
+            }
 
             if (toggle && toggle.checked) {
                 previewArea.classList.add('has-qr');
@@ -7197,7 +7353,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }, 8000);
 
-        // PowerPoint & Slides Presentation State & Logic
+        // Presentation Slides Presentation State & Logic
         let currentSlidesData = [
             {
                 title: "Welcome to English Masterclass",
@@ -7266,8 +7422,72 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 if (containerSl) containerSl.style.display = 'block';
                 if (containerWs) containerWs.style.display = 'none';
                 renderCurrentSlide();
-                showToast("Switched to PowerPoint & Slides 📊", "✨");
+                showToast("Switched to Presentation Slides 📊", "✨");
             }
+        }
+
+        
+        function openSlidesTemplateModal() {
+            const modal = document.getElementById('slides-template-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeSlidesTemplateModal() {
+            const modal = document.getElementById('slides-template-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function handleSlidesTemplateOverlayClick(event) {
+            if (event.target && event.target.id === 'slides-template-modal') {
+                closeSlidesTemplateModal();
+            }
+        }
+
+        function applySlideTemplate(type) {
+            const promptInput = document.getElementById('slides-prompt');
+            const countSelect = document.getElementById('slides-count-select');
+            const styleSelect = document.getElementById('slides-image-style-select');
+            
+            if (!promptInput) return;
+            
+            let promptText = "";
+            let num = "5";
+            let style = "concept";
+            
+            if (type === 'grammar') {
+                promptText = "Create a comprehensive Grammar lesson on [Grammar Topic]. Include introduction, structure rules, real-world examples, common mistakes, and interactive quiz questions.";
+                num = "8";
+                style = "diagram";
+            } else if (type === 'vocab') {
+                promptText = "Create a thematic Vocabulary introduction on [Topic]. Include definitions, visual associations, context sentences, pronunciation tips, and a matching exercise.";
+                num = "5";
+                style = "photo";
+            } else if (type === 'discussion') {
+                promptText = "Create a Group Discussion lesson about [Topic]. Include engaging hooks, debate prompts, conversation starters, vocabulary highlights, and wrap-up reflections.";
+                num = "5";
+                style = "concept";
+            } else if (type === 'reading') {
+                promptText = "Create a Reading Comprehension lesson on [Topic]. Include short reading excerpts, vocabulary analysis, structure breakdown, and comprehension questions.";
+                num = "8";
+                style = "minimal";
+            }
+            
+            promptInput.value = promptText;
+            if (countSelect) countSelect.value = num;
+            if (styleSelect) styleSelect.value = style;
+            
+            closeSlidesTemplateModal();
+            promptInput.focus();
+            
+            promptInput.style.transition = 'border-color 0.3s, box-shadow 0.3s';
+            promptInput.style.borderColor = 'var(--accent-primary)';
+            promptInput.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.25)';
+            setTimeout(() => {
+                promptInput.style.borderColor = '';
+                promptInput.style.boxShadow = '';
+            }, 800);
+            
+            showToast("Template applied! Edit the topic in brackets.", "✨");
         }
 
         function setSlidesTopic(topic) {
@@ -7346,21 +7566,9 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             showToast(`Generated ${numSlides}-slide presentation deck successfully! 📊`, "🎉");
         }
 
-        function renderCurrentSlide() {
-            const viewport = document.getElementById('slide-viewport-canvas');
-            const titleEl = document.getElementById('slide-deck-title');
-            const counterEl = document.getElementById('slide-counter-badge');
-            const dotsContainer = document.getElementById('slide-dots-container');
-            
-            if (!viewport) return;
-
-            const slide = currentSlidesData[currentSlideIndex];
-            if (titleEl) titleEl.innerText = slide.title;
-            if (counterEl) counterEl.innerText = `Slide ${currentSlideIndex + 1} of ${currentSlidesData.length}`;
-
+        
+        function getSlideHTML(slide, idx, total, layout) {
             let bulletsHtml = slide.bullets.map(b => `<li style="margin-bottom: 14px; font-size: 17px; line-height: 1.6; color: var(--text-main); display: flex; align-items: flex-start; gap: 10px;"><span style="color: ${slide.accent}; font-weight: bold; font-size: 20px;">▪</span><span>${escapeHtml(b)}</span></li>`).join('');
-
-            viewport.style.borderLeft = `8px solid ${slide.accent}`;
 
             const imgStyle = slide.imageStyle || 'concept';
             let rightCardHtml = '';
@@ -7418,7 +7626,6 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                     </div>
                 `;
             } else {
-                // minimal
                 rightCardHtml = `
                     <div style="flex: 0.9; background: var(--bg-card); border: 2px solid var(--tag-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.02);">
                         <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--primary-box-bg); color: var(--title-color); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 14px; border: 1px solid var(--tag-border);">✨</div>
@@ -7437,62 +7644,65 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 `;
             }
 
-            if (currentSlideLayout === 'horizontal') {
-                // Horizontal Split Layout: Left Text & Bullets, Right Visual Illustration Card
-                viewport.innerHTML = `
+            if (layout === 'horizontal') {
+                return `
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                         <div>
-                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${currentSlideIndex + 1} of ${currentSlidesData.length} • Horizontal Split</div>
+                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${idx + 1} of ${total} • Horizontal Split</div>
                             <h2 style="font-size: 28px; font-weight: 800; color: var(--title-color); margin: 0 0 4px 0; line-height: 1.2;">${escapeHtml(slide.title)}</h2>
                             <div style="font-size: 15px; color: var(--text-muted); font-weight: 500;">${escapeHtml(slide.subtitle)}</div>
                         </div>
                         <div style="font-size: 28px; padding: 10px; background: var(--bg-card); border-radius: 14px; border: 1px solid var(--tag-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04);">📊</div>
                     </div>
-
                     <div style="display: flex; gap: 24px; flex-grow: 1; align-items: stretch; margin: 10px 0;">
-                        <!-- Left Content Box -->
                         <div style="flex: 1.2; background: var(--bg-card); border: 1.5px solid var(--tag-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-                            <ul style="list-style: none; padding: 0; margin: 0;">
-                                ${bulletsHtml}
-                            </ul>
+                            <ul style="list-style: none; padding: 0; margin: 0;">${bulletsHtml}</ul>
                         </div>
-
-                        <!-- Right Illustrated Visual Card -->
                         ${rightCardHtml}
                     </div>
-
                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
                         <span>English Worksheet Studio & Presentation Deck</span>
                         <span style="font-weight: 700; color: ${slide.accent};">ESL / ELT Suite</span>
                     </div>
                 `;
             } else {
-                // Vertical Stacked Layout: Top Banner, Middle Content, Bottom Illustration Banner
-                viewport.innerHTML = `
+                return `
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
                         <div>
-                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${currentSlideIndex + 1} of ${currentSlidesData.length} • Vertical Stacked</div>
+                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${idx + 1} of ${total} • Vertical Stacked</div>
                             <h2 style="font-size: 28px; font-weight: 800; color: var(--title-color); margin: 0 0 4px 0; line-height: 1.2;">${escapeHtml(slide.title)}</h2>
                             <div style="font-size: 15px; color: var(--text-muted); font-weight: 500;">${escapeHtml(slide.subtitle)}</div>
                         </div>
                         <div style="font-size: 28px; padding: 10px; background: var(--bg-card); border-radius: 14px; border: 1px solid var(--tag-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04);">📊</div>
                     </div>
-
                     <div style="background: var(--bg-card); border: 1.5px solid var(--tag-border); border-radius: 16px; padding: 22px 28px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.04);">
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            ${bulletsHtml}
-                        </ul>
+                        <ul style="list-style: none; padding: 0; margin: 0;">${bulletsHtml}</ul>
                     </div>
-
                     ${bottomBannerHtml}
-
                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
                         <span>English Worksheet Studio & Presentation Deck</span>
                         <span style="font-weight: 700; color: ${slide.accent};">ESL / ELT Suite</span>
                     </div>
                 `;
             }
+        }
 
+        function renderCurrentSlide() {
+            const viewport = document.getElementById('slide-viewport-canvas');
+            const titleEl = document.getElementById('slide-deck-title');
+            const counterEl = document.getElementById('slide-counter-badge');
+            const dotsContainer = document.getElementById('slide-dots-container');
+            
+            if (!viewport) return;
+
+            const slide = currentSlidesData[currentSlideIndex];
+            if (titleEl) titleEl.innerText = slide.title;
+            if (counterEl) counterEl.innerText = `Slide ${currentSlideIndex + 1} of ${currentSlidesData.length}`;
+
+            
+            viewport.style.borderLeft = `8px solid ${slide.accent}`;
+            viewport.innerHTML = getSlideHTML(slide, currentSlideIndex, currentSlidesData.length, currentSlideLayout);
+            
             if (dotsContainer) {
                 dotsContainer.innerHTML = currentSlidesData.map((_, idx) => `
                     <div class="slide-dot ${idx === currentSlideIndex ? 'active' : ''}" onclick="goToSlide(${idx})" title="Jump to slide ${idx + 1}"></div>
@@ -7521,12 +7731,40 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }
 
+        
         function downloadSlidesPDF() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate slides first!", "⚠️");
+                return;
+            }
             showToast("Preparing presentation slides for export...", "📥");
+            
+            let printContainer = document.getElementById('temp-print-slides-container');
+            if (!printContainer) {
+                printContainer = document.createElement('div');
+                printContainer.id = 'temp-print-slides-container';
+                document.body.appendChild(printContainer);
+            }
+            printContainer.innerHTML = '';
+            
+            currentSlidesData.forEach((slide, idx) => {
+                const slideWrapper = document.createElement('div');
+                slideWrapper.className = 'slide-print-page';
+                slideWrapper.style.borderLeft = `8px solid ${slide.accent}`;
+                slideWrapper.innerHTML = getSlideHTML(slide, idx, currentSlidesData.length, currentSlideLayout);
+                printContainer.appendChild(slideWrapper);
+            });
+            
+            document.body.classList.add('printing-slides');
+            
             setTimeout(() => {
                 window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('printing-slides');
+                }, 500);
             }, 400);
         }
+
 
         // Also run immediately in case DOM is already loaded
         initSampleFeatures();
