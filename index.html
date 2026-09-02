@@ -7505,193 +7505,319 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
         }
 
-        function generatePresentationDeck() {
+        async function generatePresentationDeck() {
             const promptInput = document.getElementById('slides-prompt');
             const countSelect = document.getElementById('slides-count-select');
             const styleSelect = document.getElementById('slides-image-style-select');
+            const generateBtn = document.querySelector('#slides-app-container .generate-btn');
             
-            const topic = promptInput ? promptInput.value.trim() : "";
+            const rawPrompt = promptInput ? promptInput.value.trim() : "";
             const numSlides = countSelect ? parseInt(countSelect.value, 10) : 5;
             const imageStyle = styleSelect ? styleSelect.value : "concept";
             
+            let displayTopic = rawPrompt
+                .replace(/^(Create|Generate|Make|Design|Write|Build)\s+(an?\s+)?(English\s+)?(classroom\s+)?(lesson\s+)?(presentation|slides|deck|slide deck)?\s*(for|about|on)?/i, '')
+                .replace(/\(Proficiency Level:[^)]+\)/gi, '')
+                .trim();
+            if (!displayTopic) displayTopic = "English Language & Communication";
+
             showToast(`Generating ${numSlides}-slide presentation deck... 📊`, "✨");
-            
-            const displayTopic = topic || "English Lesson & Practice";
-            const accents = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0284c7", "#9333ea", "#16a34a", "#ca8a04", "#e11d48"];
-            
-            currentSlidesData = [];
-            
-            for (let i = 0; i < numSlides; i++) {
-                let slideTitle = "";
-                let subtitle = "";
-                let bullets = [];
-                const accent = accents[i % accents.length];
-                
-                if (i === 0) {
-                    slideTitle = displayTopic;
-                    subtitle = "Interactive Lesson & Practice Presentation";
-                    bullets = [
-                        "Core objective & focus: " + displayTopic,
-                        "Interactive student tasks & discussion prompts",
-                        "Step-by-step guided pedagogical breakdown"
-                    ];
-                } else if (i === numSlides - 1) {
-                    slideTitle = `${i + 1}. Summary & Homework`;
-                    subtitle = "Wrap up and key takeaways";
-                    bullets = [
-                        "• Key takeaway: Consistent practice builds mastery",
-                        "• Next steps: Complete assigned interactive tasks",
-                        "• Q&A session and open student discussion"
-                    ];
-                } else {
-                    const categories = [
-                        { name: "Core Concepts & Vocabulary", sub: "Key terminology and definitions", b: ["• Terminology 1: Foundational definition & usage", "• Terminology 2: Contextual application in sentences", "• Key rule: Remember to apply standard syntax"] },
-                        { name: "Detailed Rules & Examples", sub: "Grammar & structural breakdown", b: ["Rule structure: Subject + Primary Action + Modifier", "Example A: Correct usage in everyday conversation", "Example B: Formal application in writing"] },
-                        { name: "Interactive Practice Activity", sub: "Classroom exercise for students", b: ["Exercise 1: Complete the missing phrases", "Exercise 2: Identify and correct grammatical errors", "Exercise 3: Pair discussion & peer review"] },
-                        { name: "Guided Application Task", sub: "Real-world conversational practice", b: ["Task 1: Roleplay dialogue in pairs", "Task 2: Formulate 3 original sentences", "Task 3: Present findings to the class"] },
-                        { name: "Critical Thinking Challenge", sub: "Advanced problem solving", b: ["Challenge A: Analyze and compare structures", "Challenge B: Identify exceptions to the rule", "Challenge C: Create a mini-quiz question"] },
-                        { name: "Review & Quick Quiz", sub: "Checking student understanding", b: ["Question 1: True or false scenario", "Question 2: Multiple choice concept check", "Question 3: Open reflection"] },
-                        { name: "Extension & Enrichment", sub: "Going further with the topic", b: ["• Advanced idiomatic expressions", "• Common pitfalls and how to avoid them", "• Real-world media examples"] }
-                    ];
-                    const cat = categories[(i - 1) % categories.length];
-                    slideTitle = `${i + 1}. ${cat.name}`;
-                    subtitle = cat.sub;
-                    bullets = cat.b;
-                }
-                
-                currentSlidesData.push({
-                    title: slideTitle,
-                    subtitle: subtitle,
-                    bullets: bullets,
-                    accent: accent,
-                    imageStyle: imageStyle
-                });
+            if (generateBtn) {
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<span>⏳ Generating Slides...</span>';
             }
 
+            const accents = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0284c7", "#9333ea", "#16a34a", "#ca8a04", "#e11d48"];
+            let slidesResult = [];
+
+            // 1. Try Gemini AI if API Key is available
+            const apiKey = getWebApiKey();
+            if (apiKey && rawPrompt) {
+                try {
+                    const systemPrompt = `You are an expert English language educator and slide presentation designer. Create a high-impact, engaging ${numSlides}-slide classroom presentation deck for ESL / English learners based on the user's prompt. 
+Respond ONLY with a JSON array of slide objects (no markdown code blocks, no backticks, just valid JSON). 
+Each object in the array must strictly have:
+- "title": (string, concise engaging slide title)
+- "subtitle": (string, short descriptive subtitle)
+- "bullets": (array of 3-4 strings with concrete examples, rules, tasks, or explanations matching the user's topic)
+`;
+                    const aiRaw = await generateWithGemini(`Topic/Instructions: ${rawPrompt}. Generate exactly ${numSlides} slides.`, systemPrompt, apiKey);
+                    const cleanJson = aiRaw.replace(/```json/gi, '').replace(/```/g, '').trim();
+                    const parsed = JSON.parse(cleanJson);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        slidesResult = parsed.slice(0, numSlides).map((s, idx) => ({
+                            title: s.title || `Slide ${idx + 1}: ${displayTopic}`,
+                            subtitle: s.subtitle || `Key focus and analysis`,
+                            bullets: Array.isArray(s.bullets) ? s.bullets : [s.bullets || "Interactive lesson content"],
+                            accent: accents[idx % accents.length],
+                            imageStyle: imageStyle
+                        }));
+                    }
+                } catch (e) {
+                    console.warn("Gemini slide generation fallback:", e);
+                }
+            }
+
+            // 2. Procedural Topic-Aware Intelligent Generator (Instant Fallback matching Prompt)
+            if (slidesResult.length === 0) {
+                const lower = rawPrompt.toLowerCase();
+                const isTense = lower.includes('tense') || lower.includes('present') || lower.includes('past') || lower.includes('future') || lower.includes('continuous') || lower.includes('perfect') || lower.includes('verb');
+                const isTravel = lower.includes('travel') || lower.includes('airport') || lower.includes('hotel') || lower.includes('vacation') || lower.includes('restaurant') || lower.includes('direction');
+                const isBusiness = lower.includes('business') || lower.includes('interview') || lower.includes('meeting') || lower.includes('email') || lower.includes('career') || lower.includes('work');
+                const isGrammar = lower.includes('grammar') || lower.includes('modal') || lower.includes('preposition') || lower.includes('passive') || lower.includes('clause') || lower.includes('condition');
+                const isVocab = lower.includes('vocab') || lower.includes('word') || lower.includes('idiom') || lower.includes('phrasal');
+
+                for (let i = 0; i < numSlides; i++) {
+                    let slideTitle = "";
+                    let subtitle = "";
+                    let bullets = [];
+                    const accent = accents[i % accents.length];
+
+                    if (i === 0) {
+                        slideTitle = displayTopic;
+                        subtitle = "Interactive Classroom Presentation & Guided Lesson";
+                        bullets = [
+                            `🎯 Lesson Goal: Understand & accurately apply "${displayTopic}" in communication`,
+                            `🗣️ Key Skills: Speaking fluency, contextual comprehension, & grammar accuracy`,
+                            `📝 Structure: Concept introduction ➔ Core rules ➔ Interactive partner practice ➔ Quick quiz`
+                        ];
+                    } else if (i === numSlides - 1) {
+                        slideTitle = `${i + 1}. Wrap-up, Key Takeaways & Homework`;
+                        subtitle = "Summarizing core concepts and next steps";
+                        bullets = [
+                            `✅ Core Takeaway: Regular active use of "${displayTopic}" builds long-term fluency`,
+                            `✍️ Homework Task: Write 5 original sentences/dialogue applying today's lesson patterns`,
+                            `🤝 Open Floor: Questions, clarifications, and peer feedback session`
+                        ];
+                    } else {
+                        const step = i;
+                        if (step === 1) {
+                            slideTitle = `${i + 1}. Foundations & Key Concepts: ${displayTopic}`;
+                            subtitle = "Essential definitions and context overview";
+                            bullets = isTense ? [
+                                `📌 Definition: Explains when and why we use "${displayTopic}" in English`,
+                                `⏰ Time Indicator Signals: Frequently used with specific time markers and context clues`,
+                                `💡 Golden Rule: Match the auxiliary verb with the subject correctly (e.g., singular vs. plural)`
+                            ] : isTravel ? [
+                                `✈️ Core Situations: Asking for assistance, navigating transit, & polite inquiries`,
+                                `🗣️ Politeness Markers: Use "Could you please...", "Excuse me...", "Would it be possible to..."`,
+                                `🔑 Essential Vocabulary: Gates, itineraries, reservations, confirmation numbers`
+                            ] : isBusiness ? [
+                                `💼 Professional Tone: Clear, concise, and structured workplace communication`,
+                                `📊 Key Contexts: Formal emails, stakeholder updates, and collaborative meetings`,
+                                `💡 Pro Tip: Avoid overly casual slang; favor structured bullet points and action items`
+                            ] : [
+                                `📌 Core Concept: Foundational principles of "${displayTopic}"`,
+                                `🔍 Contextual Clues: Recognizing key patterns in authentic texts and spoken English`,
+                                `💡 Learning Focus: Connecting theory directly with everyday practical usage`
+                            ];
+                        } else if (step === 2) {
+                            slideTitle = `${i + 1}. Structural Formulas & Real Examples`;
+                            subtitle = "Grammar blueprint and model sentences";
+                            bullets = isTense ? [
+                                `📐 Standard Formula: Subject + Auxiliary Verb + Main Action [Modifier]`,
+                                `🌟 Positive Model: "They are actively participating in the workshop today."`,
+                                `⚠️ Negative & Question: "She was not informed" / "Did you complete the assignment?"`
+                            ] : [
+                                `📐 Structure Pattern: Identifying the primary elements and connectors in "${displayTopic}"`,
+                                `🌟 Model Example A: "By applying this method, students achieve clarity faster."`,
+                                `🌟 Model Example B: "In formal correspondence, this structure prevents ambiguity."`
+                            ];
+                        } else if (step === 3) {
+                            slideTitle = `${i + 1}. Common Pitfalls & How to Avoid Them`;
+                            subtitle = "Frequent errors made by English learners";
+                            bullets = [
+                                `❌ Common Error: Omitting necessary auxiliary verbs or mixing incompatible tenses`,
+                                `✔️ Correct Pattern: Verify agreement between time markers and the main action`,
+                                `🔍 Diagnostic Check: Ask yourself "Does this sentence sound natural and clear to a native speaker?"`
+                            ];
+                        } else if (step === 4) {
+                            slideTitle = `${i + 1}. Interactive Classroom Practice Activity`;
+                            subtitle = "Pair work, roleplay, and student challenges";
+                            bullets = [
+                                `👥 Partner Task: Take turns creating 2 original scenarios using "${displayTopic}"`,
+                                `⏱️ 2-Minute Speed Drill: Transform 3 basic sentences into the target structure`,
+                                `🎤 Class Showcase: 2 student pairs present their roleplay dialogue to the class`
+                            ];
+                        } else if (step === 5) {
+                            slideTitle = `${i + 1}. Quick Concept Check & Mini-Quiz`;
+                            subtitle = "Testing student understanding on the spot";
+                            bullets = [
+                                `❓ Question 1: What is the main purpose of using "${displayTopic}"?`,
+                                `❓ Question 2: Spot and fix the deliberate mistake in the example sentence`,
+                                `❓ Question 3: Formulate a spontaneous answer using today's target vocabulary`
+                            ];
+                        } else {
+                            slideTitle = `${i + 1}. Advanced Extension & Discussion`;
+                            subtitle = "Expanding fluency and deeper communicative nuance";
+                            bullets = [
+                                `🚀 Level Up: Using idiomatic expressions and advanced transitions with "${displayTopic}"`,
+                                `🌍 Cultural Nuance: How tone changes between informal chats and formal presentations`,
+                                `📖 Self-Study Resource: Recommended reading articles and listening exercises for tonight`
+                            ];
+                        }
+                    }
+
+                    slidesResult.push({
+                        title: slideTitle,
+                        subtitle: subtitle,
+                        bullets: bullets,
+                        accent: accent,
+                        imageStyle: imageStyle
+                    });
+                }
+            }
+
+            currentSlidesData = slidesResult;
             currentSlideIndex = 0;
             renderCurrentSlide();
-            showToast(`Generated ${numSlides}-slide presentation deck successfully! 📊`, "🎉");
+            
+            if (generateBtn) {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<span>✨ Generate Slide Deck</span>';
+            }
+            
+            showToast(`Presentation deck generated for "${displayTopic}"! 📽️`, "✨");
         }
 
         
-        function getSlideHTML(slide, idx, total, layout) {
-            let bulletsHtml = slide.bullets.map(b => `<li style="margin-bottom: 14px; font-size: 17px; line-height: 1.6; color: #1e293b; display: flex; align-items: flex-start; gap: 10px;"><span style="color: ${slide.accent}; font-weight: bold; font-size: 20px;">▪</span><span>${escapeHtml(b)}</span></li>`).join('');
+        // Web Speech API Voice synthesis for Presentation Slides
+        let isSpeakingSlide = false;
+        let slideSpeechUtterance = null;
 
-            const imgStyle = slide.imageStyle || 'concept';
-            let rightCardHtml = '';
-            let bottomBannerHtml = '';
-            
-            if (imgStyle === 'concept') {
-                rightCardHtml = `
-                    <div style="flex: 0.9; background: linear-gradient(135deg, ${slide.accent}15 0%, ${slide.accent}05 100%); border: 2px dashed ${slide.accent}50; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
-                        <div style="width: 64px; height: 64px; border-radius: 50%; background: ${slide.accent}; color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; box-shadow: 0 6px 16px ${slide.accent}40;">💡</div>
-                        <div style="font-weight: 700; font-size: 16px; color: #0f172a; margin-bottom: 6px;">Visual Concept Illustration</div>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.4;">Structured lesson graphic for ${escapeHtml(slide.title)}</div>
-                    </div>
-                `;
-                bottomBannerHtml = `
-                    <div style="background: linear-gradient(135deg, ${slide.accent}15 0%, ${slide.accent}05 100%); border: 1.5px dashed ${slide.accent}40; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
-                        <div style="font-size: 24px;">💡</div>
-                        <div>
-                            <div style="font-weight: 700; font-size: 14px; color: #0f172a;">Visual Concept Illustration</div>
-                            <div style="font-size: 12px; color: #475569;">Structured lesson graphic asset for classroom display and interactive student discussion</div>
-                        </div>
-                    </div>
-                `;
-            } else if (imgStyle === 'diagram') {
-                rightCardHtml = `
-                    <div style="flex: 0.9; background: linear-gradient(135deg, #0284c715 0%, #0284c705 100%); border: 2px dashed #0284c750; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
-                        <div style="width: 64px; height: 64px; border-radius: 14px; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; box-shadow: 0 6px 16px #0284c740;">📊</div>
-                        <div style="font-weight: 700; font-size: 16px; color: #0f172a; margin-bottom: 6px;">Structured Flowchart & Diagram</div>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.4;">Step-by-step structural logic map</div>
-                    </div>
-                `;
-                bottomBannerHtml = `
-                    <div style="background: linear-gradient(135deg, #0284c715 0%, #0284c705 100%); border: 1.5px dashed #0284c740; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
-                        <div style="font-size: 24px;">📊</div>
-                        <div>
-                            <div style="font-weight: 700; font-size: 14px; color: #0f172a;">Structured Flowchart & Diagram</div>
-                            <div style="font-size: 12px; color: #475569;">Step-by-step structural logic map for classroom explanation</div>
-                        </div>
-                    </div>
-                `;
-            } else if (imgStyle === 'photo') {
-                rightCardHtml = `
-                    <div style="flex: 0.9; background: linear-gradient(135deg, #16a34a15 0%, #16a34a05 100%); border: 2px dashed #16a34a50; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
-                        <div style="width: 64px; height: 64px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; box-shadow: 0 6px 16px #16a34a40;">📷</div>
-                        <div style="font-weight: 700; font-size: 16px; color: #0f172a; margin-bottom: 6px;">Photographic Context Asset</div>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.4;">Real-world situational photo frame</div>
-                    </div>
-                `;
-                bottomBannerHtml = `
-                    <div style="background: linear-gradient(135deg, #16a34a15 0%, #16a34a05 100%); border: 1.5px dashed #16a34a40; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
-                        <div style="font-size: 24px;">📷</div>
-                        <div>
-                            <div style="font-weight: 700; font-size: 14px; color: #0f172a;">Photographic Context Asset</div>
-                            <div style="font-size: 12px; color: #475569;">Real-world situational context for immersive vocabulary and dialogue practice</div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                rightCardHtml = `
-                    <div style="flex: 0.9; background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.02);">
-                        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--primary-box-bg); color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 14px; border: 1px solid #e2e8f0;">✨</div>
-                        <div style="font-weight: 700; font-size: 16px; color: #0f172a; margin-bottom: 4px;">Clean Minimalist Layout</div>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.4;">Focused high-contrast typography</div>
-                    </div>
-                `;
-                bottomBannerHtml = `
-                    <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
-                        <div style="font-size: 24px;">✨</div>
-                        <div>
-                            <div style="font-weight: 700; font-size: 14px; color: #0f172a;">Clean Minimalist Layout</div>
-                            <div style="font-size: 12px; color: #475569;">Focused high-contrast typography and polished presentation spacing</div>
-                        </div>
-                    </div>
-                `;
+        function speakCurrentSlide() {
+            if (!('speechSynthesis' in window)) {
+                showToast("Web Speech API is not supported in this browser.", "⚠️");
+                return;
             }
 
-            if (layout === 'horizontal') {
-                return `
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                        <div>
-                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${idx + 1} of ${total} • Horizontal Split</div>
-                            <h2 style="font-size: 28px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; line-height: 1.2;">${escapeHtml(slide.title)}</h2>
-                            <div style="font-size: 15px; color: #475569; font-weight: 500;">${escapeHtml(slide.subtitle)}</div>
-                        </div>
-                        <div style="font-size: 28px; padding: 10px; background: #ffffff; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">📊</div>
-                    </div>
-                    <div style="display: flex; gap: 24px; flex-grow: 1; align-items: stretch; margin: 10px 0;">
-                        <div style="flex: 1.2; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-                            <ul style="list-style: none; padding: 0; margin: 0;">${bulletsHtml}</ul>
-                        </div>
-                        ${rightCardHtml}
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #475569; margin-top: 8px;">
-                        <span>English Worksheet Studio & Presentation Deck</span>
-                        <span style="font-weight: 700; color: ${slide.accent};">ESL / ELT Suite</span>
-                    </div>
-                `;
-            } else {
-                return `
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
-                        <div>
-                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${idx + 1} of ${total} • Vertical Stacked</div>
-                            <h2 style="font-size: 28px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; line-height: 1.2;">${escapeHtml(slide.title)}</h2>
-                            <div style="font-size: 15px; color: #475569; font-weight: 500;">${escapeHtml(slide.subtitle)}</div>
-                        </div>
-                        <div style="font-size: 28px; padding: 10px; background: #ffffff; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">📊</div>
-                    </div>
-                    <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 22px 28px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.04);">
-                        <ul style="list-style: none; padding: 0; margin: 0;">${bulletsHtml}</ul>
-                    </div>
-                    ${bottomBannerHtml}
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #475569; margin-top: 8px;">
-                        <span>English Worksheet Studio & Presentation Deck</span>
-                        <span style="font-weight: 700; color: ${slide.accent};">ESL / ELT Suite</span>
-                    </div>
-                `;
+            const speakBtn = document.getElementById('slide-read-aloud-btn');
+
+            // If currently speaking, toggle pause/cancel
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                isSpeakingSlide = false;
+                if (speakBtn) {
+                    speakBtn.innerHTML = '🔊 Read Slide Aloud';
+                    speakBtn.classList.remove('speaking-pulse');
+                }
+                showToast("Speech stopped", "⏹️");
+                return;
             }
+
+            if (!currentSlidesData || currentSlidesData.length === 0) return;
+            const slide = currentSlidesData[currentSlideIndex];
+            if (!slide) return;
+
+            // Prepare text to read aloud
+            let cleanBullets = (slide.bullets || []).map(b => {
+                return b.replace(/^[•\-\*0-9\.\s\?❓✅✍️🤝📌⏰💡✈️🗣️🔑💼📊📐🌟⚠️❌✔️🔍👥⏱️🎤🚀🌍📖🎯📝\(\)\[\]]+/u, '').trim();
+            }).filter(b => b.length > 0);
+
+            let textToRead = `${slide.title}. ${slide.subtitle ? slide.subtitle + '.' : ''} `;
+            if (cleanBullets.length > 0) {
+                textToRead += cleanBullets.join('. ');
+            }
+
+            slideSpeechUtterance = new SpeechSynthesisUtterance(textToRead);
+            slideSpeechUtterance.lang = 'en-US';
+            slideSpeechUtterance.rate = 0.92; // Slightly slower, clear pace ideal for ESL learners
+            slideSpeechUtterance.pitch = 1.0;
+
+            // Pick an English voice if available
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('English')));
+            if (preferredVoice) {
+                slideSpeechUtterance.voice = preferredVoice;
+            }
+
+            slideSpeechUtterance.onstart = function() {
+                isSpeakingSlide = true;
+                if (speakBtn) {
+                    speakBtn.innerHTML = '⏹️ Stop Reading';
+                    speakBtn.classList.add('speaking-pulse');
+                }
+                showToast("Reading slide aloud for pronunciation practice... 🗣️", "🔊");
+            };
+
+            slideSpeechUtterance.onend = function() {
+                isSpeakingSlide = false;
+                if (speakBtn) {
+                    speakBtn.innerHTML = '🔊 Read Slide Aloud';
+                    speakBtn.classList.remove('speaking-pulse');
+                }
+            };
+
+            slideSpeechUtterance.onerror = function() {
+                isSpeakingSlide = false;
+                if (speakBtn) {
+                    speakBtn.innerHTML = '🔊 Read Slide Aloud';
+                    speakBtn.classList.remove('speaking-pulse');
+                }
+            };
+
+            window.speechSynthesis.speak(slideSpeechUtterance);
+        }
+
+        function getSlideHTML(slide, index, total, layout) {
+            const isHorizontal = layout === 'horizontal';
+            const bulletItems = (slide.bullets || []).map(b => `
+                <li style="margin-bottom: 12px; font-size: 17px; line-height: 1.6; color: #1e293b; display: flex; align-items: flex-start; gap: 10px;">
+                    <span style="display: inline-block; min-width: 8px; height: 8px; border-radius: 50%; background: ${slide.accent}; margin-top: 8px;"></span>
+                    <span style="flex: 1;">${escapeHtml(b)}</span>
+                </li>
+            `).join('');
+
+            return `
+                <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; min-height: 380px;">
+                    <!-- Top Slide Header -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: ${slide.accent};">
+                                Lesson Presentation • Slide ${index + 1} of ${total}
+                            </div>
+                            <button type="button" onclick="speakCurrentSlide()" class="slide-voice-btn" style="background: rgba(37,99,235,0.08); border: 1.5px solid ${slide.accent}; color: ${slide.accent}; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
+                                🔊 Pronounce & Read
+                            </button>
+                        </div>
+                        <h1 style="font-size: 30px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; line-height: 1.25; letter-spacing: -0.5px;">
+                            ${escapeHtml(slide.title)}
+                        </h1>
+                        <div style="font-size: 16px; font-weight: 500; color: #64748b; margin-bottom: 24px;">
+                            ${escapeHtml(slide.subtitle || "")}
+                        </div>
+                    </div>
+
+                    <!-- Slide Body with Bullets and Optional Visual Panel -->
+                    <div style="display: grid; grid-template-columns: ${isHorizontal ? '1.4fr 1fr' : '1fr'}; gap: 24px; align-items: center; flex: 1;">
+                        <!-- Bullets Column -->
+                        <div style="background: rgba(255, 255, 255, 0.85); padding: 22px; border-radius: 14px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                ${bulletItems}
+                            </ul>
+                        </div>
+
+                        <!-- Graphic Visual Concept Box -->
+                        <div style="background: linear-gradient(135deg, white 0%, #f8fafc 100%); border: 1.5px solid ${slide.accent}33; border-radius: 14px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; box-shadow: 0 6px 20px rgba(0,0,0,0.04);">
+                            <div style="font-size: 42px; margin-bottom: 8px;">
+                                ${index === 0 ? '🎯' : index === total - 1 ? '🎓' : (index % 3 === 0 ? '💡' : index % 2 === 0 ? '🗣️' : '📝')}
+                            </div>
+                            <div style="font-weight: 700; font-size: 14px; color: ${slide.accent}; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
+                                Pronunciation & Concept Focus
+                            </div>
+                            <div style="font-size: 12.5px; color: #64748b; line-height: 1.4; max-width: 240px;">
+                                Listen to the slide pronunciation and practice repeating key sentences with a partner.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide Bottom Footer -->
+                    <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                        <span>ESL Interactive Masterclass</span>
+                        <span>Key Target: Speaking & Fluency</span>
+                    </div>
+                </div>
+            `;
         }
 
         function renderCurrentSlide() {
