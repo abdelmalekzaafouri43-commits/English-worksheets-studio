@@ -244,6 +244,15 @@
             color: var(--text-main);
             -webkit-tap-highlight-color: transparent;
             transition: background 0.3s ease, color 0.3s ease;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4' fill='%2360a5fa' opacity='0.8'/%3E%3Ccircle cx='12' cy='12' r='8' stroke='%233b82f6' stroke-width='1.5' stroke-dasharray='2 2'/%3E%3C/svg%3E") 12 12, auto;
+        }
+
+        button, a, input[type="button"], input[type="submit"], select, .topic-chip, .editor-btn, .mode-switch-btn, .grade-seg-btn, .theme-option-btn, .theme-selector-btn, .illustration-preset-card, .template-card, label {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='6' fill='%2393c5fd' opacity='0.9'/%3E%3Ccircle cx='12' cy='12' r='10' stroke='%232563eb' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, pointer !important;
+        }
+
+        input[type="text"], input[type="search"], textarea {
+            cursor: text !important;
         }
         .header {
             background: var(--header-bg);
@@ -773,32 +782,51 @@
 
         /* Specialized PDF Generation Clean Rules */
         .a4-preview.rendering-pdf {
+            width: 794px !important;
+            max-width: 794px !important;
+            min-width: 794px !important;
             min-height: 0 !important;
             height: auto !important;
-            padding: 0 !important;
-            margin: 0 !important;
+            padding: 15mm 15mm !important;
+            margin: 0 auto !important;
             box-shadow: none !important;
             border: none !important;
-            width: 100% !important;
-            max-width: 100% !important;
+            background: #ffffff !important;
+            color: #0f172a !important;
+            box-sizing: border-box !important;
+        }
+
+        .a4-preview.rendering-pdf *,
+        .a4-preview.rendering-pdf *::before,
+        .a4-preview.rendering-pdf *::after {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            will-change: auto !important;
+        }
+
+        .a4-preview.rendering-pdf .no-print,
+        .a4-preview.rendering-pdf .ws-block-controls {
+            display: none !important;
         }
 
         .a4-preview.rendering-pdf .a4-qr-layer {
             position: relative !important;
             bottom: auto !important;
             right: auto !important;
-            margin-top: 24px !important;
-            margin-bottom: 10px !important;
+            margin-top: 20px !important;
+            margin-bottom: 8px !important;
             margin-left: auto !important;
             width: fit-content !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
 
-        .a4-preview.rendering-pdf .ws-block,
         .a4-preview.rendering-pdf .middle-box,
         .a4-preview.rendering-pdf .a4-qr-layer,
-        .a4-preview.rendering-pdf .image-placeholder {
+        .a4-preview.rendering-pdf .image-placeholder,
+        .a4-preview.rendering-pdf tr,
+        .a4-preview.rendering-pdf img {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
@@ -1507,6 +1535,57 @@
         .a4-preview.border-bold {
             border: 4.5px solid #0f172a !important;
             border-radius: 4px !important;
+        }
+
+        /* PowerPoint & Slides Presentation Styles */
+        .slide-card-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        .slide-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--tag-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .slide-dot.active {
+            background: var(--accent-primary);
+            transform: scale(1.3);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .a4-preview.layout-2col #level-body {
+            column-count: 2;
+            column-gap: 22px;
+        }
+        .a4-preview.layout-2col #level-body .ws-block,
+        .a4-preview.layout-2col #level-body .middle-box {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        @keyframes borderPulseDraw {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.8), inset 0 0 0 0 rgba(37, 99, 235, 0.6);
+                border-color: var(--accent-primary, #2563eb);
+                transform: scale(0.992);
+            }
+            50% {
+                box-shadow: 0 0 30px 6px rgba(37, 99, 235, 0.45), inset 0 0 20px 3px rgba(37, 99, 235, 0.25);
+                border-color: #7c3aed;
+                transform: scale(1.003);
+            }
+            100% {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                transform: scale(1);
+            }
+        }
+        .a4-preview.animating-border {
+            animation: borderPulseDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         
         .print-btn {
@@ -2849,7 +2928,7 @@
         <div class="header-title">
             <span>English Worksheet Studio</span>
             <span class="premium-pill">ESL / ELT</span>
-            <span class="educator-pill" style="font-size: 11.5px; background: var(--primary-box-bg); color: var(--accent-primary); border: 1px solid var(--tag-border); padding: 3px 9px; border-radius: 12px; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;">👤 Teacher</span>
+            <span class="educator-pill" style="font-size: 11.5px; background: var(--primary-box-bg); color: var(--accent-primary); border: 1px solid var(--tag-border); padding: 3px 10px; border-radius: 12px; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 5px;">👤 Zaafouri Abdelmalek</span>
         </div>
         
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -2895,8 +2974,21 @@
     
     <div class="container content-area" id="main-workspace" style="display: block;">
         
-        <!-- Streamlined Studio Creation Card -->
-        <div class="studio-card no-print" id="ai-drop-zone">
+        <!-- App Mode Switcher Tabs: Worksheets vs PowerPoint & Slides -->
+        <div class="no-print" style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <div class="preview-mode-switch" style="padding: 4px; border-radius: 16px; background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 2px solid var(--tag-border);">
+                <button type="button" class="mode-switch-btn active" id="tab-mode-worksheet" onclick="switchAppMode('worksheet')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
+                    <span>📄 Worksheets Studio</span>
+                </button>
+                <button type="button" class="mode-switch-btn" id="tab-mode-slides" onclick="switchAppMode('slides')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
+                    <span>📊 PowerPoint & Slides</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="worksheet-app-container">
+            <!-- Streamlined Studio Creation Card -->
+            <div class="studio-card no-print" id="ai-drop-zone">
             <div class="studio-header">
                 <div class="studio-title-group">
                     <div class="studio-icon">📚</div>
@@ -2948,17 +3040,7 @@
             <div class="prompt-composer">
                 <textarea id="custom-prompt" class="composer-textarea" rows="3" placeholder="Describe the English worksheet you want... (e.g. 'Past Simple vs Past Continuous story with 5 fill-in blanks, a word bank, and 4 reading comprehension questions')"></textarea>
                 
-                <div class="composer-toolbar">
-                    <div class="inspiration-chips-row" style="margin: 0; padding-left: 6px;">
-                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Topics:</span>
-                        <button type="button" class="topic-chip" onclick="setPromptTopic('🔤 Verb Tenses (Past Simple vs Present Perfect)')">🔤 Tenses</button>
-                        <button type="button" class="topic-chip" onclick="setPromptTopic('📖 Short Story Reading Comprehension & Vocabulary')">📖 Reading</button>
-                        <button type="button" class="topic-chip" onclick="setPromptTopic('💬 Conversational Dialogue & Polite Requests')">💬 Dialogue</button>
-                        <button type="button" class="topic-chip" onclick="setPromptTopic('🧩 Phrasal Verbs & Everyday English Idioms')">🎯 Idioms</button>
-                        <button type="button" class="topic-chip" onclick="setPromptTopic('✍️ Sentence Building, Prepositions & Articles')">✍️ Grammar</button>
-                        <button type="button" class="topic-chip" onclick="setPromptTopic('🔤 Synonyms, Antonyms & Word Collocations')">🔤 Vocab</button>
-                    </div>
-                    
+                <div class="composer-toolbar" style="justify-content: flex-end;">
                     <button class="ai-btn composer-ai-btn" id="ai-button" onclick="askAITutor()">
                         ✨ Generate Worksheet
                     </button>
@@ -2973,7 +3055,7 @@
                 <div class="format-settings-bar" style="margin-top: 10px;">
                     <div class="format-item">
                         <label class="format-label">Border:</label>
-                        <select id="border-style-select" class="style-dropdown" onchange="updateWorksheetStyle()" style="font-size: 12px; padding: 4px 8px;">
+                        <select id="border-style-select" class="style-dropdown" onchange="updateWorksheetStyle(); triggerBorderDrawAnimation();" style="font-size: 12px; padding: 4px 8px;">
                             <option value="border-classic" selected>Classic Solid</option>
                             <option value="border-none">None (Clean)</option>
                             <option value="border-double">Double Line</option>
@@ -3008,6 +3090,32 @@
                             <option value="#fefce8">Warm Yellow</option>
                             <option value="#f0fdf4">Mint Light</option>
                         </select>
+                    </div>
+                    <div class="format-item">
+                        <label class="format-label">Theme:</label>
+                        <select id="color-theme-select" class="style-dropdown" onchange="updateWorksheetStyle()" style="font-size: 12px; padding: 4px 8px;">
+                            <option value="theme-default" selected>✨ Classic Clean</option>
+                            <option value="theme-indigo">💙 Royal Indigo</option>
+                            <option value="theme-emerald">💚 Emerald Sunset</option>
+                            <option value="theme-violet">💜 Violet Dream</option>
+                            <option value="theme-sunset">🌅 Sunset Peach</option>
+                            <option value="theme-ocean">🌊 Ocean Breeze</option>
+                            <option value="theme-rose">🌸 Rose Gold</option>
+                        </select>
+                    </div>
+                    <div class="format-item">
+                        <label class="format-label">Layout:</label>
+                        <select id="layout-columns-select" class="style-dropdown" onchange="updateWorksheetStyle()" style="font-size: 12px; padding: 4px 8px;">
+                            <option value="layout-1col" selected>1 Column</option>
+                            <option value="layout-2col">2 Columns (Compact)</option>
+                        </select>
+                    </div>
+                    <div class="format-item">
+                        <button type="button" onclick="triggerBorderDrawAnimation()" class="editor-btn" style="padding: 5px 12px; font-size: 11.5px; background: var(--accent-gradient); color: white; border: none; font-weight: 700; border-radius: 8px; cursor: pointer;" title="Play border draw & pulse animation">✨ Animate Border</button>
+                    </div>
+                    <div class="format-item" style="display: flex; align-items: center; gap: 6px;">
+                        <label class="format-label" title="Enable or disable browser-based spellcheck for editable content blocks">Spellcheck:</label>
+                        <input type="checkbox" id="spellcheck-toggle" checked onchange="toggleSpellcheck()" style="width: 16px; height: 16px; accent-color: var(--accent-primary); cursor: pointer;" title="Toggle spellcheck">
                     </div>
                 </div>
             </details>
@@ -3217,7 +3325,7 @@
                                     <span>📱</span>
                                     <span>Digital QR Link Stamp</span>
                                 </span>
-                                <input type="checkbox" id="acc-pdf-qr-toggle" onchange="updateQRCodePreview()" checked style="width: 17px; height: 17px; accent-color: var(--accent-primary); cursor: pointer;">
+                                <input type="checkbox" id="acc-pdf-qr-toggle" onchange="updateQRCodePreview()" style="width: 17px; height: 17px; accent-color: var(--accent-primary); cursor: pointer;">
                             </label>
                             <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Embeds a scannable QR code on A4 page linking to an interactive, editable version.</div>
                         </div>
@@ -3517,7 +3625,7 @@
 
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <label class="bento-label" style="font-size: 11.5px; margin-bottom: 0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                            <input type="checkbox" id="preview-qr-toggle" onchange="syncModalQRToWorkspace()" checked style="width: 15px; height: 15px; accent-color: var(--accent-primary); cursor: pointer;">
+                            <input type="checkbox" id="preview-qr-toggle" onchange="syncModalQRToWorkspace()" style="width: 15px; height: 15px; accent-color: var(--accent-primary); cursor: pointer;">
                             <span>📱 Digital QR Link Stamp</span>
                         </label>
                     </div>
@@ -3603,6 +3711,81 @@
                     <div style="font-size: 32px; margin-bottom: 10px;">📚</div>
                     <div style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Welcome to English Worksheet Studio</div>
                     <div>Type an English grammar, reading, or vocabulary topic above and click <strong>Generate Worksheet</strong>, or pick a starter topic.</div>
+                </div>
+            </div>
+        </div>
+        </div> <!-- End of worksheet-app-container -->
+
+        <!-- PowerPoint & Slides Studio Container -->
+        <div id="slides-app-container" style="display: none;">
+            <div class="studio-card no-print">
+                <div class="studio-header">
+                    <div class="studio-title-group">
+                        <div class="studio-icon">📊</div>
+                        <div>
+                            <div class="studio-title-text">PowerPoint & Slides Studio</div>
+                            <div class="studio-subtitle">Interactive Presentation Deck Creator & Player for ESL Lessons</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="prompt-composer">
+                    <textarea id="slides-prompt" class="composer-textarea" rows="3" placeholder="Describe the lesson presentation you want... (e.g. 'Present Simple Tense interactive lesson with grammar rules, examples, and Q&A quiz')"></textarea>
+                    
+                    <div style="display: flex; gap: 12px; margin: 12px 0; flex-wrap: wrap; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-muted);">
+                            <span>📑 Number of Slides:</span>
+                            <select id="slides-count-select" style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--glass-input-bg); color: var(--text-main); font-size: 13px;">
+                                <option value="3">3 Slides (Quick)</option>
+                                <option value="5" selected>5 Slides (Standard)</option>
+                                <option value="8">8 Slides (Comprehensive)</option>
+                                <option value="10">10 Slides (Masterclass)</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-muted);">
+                            <span>🖼️ Visual Style:</span>
+                            <select id="slides-image-style-select" style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--glass-input-bg); color: var(--text-main); font-size: 13px;">
+                                <option value="concept" selected>Concept Illustration (Icons & Graphics)</option>
+                                <option value="diagram" title="Structured flowcharts and diagrams">Diagram & Flowchart</option>
+                                <option value="photo" title="Real-world photographic context">Photographic Context</option>
+                                <option value="minimal" title="Clean typography and subtle accents">Minimalist & Clean</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="composer-toolbar" style="justify-content: flex-end;">
+                        <button class="ai-btn composer-ai-btn" onclick="generatePresentationDeck()">
+                            ✨ Generate Slides Deck
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slides Presentation Player Canvas (16:9 Widescreen) -->
+            <div class="slides-player-wrapper" style="margin-top: 24px; background: var(--bg-card); border: 2px solid var(--tag-border); border-radius: 20px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.08);">
+                <!-- Player Header / Controls Bar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--primary-box-bg); border-bottom: 1px solid var(--tag-border);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: 700; font-size: 15px; color: var(--title-color);" id="slide-deck-title">Interactive Lesson Presentation</span>
+                        <span class="educator-pill" id="slide-counter-badge" style="font-size: 12px; font-weight: 700; background: var(--accent-primary); color: white; padding: 2px 10px; border-radius: 10px;">Slide 1 of 5</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="editor-btn" onclick="toggleSlideLayout()" id="slide-layout-toggle-btn" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Toggle between Horizontal Split and Vertical Stacked layout">Layout: Horizontal ↔️</button>
+                        <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">◀ Previous</button>
+                        <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">Next ▶</button>
+                        <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px;">📥 Export Slides PDF</button>
+                    </div>
+                </div>
+
+                <!-- 16:9 Widescreen Slide Canvas -->
+                <div id="slide-viewport-canvas" style="aspect-ratio: 16/9; min-height: 480px; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: #0f172a; position: relative;">
+                    <!-- Slide content injected here -->
+                </div>
+
+                <!-- Player Footer Navigation -->
+                <div style="display: flex; justify-content: center; align-items: center; padding: 12px; background: var(--primary-box-bg); border-top: 1px solid var(--tag-border); gap: 6px;" id="slide-dots-container">
+                    <!-- Dots -->
                 </div>
             </div>
         </div>
@@ -3934,11 +4117,37 @@
             }
         }
 
+        function triggerBorderDrawAnimation() {
+            const preview = document.getElementById('a4-preview-area');
+            if (!preview) return;
+            preview.classList.remove('animating-border');
+            void preview.offsetWidth; // trigger reflow
+            preview.classList.add('animating-border');
+            showToast("Border draw & pulse animation activated ✨", "🎨");
+            setTimeout(() => {
+                preview.classList.remove('animating-border');
+            }, 1200);
+        }
+
+        function toggleSpellcheck() {
+            const toggle = document.getElementById('spellcheck-toggle');
+            const enabled = toggle ? toggle.checked : true;
+            const root = document.getElementById('ws-content-root') || document.getElementById('level-body');
+            if (root) {
+                const blocks = root.querySelectorAll('.ws-block');
+                blocks.forEach(block => {
+                    block.setAttribute('spellcheck', enabled ? 'true' : 'false');
+                });
+            }
+            showToast(enabled ? "Spellcheck enabled 📝" : "Spellcheck disabled 🚫", "✨");
+        }
+
         function updateWorksheetStyle() {
             const borderStyle = document.getElementById('border-style-select').value;
             const fontFamily = document.getElementById('font-family-select').value;
             const fontSize = document.getElementById('font-size-select').value;
             const pageColor = document.getElementById('page-color-select').value;
+            const colorTheme = document.getElementById('color-theme-select') ? document.getElementById('color-theme-select').value : 'theme-default';
             const previewArea = document.getElementById('a4-preview-area');
             
             // Remove previous border classes and apply selected one
@@ -3946,18 +4155,57 @@
             borderClasses.forEach(cls => previewArea.classList.remove(cls));
             previewArea.classList.add(borderStyle);
 
+            // Remove previous theme classes
+            const themeClasses = ['theme-default', 'theme-indigo', 'theme-emerald', 'theme-violet', 'theme-sunset', 'theme-ocean', 'theme-rose'];
+            themeClasses.forEach(cls => previewArea.classList.remove(cls));
+            previewArea.classList.add(colorTheme);
+
+            // Remove previous layout classes and apply selected one
+            const layoutColumns = document.getElementById('layout-columns-select') ? document.getElementById('layout-columns-select').value : 'layout-1col';
+            const layoutClasses = ['layout-1col', 'layout-2col'];
+            layoutClasses.forEach(cls => previewArea.classList.remove(cls));
+            previewArea.classList.add(layoutColumns);
+
             previewArea.style.fontFamily = fontFamily;
             previewArea.style.backgroundColor = pageColor;
+
+            // Define theme color maps for stunning colorization of blocks & headers
+            const themePalettes = {
+                'theme-default': { bg: '#f8fafc', border: '#e2e8f0', h3: '#1e40af', h2: '#0f172a' },
+                'theme-indigo': { bg: '#eef2ff', border: '#c7d2fe', h3: '#4338ca', h2: '#312e81' },
+                'theme-emerald': { bg: '#ecfdf5', border: '#a7f3d0', h3: '#047857', h2: '#065f46' },
+                'theme-violet': { bg: '#f5f3ff', border: '#ddd6fe', h3: '#6d28d9', h2: '#5b21b6' },
+                'theme-sunset': { bg: '#fffbeb', border: '#fde68a', h3: '#b45309', h2: '#92400e' },
+                'theme-ocean': { bg: '#ecfeff', border: '#a5f3fc', h3: '#0e7490', h2: '#155e75' },
+                'theme-rose': { bg: '#fff1f2', border: '#fecdd3', h3: '#be123c', h2: '#9f1239' }
+            };
+            const palette = themePalettes[colorTheme] || themePalettes['theme-default'];
+
+            const blocks = previewArea.querySelectorAll('.ws-block');
+            blocks.forEach(block => {
+                block.style.backgroundColor = palette.bg;
+                block.style.borderColor = palette.border;
+                block.style.borderWidth = '1px';
+                block.style.borderStyle = 'solid';
+            });
+
+            const h2s = previewArea.querySelectorAll('h2');
+            h2s.forEach(h2 => {
+                h2.style.color = palette.h2;
+                h2.style.fontSize = `calc(${fontSize} + 8px)`;
+                h2.style.fontFamily = fontFamily;
+            });
+
+            const h3s = previewArea.querySelectorAll('h3');
+            h3s.forEach(h3 => {
+                h3.style.color = palette.h3;
+                h3.style.fontSize = `calc(${fontSize} + 4px)`;
+                h3.style.fontFamily = fontFamily;
+            });
             
-            const textElements = previewArea.querySelectorAll('p, div, span, input, textarea, h3, h2, li');
+            const textElements = previewArea.querySelectorAll('p, span, input, textarea, li');
             textElements.forEach(el => {
-                if(el.tagName.toLowerCase() === 'h2') {
-                    el.style.fontSize = `calc(${fontSize} + 8px)`;
-                } else if (el.tagName.toLowerCase() === 'h3') {
-                    el.style.fontSize = `calc(${fontSize} + 4px)`;
-                } else {
-                    el.style.fontSize = fontSize;
-                }
+                el.style.fontSize = fontSize;
                 el.style.fontFamily = fontFamily;
             });
         }
@@ -4694,10 +4942,10 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             }
 
             // Now equip every .ws-block with interactive editing controls and drag-and-drop
-            const blocks = root.querySelectorAll('.ws-block');
+            const spellcheckEnabled = document.getElementById('spellcheck-toggle') ? document.getElementById('spellcheck-toggle').checked : true;
             blocks.forEach((block, index) => {
                 block.setAttribute('contenteditable', 'true');
-                block.setAttribute('spellcheck', 'true');
+                block.setAttribute('spellcheck', spellcheckEnabled ? 'true' : 'false');
                 block.setAttribute('draggable', 'true');
 
                 // Remove existing controls if any
@@ -6199,6 +6447,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const fontVal = document.getElementById('font-family-select') ? document.getElementById('font-family-select').value : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             const sizeVal = document.getElementById('font-size-select') ? document.getElementById('font-size-select').value : '18px';
             const pageColorVal = document.getElementById('page-color-select') ? document.getElementById('page-color-select').value : 'white';
+            const layoutVal = document.getElementById('layout-columns-select') ? document.getElementById('layout-columns-select').value : 'layout-1col';
 
             const newItem = {
                 id: currentLoadedWorksheetId || ('ws_' + Date.now()),
@@ -6210,6 +6459,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 fontFamily: fontVal,
                 fontSize: sizeVal,
                 pageColor: pageColorVal,
+                layoutColumns: layoutVal,
                 html: root.innerHTML,
                 originalRaw: originalWorksheetHTML || root.innerHTML
             };
@@ -6432,12 +6682,12 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             
             const targetFilename = filenameOverride || 'Classroom_Worksheet.pdf';
             const opt = {
-                margin:       10,
+                margin:       [8, 8, 10, 8],
                 filename:     targetFilename.endsWith('.pdf') ? targetFilename : (targetFilename + '.pdf'),
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 794, width: 794, scrollX: 0, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak:    { mode: ['css', 'legacy'], avoid: ['.middle-box', '.a4-qr-layer', '.image-placeholder', 'tr', 'img', 'p', 'li'] }
             };
 
             const restoreState = () => {
@@ -6691,6 +6941,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const fontVal = document.getElementById('font-family-select') ? document.getElementById('font-family-select').value : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
             const sizeVal = document.getElementById('font-size-select') ? document.getElementById('font-size-select').value : '18px';
             const pageColorVal = document.getElementById('page-color-select') ? document.getElementById('page-color-select').value : 'white';
+            const layoutVal = document.getElementById('layout-columns-select') ? document.getElementById('layout-columns-select').value : 'layout-1col';
 
             const newItem = {
                 id: currentLoadedWorksheetId || ('ws_' + Date.now()),
@@ -6702,6 +6953,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 fontFamily: fontVal,
                 fontSize: sizeVal,
                 pageColor: pageColorVal,
+                layoutColumns: layoutVal,
                 html: root.innerHTML,
                 originalRaw: originalWorksheetHTML || root.innerHTML
             };
@@ -6829,6 +7081,9 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             if (item.pageColor && document.getElementById('page-color-select')) {
                 document.getElementById('page-color-select').value = item.pageColor;
             }
+            if (item.layoutColumns && document.getElementById('layout-columns-select')) {
+                document.getElementById('layout-columns-select').value = item.layoutColumns;
+            }
 
             updateWorksheetStyle();
             updateQRCodePreview();
@@ -6911,14 +7166,375 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             loadSavedTheme();
             checkAndLoadSharedWorksheetHash();
             updateQRCodePreview();
+            restoreAutoSavedWorksheet();
         });
         window.addEventListener('hashchange', checkAndLoadSharedWorksheetHash);
+        
+        function restoreAutoSavedWorksheet() {
+            const savedHtml = localStorage.getItem('autosaved_worksheet_html');
+            const savedPrompt = localStorage.getItem('autosaved_worksheet_prompt');
+            const levelBody = document.getElementById('level-body');
+            if (savedHtml && levelBody && (!levelBody.innerHTML.trim() || levelBody.innerHTML.includes('Welcome'))) {
+                levelBody.innerHTML = savedHtml;
+                originalWorksheetHTML = savedHtml;
+                if (savedPrompt && document.getElementById('custom-prompt')) {
+                    document.getElementById('custom-prompt').value = savedPrompt;
+                }
+                updateWorksheetStyle();
+                showToast("Restored your previously auto-saved worksheet draft 💾", "✨");
+            }
+        }
+
+        // Periodic Auto-Save every 8 seconds
+        setInterval(() => {
+            const levelBody = document.getElementById('level-body');
+            const customPrompt = document.getElementById('custom-prompt');
+            if (levelBody && levelBody.innerHTML.trim() !== '') {
+                localStorage.setItem('autosaved_worksheet_html', levelBody.innerHTML);
+                if (customPrompt) {
+                    localStorage.setItem('autosaved_worksheet_prompt', customPrompt.value);
+                }
+            }
+        }, 8000);
+
+        // PowerPoint & Slides Presentation State & Logic
+        let currentSlidesData = [
+            {
+                title: "Welcome to English Masterclass",
+                subtitle: "Interactive Lesson & Practice Suite",
+                type: "title",
+                bullets: ["Objective: Master essential grammar and communication", "Interactive exercises and guided practice", "Engaging discussions & vocabulary building"],
+                accent: "#2563eb"
+            },
+            {
+                title: "Key Vocabulary & Concepts",
+                subtitle: "Essential terminology for today's lesson",
+                type: "vocab",
+                bullets: ["• Hypothesis: A proposed explanation for a phenomenon", "• Variable: A factor or condition that can be changed", "• Data: Facts and statistics collected for analysis"],
+                accent: "#7c3aed"
+            },
+            {
+                title: "Grammar Rule & Structure",
+                subtitle: "How to form and apply the target structure",
+                type: "rule",
+                bullets: ["Rule: Subject + Auxiliary Verb + Base Verb", "Example: She studies English every single morning.", "Tip: Pay attention to third-person singular (-s/es)."],
+                accent: "#059669"
+            },
+            {
+                title: "Guided Practice Exercise",
+                subtitle: "Apply what you've learned in context",
+                type: "practice",
+                bullets: ["1. Fill in the blank: He ________ (play) tennis on weekends.", "2. Correct the sentence: They was studying grammar.", "3. Discussion: Describe your daily routine using 3 sentences."],
+                accent: "#d97706"
+            },
+            {
+                title: "Summary & Homework",
+                subtitle: "Great job completing today's lesson!",
+                type: "summary",
+                bullets: ["• Key takeaway: Consistent practice builds fluency", "• Homework: Complete worksheet exercises on page 3", "• Next session: Advanced conversational dialogues"],
+                accent: "#dc2626"
+            }
+        ];
+        let currentSlideIndex = 0;
+        let currentSlideLayout = 'horizontal'; // 'horizontal' (side-by-side with graphic) or 'vertical' (stacked)
+
+        function toggleSlideLayout() {
+            currentSlideLayout = currentSlideLayout === 'horizontal' ? 'vertical' : 'horizontal';
+            const btn = document.getElementById('slide-layout-toggle-btn');
+            if (btn) {
+                btn.innerText = currentSlideLayout === 'horizontal' ? 'Layout: Horizontal ↔️' : 'Layout: Vertical ↕️';
+            }
+            renderCurrentSlide();
+            showToast(`Switched to ${currentSlideLayout} slide layout`, "📊");
+        }
+
+        function switchAppMode(mode) {
+            const btnWs = document.getElementById('tab-mode-worksheet');
+            const btnSl = document.getElementById('tab-mode-slides');
+            const containerWs = document.getElementById('worksheet-app-container');
+            const containerSl = document.getElementById('slides-app-container');
+
+            if (mode === 'worksheet') {
+                if (btnWs) btnWs.classList.add('active');
+                if (btnSl) btnSl.classList.remove('active');
+                if (containerWs) containerWs.style.display = 'block';
+                if (containerSl) containerSl.style.display = 'none';
+                showToast("Switched to Worksheets Studio 📄", "✨");
+            } else {
+                if (btnSl) btnSl.classList.add('active');
+                if (btnWs) btnWs.classList.remove('active');
+                if (containerSl) containerSl.style.display = 'block';
+                if (containerWs) containerWs.style.display = 'none';
+                renderCurrentSlide();
+                showToast("Switched to PowerPoint & Slides 📊", "✨");
+            }
+        }
+
+        function setSlidesTopic(topic) {
+            const input = document.getElementById('slides-prompt');
+            if (input) {
+                input.value = topic;
+                generatePresentationDeck();
+            }
+        }
+
+        function generatePresentationDeck() {
+            const promptInput = document.getElementById('slides-prompt');
+            const countSelect = document.getElementById('slides-count-select');
+            const styleSelect = document.getElementById('slides-image-style-select');
+            
+            const topic = promptInput ? promptInput.value.trim() : "";
+            const numSlides = countSelect ? parseInt(countSelect.value, 10) : 5;
+            const imageStyle = styleSelect ? styleSelect.value : "concept";
+            
+            showToast(`Generating ${numSlides}-slide presentation deck... 📊`, "✨");
+            
+            const displayTopic = topic || "English Lesson & Practice";
+            const accents = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0284c7", "#9333ea", "#16a34a", "#ca8a04", "#e11d48"];
+            
+            currentSlidesData = [];
+            
+            for (let i = 0; i < numSlides; i++) {
+                let slideTitle = "";
+                let subtitle = "";
+                let bullets = [];
+                const accent = accents[i % accents.length];
+                
+                if (i === 0) {
+                    slideTitle = displayTopic;
+                    subtitle = "Interactive Lesson & Practice Presentation";
+                    bullets = [
+                        "Core objective & focus: " + displayTopic,
+                        "Interactive student tasks & discussion prompts",
+                        "Step-by-step guided pedagogical breakdown"
+                    ];
+                } else if (i === numSlides - 1) {
+                    slideTitle = `${i + 1}. Summary & Homework`;
+                    subtitle = "Wrap up and key takeaways";
+                    bullets = [
+                        "• Key takeaway: Consistent practice builds mastery",
+                        "• Next steps: Complete assigned interactive tasks",
+                        "• Q&A session and open student discussion"
+                    ];
+                } else {
+                    const categories = [
+                        { name: "Core Concepts & Vocabulary", sub: "Key terminology and definitions", b: ["• Terminology 1: Foundational definition & usage", "• Terminology 2: Contextual application in sentences", "• Key rule: Remember to apply standard syntax"] },
+                        { name: "Detailed Rules & Examples", sub: "Grammar & structural breakdown", b: ["Rule structure: Subject + Primary Action + Modifier", "Example A: Correct usage in everyday conversation", "Example B: Formal application in writing"] },
+                        { name: "Interactive Practice Activity", sub: "Classroom exercise for students", b: ["Exercise 1: Complete the missing phrases", "Exercise 2: Identify and correct grammatical errors", "Exercise 3: Pair discussion & peer review"] },
+                        { name: "Guided Application Task", sub: "Real-world conversational practice", b: ["Task 1: Roleplay dialogue in pairs", "Task 2: Formulate 3 original sentences", "Task 3: Present findings to the class"] },
+                        { name: "Critical Thinking Challenge", sub: "Advanced problem solving", b: ["Challenge A: Analyze and compare structures", "Challenge B: Identify exceptions to the rule", "Challenge C: Create a mini-quiz question"] },
+                        { name: "Review & Quick Quiz", sub: "Checking student understanding", b: ["Question 1: True or false scenario", "Question 2: Multiple choice concept check", "Question 3: Open reflection"] },
+                        { name: "Extension & Enrichment", sub: "Going further with the topic", b: ["• Advanced idiomatic expressions", "• Common pitfalls and how to avoid them", "• Real-world media examples"] }
+                    ];
+                    const cat = categories[(i - 1) % categories.length];
+                    slideTitle = `${i + 1}. ${cat.name}`;
+                    subtitle = cat.sub;
+                    bullets = cat.b;
+                }
+                
+                currentSlidesData.push({
+                    title: slideTitle,
+                    subtitle: subtitle,
+                    bullets: bullets,
+                    accent: accent,
+                    imageStyle: imageStyle
+                });
+            }
+
+            currentSlideIndex = 0;
+            renderCurrentSlide();
+            showToast(`Generated ${numSlides}-slide presentation deck successfully! 📊`, "🎉");
+        }
+
+        function renderCurrentSlide() {
+            const viewport = document.getElementById('slide-viewport-canvas');
+            const titleEl = document.getElementById('slide-deck-title');
+            const counterEl = document.getElementById('slide-counter-badge');
+            const dotsContainer = document.getElementById('slide-dots-container');
+            
+            if (!viewport) return;
+
+            const slide = currentSlidesData[currentSlideIndex];
+            if (titleEl) titleEl.innerText = slide.title;
+            if (counterEl) counterEl.innerText = `Slide ${currentSlideIndex + 1} of ${currentSlidesData.length}`;
+
+            let bulletsHtml = slide.bullets.map(b => `<li style="margin-bottom: 14px; font-size: 17px; line-height: 1.6; color: var(--text-main); display: flex; align-items: flex-start; gap: 10px;"><span style="color: ${slide.accent}; font-weight: bold; font-size: 20px;">▪</span><span>${escapeHtml(b)}</span></li>`).join('');
+
+            viewport.style.borderLeft = `8px solid ${slide.accent}`;
+
+            const imgStyle = slide.imageStyle || 'concept';
+            let rightCardHtml = '';
+            let bottomBannerHtml = '';
+            
+            if (imgStyle === 'concept') {
+                rightCardHtml = `
+                    <div style="flex: 0.9; background: linear-gradient(135deg, ${slide.accent}15 0%, ${slide.accent}05 100%); border: 2px dashed ${slide.accent}50; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: ${slide.accent}; color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; box-shadow: 0 6px 16px ${slide.accent}40;">💡</div>
+                        <div style="font-weight: 700; font-size: 16px; color: var(--title-color); margin-bottom: 6px;">Visual Concept Illustration</div>
+                        <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">Structured lesson graphic for ${escapeHtml(slide.title)}</div>
+                    </div>
+                `;
+                bottomBannerHtml = `
+                    <div style="background: linear-gradient(135deg, ${slide.accent}15 0%, ${slide.accent}05 100%); border: 1.5px dashed ${slide.accent}40; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
+                        <div style="font-size: 24px;">💡</div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--title-color);">Visual Concept Illustration</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Structured lesson graphic asset for classroom display and interactive student discussion</div>
+                        </div>
+                    </div>
+                `;
+            } else if (imgStyle === 'diagram') {
+                rightCardHtml = `
+                    <div style="flex: 0.9; background: linear-gradient(135deg, #0284c715 0%, #0284c705 100%); border: 2px dashed #0284c750; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
+                        <div style="width: 64px; height: 64px; border-radius: 14px; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; box-shadow: 0 6px 16px #0284c740;">📊</div>
+                        <div style="font-weight: 700; font-size: 16px; color: var(--title-color); margin-bottom: 6px;">Structured Flowchart & Diagram</div>
+                        <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">Step-by-step structural logic map</div>
+                    </div>
+                `;
+                bottomBannerHtml = `
+                    <div style="background: linear-gradient(135deg, #0284c715 0%, #0284c705 100%); border: 1.5px dashed #0284c740; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
+                        <div style="font-size: 24px;">📊</div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--title-color);">Structured Flowchart & Diagram</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Step-by-step structural logic map for classroom explanation</div>
+                        </div>
+                    </div>
+                `;
+            } else if (imgStyle === 'photo') {
+                rightCardHtml = `
+                    <div style="flex: 0.9; background: linear-gradient(135deg, #16a34a15 0%, #16a34a05 100%); border: 2px dashed #16a34a50; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; box-shadow: 0 6px 16px #16a34a40;">📷</div>
+                        <div style="font-weight: 700; font-size: 16px; color: var(--title-color); margin-bottom: 6px;">Photographic Context Asset</div>
+                        <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">Real-world situational photo frame</div>
+                    </div>
+                `;
+                bottomBannerHtml = `
+                    <div style="background: linear-gradient(135deg, #16a34a15 0%, #16a34a05 100%); border: 1.5px dashed #16a34a40; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
+                        <div style="font-size: 24px;">📷</div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--title-color);">Photographic Context Asset</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Real-world situational context for immersive vocabulary and dialogue practice</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // minimal
+                rightCardHtml = `
+                    <div style="flex: 0.9; background: var(--bg-card); border: 2px solid var(--tag-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.02);">
+                        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--primary-box-bg); color: var(--title-color); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 14px; border: 1px solid var(--tag-border);">✨</div>
+                        <div style="font-weight: 700; font-size: 16px; color: var(--title-color); margin-bottom: 4px;">Clean Minimalist Layout</div>
+                        <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">Focused high-contrast typography</div>
+                    </div>
+                `;
+                bottomBannerHtml = `
+                    <div style="background: var(--bg-card); border: 1.5px solid var(--tag-border); border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; gap: 16px;">
+                        <div style="font-size: 24px;">✨</div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 14px; color: var(--title-color);">Clean Minimalist Layout</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">Focused high-contrast typography and polished presentation spacing</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (currentSlideLayout === 'horizontal') {
+                // Horizontal Split Layout: Left Text & Bullets, Right Visual Illustration Card
+                viewport.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${currentSlideIndex + 1} of ${currentSlidesData.length} • Horizontal Split</div>
+                            <h2 style="font-size: 28px; font-weight: 800; color: var(--title-color); margin: 0 0 4px 0; line-height: 1.2;">${escapeHtml(slide.title)}</h2>
+                            <div style="font-size: 15px; color: var(--text-muted); font-weight: 500;">${escapeHtml(slide.subtitle)}</div>
+                        </div>
+                        <div style="font-size: 28px; padding: 10px; background: var(--bg-card); border-radius: 14px; border: 1px solid var(--tag-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04);">📊</div>
+                    </div>
+
+                    <div style="display: flex; gap: 24px; flex-grow: 1; align-items: stretch; margin: 10px 0;">
+                        <!-- Left Content Box -->
+                        <div style="flex: 1.2; background: var(--bg-card); border: 1.5px solid var(--tag-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                ${bulletsHtml}
+                            </ul>
+                        </div>
+
+                        <!-- Right Illustrated Visual Card -->
+                        ${rightCardHtml}
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <span>English Worksheet Studio & Presentation Deck</span>
+                        <span style="font-weight: 700; color: ${slide.accent};">ESL / ELT Suite</span>
+                    </div>
+                `;
+            } else {
+                // Vertical Stacked Layout: Top Banner, Middle Content, Bottom Illustration Banner
+                viewport.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+                        <div>
+                            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: ${slide.accent}; letter-spacing: 1px; margin-bottom: 4px;">Slide ${currentSlideIndex + 1} of ${currentSlidesData.length} • Vertical Stacked</div>
+                            <h2 style="font-size: 28px; font-weight: 800; color: var(--title-color); margin: 0 0 4px 0; line-height: 1.2;">${escapeHtml(slide.title)}</h2>
+                            <div style="font-size: 15px; color: var(--text-muted); font-weight: 500;">${escapeHtml(slide.subtitle)}</div>
+                        </div>
+                        <div style="font-size: 28px; padding: 10px; background: var(--bg-card); border-radius: 14px; border: 1px solid var(--tag-border); box-shadow: 0 4px 12px rgba(0,0,0,0.04);">📊</div>
+                    </div>
+
+                    <div style="background: var(--bg-card); border: 1.5px solid var(--tag-border); border-radius: 16px; padding: 22px 28px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.04);">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${bulletsHtml}
+                        </ul>
+                    </div>
+
+                    ${bottomBannerHtml}
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <span>English Worksheet Studio & Presentation Deck</span>
+                        <span style="font-weight: 700; color: ${slide.accent};">ESL / ELT Suite</span>
+                    </div>
+                `;
+            }
+
+            if (dotsContainer) {
+                dotsContainer.innerHTML = currentSlidesData.map((_, idx) => `
+                    <div class="slide-dot ${idx === currentSlideIndex ? 'active' : ''}" onclick="goToSlide(${idx})" title="Jump to slide ${idx + 1}"></div>
+                `).join('');
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < currentSlidesData.length - 1) {
+                currentSlideIndex++;
+                renderCurrentSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderCurrentSlide();
+            }
+        }
+
+        function goToSlide(idx) {
+            if (idx >= 0 && idx < currentSlidesData.length) {
+                currentSlideIndex = idx;
+                renderCurrentSlide();
+            }
+        }
+
+        function downloadSlidesPDF() {
+            showToast("Preparing presentation slides for export...", "📥");
+            setTimeout(() => {
+                window.print();
+            }, 400);
+        }
+
         // Also run immediately in case DOM is already loaded
         initSampleFeatures();
         updateSavedCountBadges();
         loadSavedTheme();
         checkAndLoadSharedWorksheetHash();
         updateQRCodePreview();
+        restoreAutoSavedWorksheet();
     </script>
     <footer class="no-print" style="text-align: center; padding: 24px 16px 36px; color: var(--text-muted); font-size: 12px; font-weight: 500;">
         Worksheet Generator
