@@ -5410,13 +5410,13 @@
             reader.onload = function(e) {
                 const content = e.target.result;
                 if (!content || !content.trim()) {
-                    alert("The uploaded file is empty.");
+                    showToast("The uploaded file is empty.", "⚠️");
                     return;
                 }
                 setLoadedSample(file.name, content.trim(), 'Uploaded File');
             };
             reader.onerror = function() {
-                alert("Failed to read the file. Please try a .txt, .md, or .csv file.");
+                showToast("Failed to read the file. Please try a .txt, .md, or .csv file.", "⚠️");
             };
             reader.readAsText(file);
         }
@@ -7006,7 +7006,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
         function resetWorksheetToOriginal() {
             if (!originalWorksheetHTML) {
-                alert("No original AI generation to restore.");
+                showToast("No original AI generation to restore.", "ℹ️");
                 return;
             }
             if (confirm("Reset worksheet back to original AI generation? Any manual edits will be replaced.")) {
@@ -11883,7 +11883,8 @@ Each object MUST strictly contain:
     \x3Cscript\x3E
         function speakSlideText(text) {
             if (!('speechSynthesis' in window)) {
-                alert("Speech synthesis is not supported in this browser.");
+                if (typeof showToast === 'function') showToast("Speech synthesis is not supported in this browser.", "⚠️");
+                else alert("Speech synthesis is not supported in this browser.");
                 return;
             }
             window.speechSynthesis.cancel();
