@@ -4065,17 +4065,17 @@
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <!-- Digital Interactive QR Link -->
             <button type="button" class="dark-mode-toggle-btn" onclick="openDigitalShareModal(event)" title="Show QR code for interactive digital version">
-                <span>Digital Version</span>
+                <span>📱 Digital Link</span>
             </button>
             
             <!-- Global Night Mode / Day Mode Toggle Button -->
-            <button type="button" class="dark-mode-toggle-btn" id="global-dark-mode-toggle" onclick="toggleGlobalDarkMode()" title="Toggle Night Mode (Obsidian) / Day Mode">
-                <span id="dark-mode-label">Night Mode</span>
+            <button type="button" class="dark-mode-toggle-btn" id="global-dark-mode-toggle" onclick="toggleGlobalDarkMode()" title="Toggle Night Mode / Day Mode">
+                <span id="dark-mode-label">🌙 Night Mode</span>
             </button>
 
             <!-- Theme Selector Trigger Button -->
             <div class="theme-selector-container">
-                <button type="button" class="theme-selector-btn" id="theme-menu-trigger" onclick="toggleThemeMenu(event)" title="Choose Theme Palette with Visual Preview Cards">
+                <button type="button" class="theme-selector-btn" id="theme-menu-trigger" onclick="toggleThemeMenu(event)" title="Choose Theme Palette">
                     <span class="theme-dot" id="header-theme-dot" style="background: #38bdf8; margin-right: 6px;"></span>
                     <span style="display: flex; align-items: center; gap: 4px;">
                         <span style="opacity: 0.85; font-weight: 600;">Theme:</span>
@@ -4084,37 +4084,9 @@
                 </button>
             </div>
 
-            <!-- Direct Quick Theme Palette -->
-            <div class="header-theme-strip" title="Quick Palette Swatches">
-                <button type="button" class="theme-chip-btn active" id="swatch-sapphire" onclick="setTheme('sapphire')" title="Sapphire Theme (Academic Blue)">
-                    <span class="theme-swatch-dot" style="background: #38bdf8;"></span>
-                    <span>Sapphire</span>
-                </button>
-                <button type="button" class="theme-chip-btn" id="swatch-icewhite" onclick="setTheme('icewhite')" title="Ice White Theme (Arctic Frost)">
-                    <span class="theme-swatch-dot" style="background: #7dd3fc;"></span>
-                    <span>Ice White</span>
-                </button>
-                <button type="button" class="theme-chip-btn" id="swatch-emerald" onclick="setTheme('emerald')" title="Emerald Theme (Botanical Green)">
-                    <span class="theme-swatch-dot" style="background: #34d399;"></span>
-                    <span>Emerald</span>
-                </button>
-                <button type="button" class="theme-chip-btn" id="swatch-amethyst" onclick="setTheme('amethyst')" title="Amethyst Theme (Royal Violet)">
-                    <span class="theme-swatch-dot" style="background: #c084fc;"></span>
-                    <span>Amethyst</span>
-                </button>
-                <button type="button" class="theme-chip-btn" id="swatch-amber" onclick="setTheme('amber')" title="Sunset Amber Theme (Warm Terracotta)">
-                    <span class="theme-swatch-dot" style="background: #fbbf24;"></span>
-                    <span>Amber</span>
-                </button>
-                <button type="button" class="theme-chip-btn" id="swatch-obsidian" onclick="setTheme('obsidian')" title="Obsidian Dark Theme (High-Contrast)">
-                    <span class="theme-swatch-dot" style="background: #818cf8;"></span>
-                    <span>Dark</span>
-                </button>
-            </div>
-
             <!-- API Key Configuration -->
             <button type="button" class="saved-manager-btn" onclick="openApiKeyModal()" title="Configure Gemini API Key" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--tag-border);">
-                <span>API Key</span>
+                <span>🔑 API Key</span>
             </button>
             <!-- Saved Worksheets Quick Access -->
             <button type="button" class="saved-manager-btn" onclick="openSavedWorksheetsModal()" title="View and open saved worksheets">
@@ -4185,12 +4157,9 @@
 
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="sample-action-btn" type="button" onclick="loadSpiralWorkbookTemplate()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(2,132,199,0.25); display: inline-flex; align-items: center; gap: 5px;" title="Load the illustrated children's workbook layout with pictures & spiral binding">Illustrated Workbook</button>
-                    <button type="button" id="btn-spiral-notebook-toggle" onclick="toggleSpiralNotebook()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #1e40af; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Toggle spiral notebook binding on the worksheet page">Spiral Notebook: <span id="spiral-toggle-status">ON</span></button>
-                    <button type="button" id="btn-visual-cards-toggle" onclick="toggleVisualCardsMode()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #059669; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Ensure AI generates cute cartoon picture cards for each concept">Picture Cards: <span id="visual-cards-status">AUTO</span></button>
-                    <button class="sample-action-btn" type="button" onclick="openTemplateLibraryModal()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(37,99,235,0.2);">Templates</button>
-                    <button class="sample-action-btn" type="button" onclick="openSampleLibrary()" style="font-size: 12px; padding: 6px 12px;">Texts & Samples</button>
-                    <button class="sample-action-btn" type="button" onclick="triggerFileInput()" style="font-size: 12px; padding: 6px 12px;">Import</button>
+                    <button class="sample-action-btn" type="button" onclick="openTemplateLibraryModal()" style="font-size: 12px; padding: 6px 14px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(37,99,235,0.2); border-radius: 8px;">📚 Templates</button>
+                    <button class="sample-action-btn" type="button" onclick="openSampleLibrary()" style="font-size: 12px; padding: 6px 14px; border-radius: 8px;">📖 Texts & Samples</button>
+                    <button class="sample-action-btn" type="button" onclick="triggerFileInput()" style="font-size: 12px; padding: 6px 14px; border-radius: 8px;">📂 Import Text</button>
                 </div>
             </div>
 
@@ -5157,18 +5126,16 @@
                         </div>
                         
                         <!-- Navigation Group -->
-                        <div style="display: flex; gap: 4px; border-left: 1px solid var(--tag-border); padding-left: 8px; margin-left: 4px;">
-                            <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Previous slide (Left Arrow)">◀ Prev</button>
-                            <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Next slide (Right Arrow / Space)">Next ▶</button>
+                        <div style="display: flex; gap: 4px; padding-left: 6px;">
+                            <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px;" title="Previous slide (Left Arrow)">◀ Prev</button>
+                            <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px;" title="Next slide (Right Arrow / Space)">Next ▶</button>
                         </div>
                         
-                        <!-- Export Group: 4 Functional Action Buttons (Audio PDF, Video, Word, PNG) -->
+                        <!-- Essential Export Actions (PDF, Video, PNG) -->
                         <div style="display: flex; gap: 6px; border-left: 1px solid var(--tag-border); padding-left: 8px; margin-left: 4px; flex-wrap: wrap; align-items: center;">
-                            <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; white-space: nowrap;" title="Standard PDF Export">📥 PDF</button>
-                            <button type="button" class="editor-btn" onclick="exportSlidesAudioPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); white-space: nowrap;" title="Export interactive PDF presentation with embedded voice narration">🎧 Audio PDF</button>
-                            <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); white-space: nowrap;" title="Export complete slide deck as a WebM / MP4 video with synthesized voice narration">🎬 Video</button>
-                            <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #1e40af, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25); white-space: nowrap;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Word</button>
-                            <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); white-space: nowrap;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
+                            <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px; white-space: nowrap; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none;" title="Export High-Res Landscape A4 PDF">📥 Export PDF</button>
+                            <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); white-space: nowrap;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
+                            <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); white-space: nowrap;" title="Export complete slide deck as video">🎬 Video</button>
                         </div>
                     </div>
                 </div>
