@@ -4039,6 +4039,7 @@
             <!-- Theme Selector Trigger Button -->
             <div class="theme-selector-container">
                 <button type="button" class="theme-selector-btn" id="theme-menu-trigger" onclick="toggleThemeMenu(event)" title="Choose Theme Palette with Visual Preview Cards">
+                    <span class="theme-dot" id="header-theme-dot" style="background: #38bdf8; margin-right: 6px;"></span>
                     <span style="display: flex; align-items: center; gap: 4px;">
                         <span style="opacity: 0.85; font-weight: 600;">Theme:</span>
                         <span id="current-theme-label" style="font-weight: 800;">Sapphire</span>
@@ -4049,21 +4050,27 @@
             <!-- Direct Quick Theme Palette -->
             <div class="header-theme-strip" title="Quick Palette Swatches">
                 <button type="button" class="theme-chip-btn active" id="swatch-sapphire" onclick="setTheme('sapphire')" title="Sapphire Theme (Academic Blue)">
+                    <span class="theme-swatch-dot" style="background: #38bdf8;"></span>
                     <span>Sapphire</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-icewhite" onclick="setTheme('icewhite')" title="Ice White Theme (Arctic Frost)">
+                    <span class="theme-swatch-dot" style="background: #7dd3fc;"></span>
                     <span>Ice White</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-emerald" onclick="setTheme('emerald')" title="Emerald Theme (Botanical Green)">
+                    <span class="theme-swatch-dot" style="background: #34d399;"></span>
                     <span>Emerald</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-amethyst" onclick="setTheme('amethyst')" title="Amethyst Theme (Royal Violet)">
+                    <span class="theme-swatch-dot" style="background: #c084fc;"></span>
                     <span>Amethyst</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-amber" onclick="setTheme('amber')" title="Sunset Amber Theme (Warm Terracotta)">
+                    <span class="theme-swatch-dot" style="background: #fbbf24;"></span>
                     <span>Amber</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-obsidian" onclick="setTheme('obsidian')" title="Obsidian Dark Theme (High-Contrast)">
+                    <span class="theme-swatch-dot" style="background: #818cf8;"></span>
                     <span>Dark</span>
                 </button>
             </div>
@@ -11472,6 +11479,139 @@ Each object MUST strictly contain:
             }
         }
 
+        // --- Helper to draw a slide directly to Canvas (instant, robust, zero-dependency) ---
+        function drawSlideToCanvasDirectly(ctx, slide, index, totalSlides, width, height) {
+            ctx.save();
+            // Background
+            const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+            bgGrad.addColorStop(0, '#f8fafc');
+            bgGrad.addColorStop(1, '#f1f5f9');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, width, height);
+
+            // Left accent border
+            const accentColor = slide.accent || '#2563eb';
+            ctx.fillStyle = accentColor;
+            ctx.fillRect(0, 0, 16, height);
+
+            const pad = 54;
+            let curY = pad + 10;
+
+            // Header category tag
+            ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = accentColor;
+            ctx.fillText(`LESSON PRESENTATION • SLIDE ${index + 1} OF ${totalSlides}`, pad + 10, curY);
+
+            curY += 42;
+            // Title
+            ctx.font = 'bold 34px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = '#0f172a';
+            const titleText = (slide.title || 'Slide Title').slice(0, 70);
+            ctx.fillText(titleText, pad + 10, curY);
+
+            // Subtitle
+            if (slide.subtitle) {
+                curY += 28;
+                ctx.font = '500 18px system-ui, -apple-system, sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText(slide.subtitle.slice(0, 100), pad + 10, curY);
+            }
+
+            curY += 36;
+            // Split layout: bullets on left, graphic box on right
+            const panelW = (width - (pad * 2) - 30) * 0.65;
+            const rightW = (width - (pad * 2) - 30) * 0.35;
+            const panelH = height - curY - 70;
+
+            // Bullets background card
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(pad + 10, curY, panelW, panelH, 14);
+            ctx.fill();
+            ctx.stroke();
+
+            // Render bullets
+            const bullets = slide.bullets || [];
+            let bulletY = curY + 36;
+            bullets.slice(0, 5).forEach((b) => {
+                const clean = b.replace(/<[^>]+>/g, '').trim();
+                if (!clean) return;
+
+                // Bullet circle
+                ctx.fillStyle = accentColor;
+                ctx.beginPath();
+                ctx.arc(pad + 34, bulletY - 6, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bullet text
+                ctx.font = '17px system-ui, -apple-system, sans-serif';
+                ctx.fillStyle = '#1e293b';
+                
+                // Wrap text if needed
+                const maxLineW = panelW - 50;
+                const words = clean.split(' ');
+                let line = '';
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxLineW && n > 0) {
+                        ctx.fillText(line, pad + 48, bulletY);
+                        line = words[n] + ' ';
+                        bulletY += 26;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, pad + 48, bulletY);
+                bulletY += 34;
+            });
+
+            // Right visual panel
+            const rightX = pad + 10 + panelW + 20;
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = accentColor + '44';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(rightX, curY, rightW, panelH, 14);
+            ctx.fill();
+            ctx.stroke();
+
+            // Right panel icon
+            ctx.font = '48px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(slide.icon || '💡', rightX + (rightW / 2), curY + 70);
+
+            // Right panel label
+            ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = accentColor;
+            ctx.fillText((slide.focusLabel || 'Focus & Practice').toUpperCase(), rightX + (rightW / 2), curY + 115);
+
+            // Right panel desc
+            ctx.font = '13px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText(slide.focusNote || 'Listen & repeat key vocabulary', rightX + (rightW / 2), curY + 145);
+
+            ctx.textAlign = 'left';
+
+            // Footer
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(pad + 10, height - 38);
+            ctx.lineTo(width - pad, height - 38);
+            ctx.stroke();
+
+            ctx.font = '13px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('ESL Interactive Masterclass Deck', pad + 10, height - 18);
+            ctx.textAlign = 'right';
+            ctx.fillText('Key Target: Speaking & Fluency', width - pad, height - 18);
+
+            ctx.restore();
+        }
+
         async function startSlideVideoExportProcess() {
             if (!currentSlidesData || currentSlidesData.length === 0) {
                 showToast("No slides available to export!", "⚠️");
@@ -11532,38 +11672,46 @@ Each object MUST strictly contain:
                 console.warn("AudioContext setup failed:", e);
             }
 
-            const canvasStream = exportCanvas.captureStream(30);
-            const tracks = [...canvasStream.getVideoTracks()];
-            if (dest && dest.stream) {
-                tracks.push(...dest.stream.getAudioTracks());
+            let combinedStream;
+            try {
+                const canvasStream = exportCanvas.captureStream ? exportCanvas.captureStream(30) : null;
+                const tracks = canvasStream ? [...canvasStream.getVideoTracks()] : [];
+                if (dest && dest.stream) {
+                    tracks.push(...dest.stream.getAudioTracks());
+                }
+                combinedStream = tracks.length > 0 ? new MediaStream(tracks) : null;
+            } catch(e) {
+                console.warn("Stream creation issue:", e);
             }
-            const combinedStream = new MediaStream(tracks);
 
             let mimeType = 'video/webm;codecs=vp9,opus';
-            if (!MediaRecorder.isTypeSupported(mimeType)) {
-                mimeType = 'video/webm;codecs=vp8,opus';
-                if (!MediaRecorder.isTypeSupported(mimeType)) {
-                    mimeType = 'video/webm';
+            if (typeof MediaRecorder !== 'undefined') {
+                if (!MediaRecorder.isTypeSupported || !MediaRecorder.isTypeSupported(mimeType)) {
+                    mimeType = 'video/webm;codecs=vp8,opus';
+                    if (!MediaRecorder.isTypeSupported || !MediaRecorder.isTypeSupported(mimeType)) {
+                        mimeType = 'video/webm';
+                    }
                 }
             }
 
             const recordedChunks = [];
             let mediaRecorder = null;
-            try {
-                mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
-                mediaRecorder.ondataavailable = (e) => {
-                    if (e.data && e.data.size > 0) {
-                        recordedChunks.push(e.data);
-                    }
-                };
-                mediaRecorder.start(100);
-            } catch(e) {
-                console.error("MediaRecorder init error:", e);
-                showToast("Video recording not supported in this browser.", "⚠️");
-                document.body.removeChild(offscreenContainer);
-                if (startBtn) { startBtn.disabled = false; startBtn.innerText = '🎬 Start Video Generation'; }
-                if (cancelBtn) cancelBtn.disabled = false;
-                return;
+            let canRecordVideo = false;
+
+            if (typeof MediaRecorder !== 'undefined' && combinedStream) {
+                try {
+                    mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data && e.data.size > 0) {
+                            recordedChunks.push(e.data);
+                        }
+                    };
+                    mediaRecorder.start(100);
+                    canRecordVideo = true;
+                } catch(e) {
+                    console.warn("MediaRecorder creation fallback:", e);
+                    canRecordVideo = false;
+                }
             }
 
             const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
@@ -11582,23 +11730,30 @@ Each object MUST strictly contain:
                 try {
                     let renderedCanvas = null;
                     if (captureCanvas) {
-                        renderedCanvas = await captureCanvas(offscreenContainer, {
-                            width: width,
-                            height: height,
-                            scale: 1,
-                            useCORS: true,
-                            logging: false
-                        });
+                        try {
+                            renderedCanvas = await captureCanvas(offscreenContainer, {
+                                width: width,
+                                height: height,
+                                scale: 1,
+                                useCORS: true,
+                                logging: false
+                            });
+                        } catch(e) {
+                            console.warn("html2canvas error, using direct 2D canvas renderer:", e);
+                        }
                     }
 
                     if (renderedCanvas) {
                         ctx.clearRect(0, 0, width, height);
                         ctx.drawImage(renderedCanvas, 0, 0, width, height);
+                    } else {
+                        // Direct high-performance Canvas drawing fallback
+                        drawSlideToCanvasDirectly(ctx, slide, i, totalSlides, width, height);
+                    }
 
-                        if (framePreview) {
-                            framePreview.src = exportCanvas.toDataURL('image/jpeg', 0.8);
-                            framePreview.style.display = 'inline-block';
-                        }
+                    if (framePreview) {
+                        framePreview.src = exportCanvas.toDataURL('image/jpeg', 0.8);
+                        framePreview.style.display = 'inline-block';
                     }
 
                     if (audioCtx && dest) {
@@ -11612,26 +11767,32 @@ Each object MUST strictly contain:
                     }
 
                     if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        const utterance = new SpeechSynthesisUtterance(textToRead);
-                        utterance.lang = 'en-US';
-                        utterance.rate = voiceRate;
-                        const voices = window.speechSynthesis.getVoices();
-                        const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('English')));
-                        if (preferredVoice) utterance.voice = preferredVoice;
-                        window.speechSynthesis.speak(utterance);
+                        try {
+                            window.speechSynthesis.cancel();
+                            const utterance = new SpeechSynthesisUtterance(textToRead);
+                            utterance.lang = 'en-US';
+                            utterance.rate = voiceRate;
+                            const voices = window.speechSynthesis.getVoices();
+                            const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('English')));
+                            if (preferredVoice) utterance.voice = preferredVoice;
+                            window.speechSynthesis.speak(utterance);
+                        } catch(e) {
+                            console.warn("SpeechSynthesis error:", e);
+                        }
                     }
 
                     const wordCount = textToRead.split(/\s+/).length;
-                    const estimatedSpeechDurationMs = Math.max((wordCount / (150 * voiceRate / 60)) * 1000, 3500);
+                    const estimatedSpeechDurationMs = Math.max((wordCount / (150 * voiceRate / 60)) * 1000, 3200);
                     const totalSlideHoldMs = estimatedSpeechDurationMs + (pauseSec * 1000);
 
                     const startTime = Date.now();
                     while (Date.now() - startTime < totalSlideHoldMs) {
-                        if (renderedCanvas) {
+                        if (!renderedCanvas) {
+                            drawSlideToCanvasDirectly(ctx, slide, i, totalSlides, width, height);
+                        } else {
                             ctx.drawImage(renderedCanvas, 0, 0, width, height);
                         }
-                        await new Promise(r => setTimeout(r, 50));
+                        await new Promise(r => setTimeout(r, 60));
                     }
 
                 } catch(err) {
@@ -11641,23 +11802,11 @@ Each object MUST strictly contain:
 
             updateProgress(95, "Finalizing video container and downloading file...");
 
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: mimeType });
-                const url = URL.createObjectURL(blob);
-                const titleEl = document.getElementById('slide-deck-title');
-                const deckTitle = (titleEl && titleEl.innerText) ? titleEl.innerText : "Lesson_Presentation_Video";
-                const filename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_Narrated.webm';
+            const titleEl = document.getElementById('slide-deck-title');
+            const deckTitle = (titleEl && titleEl.innerText) ? titleEl.innerText : "Lesson_Presentation_Video";
+            const filename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_Narrated.webm';
 
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 500);
-
+            const finishExport = (blobDataUrl) => {
                 if (offscreenContainer.parentNode) {
                     document.body.removeChild(offscreenContainer);
                 }
@@ -11665,7 +11814,7 @@ Each object MUST strictly contain:
                     audioCtx.close();
                 }
 
-                updateProgress(100, "Export Complete! Video downloaded.");
+                updateProgress(100, "Export Complete! Video saved.");
                 showToast("Narrated Slide Deck Video exported successfully! 🎬", "✨");
 
                 if (startBtn) {
@@ -11679,7 +11828,49 @@ Each object MUST strictly contain:
                 }, 1500);
             };
 
-            mediaRecorder.stop();
+            if (canRecordVideo && mediaRecorder) {
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: mimeType });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64Data = reader.result;
+                        if (window.AndroidAI && typeof window.AndroidAI.saveFile === 'function') {
+                            window.AndroidAI.saveFile(base64Data, filename, 'video/webm');
+                        }
+                    };
+                    reader.readAsDataURL(blob);
+
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 500);
+
+                    finishExport();
+                };
+                mediaRecorder.stop();
+            } else {
+                // Snapshot fallback for environments where full MediaRecorder is restricted
+                const pngDataUrl = exportCanvas.toDataURL('image/png');
+                const imageFilename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_SlideDeck.png';
+                if (window.AndroidAI && typeof window.AndroidAI.saveFile === 'function') {
+                    window.AndroidAI.saveFile(pngDataUrl, imageFilename, 'image/png');
+                }
+                const a = document.createElement('a');
+                a.href = pngDataUrl;
+                a.download = imageFilename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                }, 500);
+                finishExport();
+            }
         }
 
         function exportSlidesAudioPDF() {
