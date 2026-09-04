@@ -308,7 +308,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             position: relative;
             z-index: 1001;
-            pointer-events: auto !important;
             touch-action: manipulation;
         }
 
@@ -355,12 +354,7 @@
         button, a, input[type="button"], input[type="submit"], select, .topic-chip, .editor-btn, .mode-switch-btn, .grade-seg-btn, .theme-option-btn, .theme-selector-btn, .illustration-preset-card, .template-card, .ai-btn, .print-btn, .save-btn, label {
             cursor: pointer !important;
             touch-action: manipulation;
-            pointer-events: auto !important;
             user-select: none;
-        }
-
-        button > span, .editor-btn > span, .mode-switch-btn > span, .ai-btn > span {
-            pointer-events: none;
         }
 
         input[type="text"], input[type="search"], textarea {
@@ -421,7 +415,6 @@
             touch-action: manipulation;
             position: relative;
             z-index: 1001;
-            pointer-events: auto !important;
         }
         .theme-chip-btn:hover {
             background: rgba(255, 255, 255, 0.22);
@@ -469,7 +462,6 @@
             touch-action: manipulation;
             position: relative;
             z-index: 1001;
-            pointer-events: auto !important;
         }
         .theme-selector-btn:hover {
             background: rgba(255, 255, 255, 0.35);
@@ -4572,7 +4564,7 @@
         </div>
 
         <!-- API Key Configuration Modal -->
-        <div id="api-key-modal" class="sample-modal-overlay" onclick="if(event.target.id === 'api-key-modal') document.getElementById('api-key-modal').style.display='none'">
+        <div id="api-key-modal" class="sample-modal-overlay" style="display: none;" onclick="if(event.target.id === 'api-key-modal') document.getElementById('api-key-modal').style.display='none'">
             <div class="sample-modal" style="max-width: 500px; border-radius: 20px; width: 90vw; padding: 24px;" onclick="event.stopPropagation()">
                 <div style="font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
                     <span>🔑</span> Configure Gemini API Key
@@ -4600,7 +4592,7 @@
         </div>
 
         <!-- Template Library Modal (Pre-designed Worksheet Layouts) -->
-        <div id="template-library-modal" class="sample-modal-overlay" onclick="handleTemplateLibraryOverlayClick(event)">
+        <div id="template-library-modal" class="sample-modal-overlay" style="display: none;" onclick="handleTemplateLibraryOverlayClick(event)">
             <div class="sample-modal" style="max-width: 860px; border-radius: 20px; width: 94vw;" onclick="event.stopPropagation()">
                 <div class="sample-modal-header" style="border-bottom: 1px solid var(--input-border); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4636,7 +4628,7 @@
         </div>
 
         <!-- Illustration Studio Modal (Thematic Graphic Generator & A4 Embed) -->
-        <div id="illustration-modal" class="sample-modal-overlay" onclick="handleIllustrationOverlayClick(event)">
+        <div id="illustration-modal" class="sample-modal-overlay" style="display: none;" onclick="handleIllustrationOverlayClick(event)">
             <div class="sample-modal" style="max-width: 650px; border-radius: 20px; width: 92vw;" onclick="event.stopPropagation()">
                 <div class="sample-modal-header" style="border-bottom: 1px solid var(--input-border); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between;">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4740,7 +4732,7 @@
         </div>
 
         <!-- Save Worksheet Modal (Name / Tag / Confirm) -->
-        <div id="save-worksheet-modal" class="sample-modal-overlay" onclick="handleSaveModalOverlayClick(event)">
+        <div id="save-worksheet-modal" class="sample-modal-overlay" style="display: none;" onclick="handleSaveModalOverlayClick(event)">
             <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 460px;">
                 <div class="sample-modal-header">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4766,7 +4758,7 @@
         </div>
 
         <!-- Saved Worksheets Collection Manager Modal -->
-        <div id="saved-worksheets-modal" class="sample-modal-overlay" onclick="handleSavedListOverlayClick(event)">
+        <div id="saved-worksheets-modal" class="sample-modal-overlay" style="display: none;" onclick="handleSavedListOverlayClick(event)">
             <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 680px;">
                 <div class="sample-modal-header">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4789,7 +4781,7 @@
         </div>
 
         <!-- Print Preview Dedicated Modal (A4 Page Positioning, Watermark & QR Inspector) -->
-        <div id="print-preview-modal" class="sample-modal-overlay" onclick="handlePrintPreviewOverlayClick(event)">
+        <div id="print-preview-modal" class="sample-modal-overlay" style="display: none;" onclick="handlePrintPreviewOverlayClick(event)">
             <div class="sample-modal print-preview-modal-dialog" onclick="event.stopPropagation()">
                 <div class="sample-modal-header print-preview-header-bar">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4869,7 +4861,7 @@
 
 
         <!-- Slides Template Library Modal -->
-        <div id="slides-template-modal" class="sample-modal-overlay" onclick="handleSlidesTemplateOverlayClick(event)">
+        <div id="slides-template-modal" class="sample-modal-overlay" style="display: none;" onclick="handleSlidesTemplateOverlayClick(event)">
             <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 540px;">
                 <div class="sample-modal-header">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4912,7 +4904,7 @@
         </div>
 
         <!-- Digital Version Link & Share Modal -->
-        <div id="digital-share-modal" class="sample-modal-overlay" onclick="handleDigitalShareOverlayClick(event)">
+        <div id="digital-share-modal" class="sample-modal-overlay" style="display: none;" onclick="handleDigitalShareOverlayClick(event)">
             <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 540px;">
                 <div class="sample-modal-header">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
@@ -4943,7 +4935,7 @@
         </div>
 
         <!-- Slide Deck Video Export Modal -->
-        <div id="slide-video-export-modal" class="sample-modal-overlay" onclick="if(event.target.id === 'slide-video-export-modal') closeSlideVideoModal()">
+        <div id="slide-video-export-modal" class="sample-modal-overlay" style="display: none;" onclick="if(event.target.id === 'slide-video-export-modal') closeSlideVideoModal()">
             <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 620px;">
                 <div class="sample-modal-header">
                     <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
