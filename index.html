@@ -352,8 +352,15 @@
             cursor: default;
         }
 
-        button, a, input[type="button"], input[type="submit"], select, .topic-chip, .editor-btn, .mode-switch-btn, .grade-seg-btn, .theme-option-btn, .theme-selector-btn, .illustration-preset-card, .template-card, label {
+        button, a, input[type="button"], input[type="submit"], select, .topic-chip, .editor-btn, .mode-switch-btn, .grade-seg-btn, .theme-option-btn, .theme-selector-btn, .illustration-preset-card, .template-card, .ai-btn, .print-btn, .save-btn, label {
             cursor: pointer !important;
+            touch-action: manipulation;
+            pointer-events: auto !important;
+            user-select: none;
+        }
+
+        button > span, .editor-btn > span, .mode-switch-btn > span, .ai-btn > span {
+            pointer-events: none;
         }
 
         input[type="text"], input[type="search"], textarea {
@@ -722,9 +729,11 @@
             color: var(--accent-primary);
         }
         .container {
-            padding: 20px;
-            max-width: 860px;
-            margin: 0 auto;
+            padding: 12px 16px;
+            max-width: 100% !important;
+            width: 100%;
+            margin: 0;
+            box-sizing: border-box;
         }
 
         /* Streamlined Studio Card */
@@ -4021,69 +4030,59 @@
         <div class="header-title">
             <span>English Worksheet Studio</span>
             <span class="premium-pill">ESL / ELT</span>
-            <span class="educator-pill" style="font-size: 11.5px; background: var(--primary-box-bg); color: var(--accent-primary); border: 1px solid var(--tag-border); padding: 3px 10px; border-radius: 12px; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.2s ease;" onclick="editTeacherName()" title="Click to edit teacher's name on worksheets" onmouseover="this.style.filter='brightness(1.05)'" onmouseout="this.style.filter='none'">👤 <span id="teacher-name-text">Zaafouri Abdelmalek</span> ✏️</span>
+            <span class="educator-pill" style="font-size: 11.5px; background: var(--primary-box-bg); color: var(--accent-primary); border: 1px solid var(--tag-border); padding: 3px 10px; border-radius: 12px; font-weight: 700; margin-left: 6px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.2s ease;" onclick="editTeacherName()" title="Click to edit teacher's name on worksheets" onmouseover="this.style.filter='brightness(1.05)'" onmouseout="this.style.filter='none'"><span id="teacher-name-text">Zaafouri Abdelmalek</span></span>
         </div>
         
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <!-- Digital Interactive QR Link -->
             <button type="button" class="dark-mode-toggle-btn" onclick="openDigitalShareModal(event)" title="Show QR code for interactive digital version">
-                <span>📱</span>
                 <span>Digital Version</span>
             </button>
             
             <!-- Global Night Mode / Day Mode Toggle Button -->
             <button type="button" class="dark-mode-toggle-btn" id="global-dark-mode-toggle" onclick="toggleGlobalDarkMode()" title="Toggle Night Mode (Obsidian) / Day Mode">
-                <span id="dark-mode-icon">🌙</span>
                 <span id="dark-mode-label">Night Mode</span>
             </button>
 
             <!-- Theme Selector Trigger Button -->
             <div class="theme-selector-container">
                 <button type="button" class="theme-selector-btn" id="theme-menu-trigger" onclick="toggleThemeMenu(event)" title="Choose Theme Palette with Visual Preview Cards">
-                    <span class="theme-dot" id="header-theme-dot" style="background: #38bdf8;"></span>
                     <span style="display: flex; align-items: center; gap: 4px;">
                         <span style="opacity: 0.85; font-weight: 600;">Theme:</span>
                         <span id="current-theme-label" style="font-weight: 800;">Sapphire</span>
                     </span>
-                    <span style="font-size: 9px; margin-left: 2px; opacity: 0.85;">▼</span>
                 </button>
             </div>
 
             <!-- Direct Quick Theme Palette -->
             <div class="header-theme-strip" title="Quick Palette Swatches">
                 <button type="button" class="theme-chip-btn active" id="swatch-sapphire" onclick="setTheme('sapphire')" title="Sapphire Theme (Academic Blue)">
-                    <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #1e40af, #0284c7);"></span>
                     <span>Sapphire</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-icewhite" onclick="setTheme('icewhite')" title="Ice White Theme (Arctic Frost)">
-                    <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #ffffff, #38bdf8); border: 1px solid #cbd5e1;"></span>
                     <span>Ice White</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-emerald" onclick="setTheme('emerald')" title="Emerald Theme (Botanical Green)">
-                    <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #047857, #10b981);"></span>
                     <span>Emerald</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-amethyst" onclick="setTheme('amethyst')" title="Amethyst Theme (Royal Violet)">
-                    <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #6b21a8, #9333ea);"></span>
                     <span>Amethyst</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-amber" onclick="setTheme('amber')" title="Sunset Amber Theme (Warm Terracotta)">
-                    <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #c2410c, #d97706);"></span>
                     <span>Amber</span>
                 </button>
                 <button type="button" class="theme-chip-btn" id="swatch-obsidian" onclick="setTheme('obsidian')" title="Obsidian Dark Theme (High-Contrast)">
-                    <span class="theme-swatch-dot" style="background: linear-gradient(135deg, #090d16, #6366f1); border: 1px solid #334155;"></span>
                     <span>Dark</span>
                 </button>
             </div>
 
             <!-- API Key Configuration -->
             <button type="button" class="saved-manager-btn" onclick="openApiKeyModal()" title="Configure Gemini API Key" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--tag-border);">
-                <span>🔑 API Key</span>
+                <span>API Key</span>
             </button>
             <!-- Saved Worksheets Quick Access -->
             <button type="button" class="saved-manager-btn" onclick="openSavedWorksheetsModal()" title="View and open saved worksheets">
-                <span>📂 Saved Worksheets</span>
+                <span>Saved Worksheets</span>
                 <span class="badge-count" id="header-saved-count">0</span>
             </button>
         </div>
@@ -4095,13 +4094,13 @@
         <div class="no-print" style="display: flex; justify-content: center; margin-bottom: 20px;">
             <div class="preview-mode-switch" style="padding: 4px; border-radius: 16px; background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 2px solid var(--tag-border);">
                 <button type="button" class="mode-switch-btn active" id="tab-mode-worksheet" onclick="switchAppMode('worksheet')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
-                    <span>📄 Worksheets Studio</span>
+                    <span>Worksheets Studio</span>
                 </button>
                 <button type="button" class="mode-switch-btn" id="tab-mode-slides" onclick="switchAppMode('slides')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
-                    <span>📊 Presentation Slides</span>
+                    <span>Presentation Slides</span>
                 </button>
                 <button type="button" class="mode-switch-btn" id="tab-mode-copilot" onclick="switchAppMode('copilot')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
-                    <span>🤖 AI Co-Pilot Chat</span>
+                    <span>AI Co-Pilot Chat</span>
                 </button>
             </div>
         </div>
@@ -4111,7 +4110,6 @@
             <div class="studio-card no-print" id="ai-drop-zone">
             <div class="studio-header">
                 <div class="studio-title-group">
-                    <div class="studio-icon">📚</div>
                     <div>
                         <div class="studio-title-text">English Worksheet Creator</div>
                         <div class="studio-subtitle">Classroom English & ESL Suite</div>
@@ -4119,10 +4117,10 @@
                 </div>
 
                 <div class="grade-segmented-bar">
-                    <button type="button" class="grade-seg-btn active" id="seg-elem" onclick="setGradeSegment(this, 'elementary')">✏️ Elementary (A1-A2)</button>
-                    <button type="button" class="grade-seg-btn" id="seg-k" onclick="setGradeSegment(this, 'kindergarten')">🎨 Phonics & ABC</button>
-                    <button type="button" class="grade-seg-btn" id="seg-mid" onclick="setGradeSegment(this, 'middle')">💬 Intermediate (B1)</button>
-                    <button type="button" class="grade-seg-btn" id="seg-high" onclick="setGradeSegment(this, 'high')">🎓 Advanced (B2-C1)</button>
+                    <button type="button" class="grade-seg-btn active" id="seg-elem" onclick="setGradeSegment(this, 'elementary')">Elementary (A1-A2)</button>
+                    <button type="button" class="grade-seg-btn" id="seg-k" onclick="setGradeSegment(this, 'kindergarten')">Phonics & ABC</button>
+                    <button type="button" class="grade-seg-btn" id="seg-mid" onclick="setGradeSegment(this, 'middle')">Intermediate (B1)</button>
+                    <button type="button" class="grade-seg-btn" id="seg-high" onclick="setGradeSegment(this, 'high')">Advanced (B2-C1)</button>
                 </div>
             </div>
 
@@ -4137,26 +4135,26 @@
                         <span id="sample-meta-title" style="font-weight: 700;">Sample Title</span>
                         <span id="sample-meta-stats" style="font-size: 11px; color: var(--text-muted); font-weight: normal;">(0 words)</span>
                     </div>
-                    <button type="button" onclick="clearLoadedSample()" style="background: transparent; border: none; font-size: 14px; cursor: pointer; color: var(--text-muted); font-weight: bold;" title="Remove sample">✖ Remove</button>
+                    <button type="button" onclick="clearLoadedSample()" style="background: transparent; border: none; font-size: 14px; cursor: pointer; color: var(--text-muted); font-weight: bold;" title="Remove sample">Remove</button>
                 </div>
                 <div class="loaded-sample-preview" id="sample-preview-box"></div>
                 <div class="loaded-sample-actions">
                     <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">English Tasks:</span>
-                    <button type="button" class="sample-transform-btn" onclick="transformSample('comprehension')">📖 Reading Quiz</button>
-                    <button type="button" class="sample-transform-btn" onclick="transformSample('fill_blanks')">📝 Fill-in-Blanks</button>
-                    <button type="button" class="sample-transform-btn" onclick="transformSample('mcq')">🔘 Multiple Choice</button>
-                    <button type="button" class="sample-transform-btn" onclick="transformSample('vocab')">🔤 Vocab Match</button>
+                    <button type="button" class="sample-transform-btn" onclick="transformSample('comprehension')">Reading Quiz</button>
+                    <button type="button" class="sample-transform-btn" onclick="transformSample('fill_blanks')">Fill-in-Blanks</button>
+                    <button type="button" class="sample-transform-btn" onclick="transformSample('mcq')">Multiple Choice</button>
+                    <button type="button" class="sample-transform-btn" onclick="transformSample('vocab')">Vocab Match</button>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="sample-action-btn" type="button" onclick="loadSpiralWorkbookTemplate()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(2,132,199,0.25); display: inline-flex; align-items: center; gap: 5px;" title="Load the illustrated children's workbook layout with pictures & spiral binding from your screenshot">⭐ Illustrated Workbook (Screenshot)</button>
-                    <button type="button" id="btn-spiral-notebook-toggle" onclick="toggleSpiralNotebook()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #1e40af; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Toggle spiral notebook binding on the worksheet page">📓 Spiral: <span id="spiral-toggle-status">ON</span></button>
-                    <button type="button" id="btn-visual-cards-toggle" onclick="toggleVisualCardsMode()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #059669; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Ensure AI generates cute cartoon picture cards for each concept">📸 Picture Cards: <span id="visual-cards-status">AUTO</span></button>
-                    <button class="sample-action-btn" type="button" onclick="openTemplateLibraryModal()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(37,99,235,0.2);">📐 Templates</button>
-                    <button class="sample-action-btn" type="button" onclick="openSampleLibrary()" style="font-size: 12px; padding: 6px 12px;">📚 Texts & Samples</button>
-                    <button class="sample-action-btn" type="button" onclick="triggerFileInput()" style="font-size: 12px; padding: 6px 12px;">📁 Import</button>
+                    <button class="sample-action-btn" type="button" onclick="loadSpiralWorkbookTemplate()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(2,132,199,0.25); display: inline-flex; align-items: center; gap: 5px;" title="Load the illustrated children's workbook layout with pictures & spiral binding">Illustrated Workbook</button>
+                    <button type="button" id="btn-spiral-notebook-toggle" onclick="toggleSpiralNotebook()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #1e40af; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Toggle spiral notebook binding on the worksheet page">Spiral Notebook: <span id="spiral-toggle-status">ON</span></button>
+                    <button type="button" id="btn-visual-cards-toggle" onclick="toggleVisualCardsMode()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #059669; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Ensure AI generates cute cartoon picture cards for each concept">Picture Cards: <span id="visual-cards-status">AUTO</span></button>
+                    <button class="sample-action-btn" type="button" onclick="openTemplateLibraryModal()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(37,99,235,0.2);">Templates</button>
+                    <button class="sample-action-btn" type="button" onclick="openSampleLibrary()" style="font-size: 12px; padding: 6px 12px;">Texts & Samples</button>
+                    <button class="sample-action-btn" type="button" onclick="triggerFileInput()" style="font-size: 12px; padding: 6px 12px;">Import</button>
                 </div>
             </div>
 
@@ -4165,10 +4163,10 @@
                 
                 <div class="composer-toolbar" style="justify-content: space-between; gap: 8px; flex-wrap: wrap;">
                     <button type="button" class="editor-btn" onclick="openCopilotWithTopic(document.getElementById('custom-prompt').value, 'worksheet')" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 10px 16px; border-radius: 12px; background: rgba(124,58,237,0.08); border-color: #8b5cf6; color: #7c3aed;" title="Open conversational AI Co-Pilot chat to brainstorm or refine">
-                        🤖 Chat with Co-Pilot
+                        Chat with Co-Pilot
                     </button>
                     <button class="ai-btn composer-ai-btn" id="ai-button" onclick="askAITutor()">
-                        ✨ Generate Worksheet
+                        Generate Worksheet
                     </button>
                 </div>
             </div>

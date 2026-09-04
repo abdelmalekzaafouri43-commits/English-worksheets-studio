@@ -477,7 +477,6 @@ fun HtmlAppWebView() {
             }
 
             WebView(context).apply {
-                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 settings.javaScriptEnabled = true
                 settings.domStorageEnabled = true
                 settings.allowContentAccess = true
