@@ -3192,37 +3192,74 @@
         @media print {
             body.printing-slides { 
                 background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             body.printing-slides > *:not(#temp-print-slides-container) {
                 display: none !important;
             }
             body.printing-slides #temp-print-slides-container {
                 display: block !important;
-                width: 100%;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             .slide-print-page {
                 page-break-after: always !important;
                 break-after: page !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
-                aspect-ratio: 16/9;
-                padding: 40px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+                width: 100% !important;
+                min-height: 96vh !important;
+                box-sizing: border-box !important;
+                padding: 36px 44px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                background: #ffffff !important;
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important;
-                color: #0f172a;
-                box-sizing: border-box;
-                border: 2px solid #e2e8f0;
-                margin: 0 auto;
-                width: 100%;
-                max-width: 1080px;
+                color: #0f172a !important;
+                border: 2px solid #cbd5e1 !important;
+                border-radius: 12px !important;
+                margin: 0 0 20px 0 !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
             }
             .slide-print-page:last-child {
                 page-break-after: auto !important;
                 break-after: auto !important;
+            }
+            .slide-print-page h1 {
+                font-size: 28pt !important;
+                font-weight: 800 !important;
+                color: #0f172a !important;
+                margin: 0 0 8px 0 !important;
+                line-height: 1.25 !important;
+            }
+            .slide-print-page .slide-bullets-panel {
+                background: #f8fafc !important;
+                border: 1.5px solid #cbd5e1 !important;
+                border-radius: 12px !important;
+                padding: 24px 28px !important;
+            }
+            .slide-print-page .slide-bullets-panel li {
+                font-size: 17pt !important;
+                line-height: 1.6 !important;
+                color: #0f172a !important;
+                font-weight: 600 !important;
+                margin-bottom: 14px !important;
+            }
+            .slide-print-page .slide-visual-panel {
+                background: #f1f5f9 !important;
+                border: 1.5px solid #94a3b8 !important;
+                border-radius: 12px !important;
+                padding: 24px !important;
+            }
+            .slide-print-page .slide-visual-panel div {
+                color: #1e293b !important;
+            }
+            .slide-print-page .slide-voice-btn {
+                display: none !important;
             }
 
             body { 
@@ -5125,13 +5162,13 @@
                             <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Next slide (Right Arrow / Space)">Next ▶</button>
                         </div>
                         
-                        <!-- Export Group -->
+                        <!-- Export Group: 4 Functional Action Buttons (Audio PDF, Video, Word, PNG) -->
                         <div style="display: flex; gap: 6px; border-left: 1px solid var(--tag-border); padding-left: 8px; margin-left: 4px; flex-wrap: wrap; align-items: center;">
                             <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; white-space: nowrap;" title="Standard PDF Export">📥 PDF</button>
-                            <button type="button" class="editor-btn" onclick="exportSlidesAudioPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); white-space: nowrap;" title="Export interactive PDF presentation with embedded voice narration">🎧 Audio PDF</button>
-                            <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); white-space: nowrap;" title="Export complete slide deck as a WebM / MP4 video with synthesized voice narration">🎬 Video</button>
-                            <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #1e40af; color: white; border: none; cursor: pointer; white-space: nowrap;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Word</button>
-                            <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #059669; color: white; border: none; cursor: pointer; white-space: nowrap;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
+                            <button type="button" class="editor-btn" onclick="exportSlidesAudioPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); white-space: nowrap;" title="Export interactive PDF presentation with embedded voice narration">🎧 Audio PDF</button>
+                            <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); white-space: nowrap;" title="Export complete slide deck as a WebM / MP4 video with synthesized voice narration">🎬 Video</button>
+                            <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #1e40af, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25); white-space: nowrap;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Word</button>
+                            <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); white-space: nowrap;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
                         </div>
                     </div>
                 </div>
@@ -11346,20 +11383,7 @@ Each object MUST strictly contain:
 
             showToast(`Capturing Slide ${currentSlideIndex + 1} as printable PNG image... 🖼️`, "⏳");
 
-            const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
-
-            if (!captureCanvas) {
-                showToast("Image renderer is loading, please try again in a moment...", "⚠️");
-                return;
-            }
-
-            captureCanvas(viewport, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#f8fafc',
-                logging: false
-            }).then(canvas => {
-                const dataUrl = canvas.toDataURL('image/png');
+            const savePngDataUrl = (dataUrl) => {
                 if (window.AndroidAI && (window.AndroidAI.saveImage || window.AndroidAI.saveFile)) {
                     if (window.AndroidAI.saveImage) {
                         window.AndroidAI.saveImage(dataUrl, filename);
@@ -11372,15 +11396,103 @@ Each object MUST strictly contain:
                         showToast(`Slide ${currentSlideIndex + 1} saved to Pictures as PNG image! 🖼️`, "✨");
                     }
                 } else {
-                    canvas.toBlob(blob => {
-                        if (!blob) {
-                            showToast("Failed to generate slide image file", "⚠️");
-                            return;
+                    const a = document.createElement('a');
+                    a.href = dataUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        if (a.parentNode) a.parentNode.removeChild(a);
+                    }, 1000);
+                    showToast(`Slide ${currentSlideIndex + 1} PNG image downloaded! <a href="${dataUrl}" target="_blank" download="${escapeHtml(filename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">🖼️ Open Image</a>`, "✨", 10000);
+                }
+            };
+
+            const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
+
+            if (captureCanvas) {
+                captureCanvas(viewport, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#f8fafc',
+                    logging: false
+                }).then(canvas => {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    savePngDataUrl(dataUrl);
+                }).catch(err => {
+                    console.warn("html2canvas capture warning, falling back to direct 2D canvas:", err);
+                    const fallbackCanvas = document.createElement('canvas');
+                    fallbackCanvas.width = 1920;
+                    fallbackCanvas.height = 1080;
+                    const ctx = fallbackCanvas.getContext('2d');
+                    drawSlideToCanvasDirectly(ctx, slide, currentSlideIndex, currentSlidesData.length, 1920, 1080);
+                    const dataUrl = fallbackCanvas.toDataURL('image/png');
+                    savePngDataUrl(dataUrl);
+                });
+            } else {
+                // Direct high-res 1920x1080 canvas export fallback
+                const fallbackCanvas = document.createElement('canvas');
+                fallbackCanvas.width = 1920;
+                fallbackCanvas.height = 1080;
+                const ctx = fallbackCanvas.getContext('2d');
+                drawSlideToCanvasDirectly(ctx, slide, currentSlideIndex, currentSlidesData.length, 1920, 1080);
+                const dataUrl = fallbackCanvas.toDataURL('image/png');
+                savePngDataUrl(dataUrl);
+            }
+        }
+
+        function downloadSlidesPDF() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate slides first!", "⚠️");
+                return;
+            }
+            showToast("Generating crisp, high-resolution PDF of slides... 📥", "⏳");
+
+            const filename = (document.getElementById('slides-prompt') ? document.getElementById('slides-prompt').value.trim() : '') || 'Presentation_Deck';
+            const cleanFilename = filename.replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 40) + '.pdf';
+
+            // Check if jsPDF is available
+            const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (typeof jsPDF === 'function' ? jsPDF : null);
+
+            if (jsPDFClass) {
+                try {
+                    // Create landscape A4 PDF: 297mm x 210mm
+                    const pdf = new jsPDFClass({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 1920;
+                    canvas.height = 1080;
+                    const ctx = canvas.getContext('2d');
+
+                    const total = currentSlidesData.length;
+                    for (let i = 0; i < total; i++) {
+                        if (i > 0) {
+                            pdf.addPage('a4', 'landscape');
                         }
+                        ctx.clearRect(0, 0, 1920, 1080);
+                        drawSlideToCanvasDirectly(ctx, currentSlidesData[i], i, total, 1920, 1080);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.96);
+                        pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
+                    }
+
+                    if (window.AndroidAI && window.AndroidAI.savePdf) {
+                        const pdfDataUri = pdf.output('datauristring');
+                        window.AndroidAI.savePdf(pdfDataUri, cleanFilename);
+                        if (typeof onAndroidFileSaved === 'function') {
+                            onAndroidFileSaved(cleanFilename, 'application/pdf');
+                        } else {
+                            showToast(`PDF saved to Downloads! 📥`, "✨");
+                        }
+                    } else {
+                        const blob = pdf.output('blob');
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
-                        a.download = filename;
+                        a.download = cleanFilename;
                         document.body.appendChild(a);
                         a.click();
                         setTimeout(() => {
@@ -11389,22 +11501,15 @@ Each object MUST strictly contain:
                         setTimeout(() => {
                             URL.revokeObjectURL(url);
                         }, 600000);
-                        showToast(`Slide ${currentSlideIndex + 1} PNG image downloaded! <a href="${url}" target="_blank" download="${escapeHtml(filename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">🖼️ Open Image</a>`, "✨", 10000);
-                    }, 'image/png');
+                        showToast(`Crisp slides PDF downloaded! <a href="${url}" target="_blank" download="${escapeHtml(cleanFilename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">📂 Open PDF</a>`, "✨", 10000);
+                    }
+                    return;
+                } catch (pdfErr) {
+                    console.warn("jsPDF direct rendering error, falling back to print dialog:", pdfErr);
                 }
-            }).catch(err => {
-                console.error("Slide image capture error:", err);
-                showToast("Failed to capture slide image.", "⚠️");
-            });
-        }
-
-        function downloadSlidesPDF() {
-            if (!currentSlidesData || currentSlidesData.length === 0) {
-                showToast("Please generate slides first!", "⚠️");
-                return;
             }
-            showToast("Preparing presentation slides for export...", "📥");
-            
+
+            // Fallback to high-contrast print layout
             let printContainer = document.getElementById('temp-print-slides-container');
             if (!printContainer) {
                 printContainer = document.createElement('div');
@@ -11479,135 +11584,160 @@ Each object MUST strictly contain:
             }
         }
 
-        // --- Helper to draw a slide directly to Canvas (instant, robust, zero-dependency) ---
+        // --- Helper to draw a slide directly to Canvas (instant, robust, zero-dependency, ultra-crisp) ---
         function drawSlideToCanvasDirectly(ctx, slide, index, totalSlides, width, height) {
             ctx.save();
             // Background
-            const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-            bgGrad.addColorStop(0, '#f8fafc');
-            bgGrad.addColorStop(1, '#f1f5f9');
-            ctx.fillStyle = bgGrad;
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, width, height);
 
-            // Left accent border
-            const accentColor = slide.accent || '#2563eb';
-            ctx.fillStyle = accentColor;
-            ctx.fillRect(0, 0, 16, height);
-
-            const pad = 54;
-            let curY = pad + 10;
-
-            // Header category tag
-            ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = accentColor;
-            ctx.fillText(`LESSON PRESENTATION • SLIDE ${index + 1} OF ${totalSlides}`, pad + 10, curY);
-
-            curY += 42;
-            // Title
-            ctx.font = 'bold 34px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = '#0f172a';
-            const titleText = (slide.title || 'Slide Title').slice(0, 70);
-            ctx.fillText(titleText, pad + 10, curY);
-
-            // Subtitle
-            if (slide.subtitle) {
-                curY += 28;
-                ctx.font = '500 18px system-ui, -apple-system, sans-serif';
-                ctx.fillStyle = '#64748b';
-                ctx.fillText(slide.subtitle.slice(0, 100), pad + 10, curY);
-            }
-
-            curY += 36;
-            // Split layout: bullets on left, graphic box on right
-            const panelW = (width - (pad * 2) - 30) * 0.65;
-            const rightW = (width - (pad * 2) - 30) * 0.35;
-            const panelH = height - curY - 70;
-
-            // Bullets background card
-            ctx.fillStyle = '#ffffff';
+            // Subtle header band
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, 140);
             ctx.strokeStyle = '#e2e8f0';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.roundRect(pad + 10, curY, panelW, panelH, 14);
+            ctx.moveTo(0, 140);
+            ctx.lineTo(width, 140);
+            ctx.stroke();
+
+            // Left accent border bar
+            const accentColor = slide.accent || '#2563eb';
+            ctx.fillStyle = accentColor;
+            ctx.fillRect(0, 0, 24, height);
+
+            const pad = 64;
+            let curY = 48;
+
+            // Header category tag
+            ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = accentColor;
+            ctx.fillText(`LESSON PRESENTATION • SLIDE ${index + 1} OF ${totalSlides}`, pad + 10, curY);
+
+            curY += 46;
+            // Title
+            ctx.font = '800 44px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = '#0f172a';
+            const titleText = (slide.title || 'Slide Title').slice(0, 60);
+            ctx.fillText(titleText, pad + 10, curY);
+
+            curY = 175;
+            // Subtitle
+            if (slide.subtitle) {
+                ctx.font = '600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                ctx.fillStyle = '#475569';
+                ctx.fillText(slide.subtitle.slice(0, 90), pad + 10, curY);
+                curY += 38;
+            } else {
+                curY += 10;
+            }
+
+            // Split layout: bullets on left, graphic box on right
+            const totalContentW = width - (pad * 2) - 30;
+            const panelW = totalContentW * 0.64;
+            const rightW = totalContentW * 0.36;
+            const panelH = height - curY - 90;
+
+            // Bullets background card
+            ctx.fillStyle = '#f8fafc';
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(pad + 10, curY, panelW, panelH, 16);
             ctx.fill();
             ctx.stroke();
 
             // Render bullets
             const bullets = slide.bullets || [];
-            let bulletY = curY + 36;
-            bullets.slice(0, 5).forEach((b) => {
+            let bulletY = curY + 48;
+            bullets.slice(0, 6).forEach((b) => {
                 const clean = b.replace(/<[^>]+>/g, '').trim();
                 if (!clean) return;
 
                 // Bullet circle
                 ctx.fillStyle = accentColor;
                 ctx.beginPath();
-                ctx.arc(pad + 34, bulletY - 6, 5, 0, Math.PI * 2);
+                ctx.arc(pad + 40, bulletY - 8, 7, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Bullet text
-                ctx.font = '17px system-ui, -apple-system, sans-serif';
-                ctx.fillStyle = '#1e293b';
+                // Bullet text with larger readable font
+                ctx.font = '600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                ctx.fillStyle = '#0f172a';
                 
                 // Wrap text if needed
-                const maxLineW = panelW - 50;
+                const maxLineW = panelW - 75;
                 const words = clean.split(' ');
                 let line = '';
                 for (let n = 0; n < words.length; n++) {
                     const testLine = line + words[n] + ' ';
                     const metrics = ctx.measureText(testLine);
                     if (metrics.width > maxLineW && n > 0) {
-                        ctx.fillText(line, pad + 48, bulletY);
+                        ctx.fillText(line, pad + 60, bulletY);
                         line = words[n] + ' ';
-                        bulletY += 26;
+                        bulletY += 36;
                     } else {
                         line = testLine;
                     }
                 }
-                ctx.fillText(line, pad + 48, bulletY);
-                bulletY += 34;
+                ctx.fillText(line, pad + 60, bulletY);
+                bulletY += 46;
             });
 
             // Right visual panel
-            const rightX = pad + 10 + panelW + 20;
-            ctx.fillStyle = '#ffffff';
-            ctx.strokeStyle = accentColor + '44';
-            ctx.lineWidth = 1.5;
+            const rightX = pad + 10 + panelW + 24;
+            ctx.fillStyle = '#f1f5f9';
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(rightX, curY, rightW, panelH, 14);
+            ctx.roundRect(rightX, curY, rightW, panelH, 16);
             ctx.fill();
             ctx.stroke();
 
             // Right panel icon
-            ctx.font = '48px system-ui, -apple-system, sans-serif';
+            ctx.font = '68px system-ui, -apple-system, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(slide.icon || '💡', rightX + (rightW / 2), curY + 70);
+            ctx.fillText(slide.icon || '💡', rightX + (rightW / 2), curY + 95);
 
             // Right panel label
-            ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+            ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.fillStyle = accentColor;
-            ctx.fillText((slide.focusLabel || 'Focus & Practice').toUpperCase(), rightX + (rightW / 2), curY + 115);
+            ctx.fillText((slide.focusLabel || 'Focus & Practice').toUpperCase(), rightX + (rightW / 2), curY + 155);
 
-            // Right panel desc
-            ctx.font = '13px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = '#64748b';
-            ctx.fillText(slide.focusNote || 'Listen & repeat key vocabulary', rightX + (rightW / 2), curY + 145);
+            // Right panel desc with text wrapping
+            ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = '#334155';
+            const focusText = slide.focusNote || 'Listen & repeat key vocabulary with full pronunciation and fluency.';
+            const fWords = focusText.split(' ');
+            let fLine = '';
+            let fY = curY + 195;
+            const maxFW = rightW - 40;
+            for (let m = 0; m < fWords.length; m++) {
+                const test = fLine + fWords[m] + ' ';
+                if (ctx.measureText(test).width > maxFW && m > 0) {
+                    ctx.fillText(fLine, rightX + (rightW / 2), fY);
+                    fLine = fWords[m] + ' ';
+                    fY += 26;
+                } else {
+                    fLine = test;
+                }
+            }
+            ctx.fillText(fLine, rightX + (rightW / 2), fY);
 
             ctx.textAlign = 'left';
 
-            // Footer
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1;
+            // Bottom Footer
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.moveTo(pad + 10, height - 38);
-            ctx.lineTo(width - pad, height - 38);
+            ctx.moveTo(pad + 10, height - 45);
+            ctx.lineTo(width - pad, height - 45);
             ctx.stroke();
 
-            ctx.font = '13px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = '#94a3b8';
-            ctx.fillText('ESL Interactive Masterclass Deck', pad + 10, height - 18);
+            ctx.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('ESL Interactive Masterclass Presentation', pad + 10, height - 20);
             ctx.textAlign = 'right';
-            ctx.fillText('Key Target: Speaking & Fluency', width - pad, height - 18);
+            ctx.fillText('Target Focus: Speaking & Fluency', width - pad, height - 20);
 
             ctx.restore();
         }
@@ -11920,7 +12050,7 @@ Each object MUST strictly contain:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>\${escapeHtml(deckTitle)} — Audio-Enhanced Interactive Presentation</title>
+    <title>${escapeHtml(deckTitle)} — Audio-Enhanced Interactive Presentation</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -12099,19 +12229,34 @@ Each object MUST strictly contain:
 </body>
 </html>`;
 
-            const blob = new Blob([fullDoc], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 200);
-
-            showToast(`Audio-Enhanced Presentation exported! Open file to listen to voice narration 🎧`, "✨");
+            if (window.AndroidAI && (window.AndroidAI.saveDoc || window.AndroidAI.saveFile)) {
+                const base64Data = 'data:text/html;base64,' + utf8ToBase64(fullDoc);
+                if (window.AndroidAI.saveDoc) {
+                    window.AndroidAI.saveDoc(base64Data, filename);
+                } else {
+                    window.AndroidAI.saveFile(base64Data, filename, 'text/html');
+                }
+                if (typeof onAndroidFileSaved === 'function') {
+                    onAndroidFileSaved(filename, 'text/html');
+                } else {
+                    showToast(`Audio-Enhanced Presentation saved! Open file to listen to voice narration 🎧`, "✨");
+                }
+            } else {
+                const blob = new Blob([fullDoc], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    if (a.parentNode) a.parentNode.removeChild(a);
+                }, 1000);
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 600000);
+                showToast(`Audio-Enhanced Presentation exported! <a href="${url}" target="_blank" download="${escapeHtml(filename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">🎧 Open File</a>`, "✨", 10000);
+            }
         }
 
 
