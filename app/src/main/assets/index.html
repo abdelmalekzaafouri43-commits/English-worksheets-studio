@@ -4488,7 +4488,7 @@
                                     <span>📱</span>
                                     <span>Digital QR Link Stamp</span>
                                 </span>
-                                <input type="checkbox" id="acc-pdf-qr-toggle" onchange="updateQRCodePreview()" style="width: 17px; height: 17px; accent-color: var(--accent-primary); cursor: pointer;">
+                                <input type="checkbox" id="acc-pdf-qr-toggle" checked onchange="updateQRCodePreview()" style="width: 17px; height: 17px; accent-color: var(--accent-primary); cursor: pointer;">
                             </label>
                             <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px;">Embeds a scannable QR code on A4 page linking to an interactive, editable version.</div>
                             <input type="text" id="acc-pdf-qr-label" class="primary-input bento-input" placeholder="📱 Digital Version Link" oninput="updateQRCodePreview()" style="padding: 6px 10px; font-size: 12px;">
@@ -4833,7 +4833,7 @@
 
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <label class="bento-label" style="font-size: 11.5px; margin-bottom: 0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                            <input type="checkbox" id="preview-qr-toggle" onchange="syncModalQRToWorkspace()" style="width: 15px; height: 15px; accent-color: var(--accent-primary); cursor: pointer;">
+                            <input type="checkbox" id="preview-qr-toggle" checked onchange="syncModalQRToWorkspace()" style="width: 15px; height: 15px; accent-color: var(--accent-primary); cursor: pointer;">
                             <span>📱 Digital QR Link Stamp</span>
                         </label>
                     </div>
@@ -5022,7 +5022,7 @@
             </div>
         </div>
 
-        <div class="a4-preview border-spiral" id="a4-preview-area" style="margin-top: 20px;">
+        <div class="a4-preview border-spiral has-qr" id="a4-preview-area" style="margin-top: 20px;">
             <div id="a4-spiral-binding" class="a4-spiral-binding" aria-hidden="true"></div>
             <div id="a4-watermark-overlay" class="a4-watermark-layer"></div>
             <div id="a4-qr-footer" class="a4-qr-layer" onclick="openDigitalShareModal(event)" style="cursor: pointer;" title="Click to view and share digital link">
