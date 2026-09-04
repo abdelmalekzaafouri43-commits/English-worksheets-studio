@@ -1027,6 +1027,66 @@
         }
 
         /* Specialized PDF Generation Clean Rules */
+        .a4-preview.rendering-image {
+            width: 794px !important;
+            max-width: 794px !important;
+            min-width: 794px !important;
+            min-height: 1123px !important; /* Force minimum A4 proportions (794 x 1123) */
+            height: auto !important;
+            padding: 15mm 15mm !important;
+            margin: 0 auto !important;
+            box-shadow: none !important;
+            border: none !important;
+            background: #ffffff !important;
+            color: #0f172a !important;
+            box-sizing: border-box !important;
+        }
+        
+        .a4-preview.rendering-image *,
+        .a4-preview.rendering-image *::before,
+        .a4-preview.rendering-image *::after {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+            will-change: auto !important;
+        }
+
+        .a4-preview.rendering-image .no-print,
+        .a4-preview.rendering-image .ws-block-controls {
+            display: none !important;
+        }
+
+        .a4-preview.rendering-image .a4-qr-layer {
+            position: relative !important;
+            bottom: auto !important;
+            right: auto !important;
+            margin-top: 20px !important;
+            margin-bottom: 8px !important;
+            padding-right: 0 !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+
+        .a4-preview.rendering-image .a4-qr-layer .a4-qr-title {
+            color: #334155 !important;
+        }
+
+        .a4-preview.rendering-image .middle-box,
+        .a4-preview.rendering-image .image-placeholder,
+        .a4-preview.rendering-image tr,
+        .a4-preview.rendering-image img {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .a4-preview.rendering-image h1,
+        .a4-preview.rendering-image h2,
+        .a4-preview.rendering-image h3,
+        .a4-preview.rendering-image h4 {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+
         .a4-preview.rendering-pdf {
             width: 794px !important;
             max-width: 794px !important;
@@ -1756,6 +1816,38 @@
             border: none !important;
             outline: none !important;
         }
+        
+        /* Spiral Notebook Border & Realistic 3D Binding Coil */
+        .a4-preview.border-spiral {
+            border: var(--ws-border-width, 2.5px) solid #2563eb !important;
+            border-radius: 22px !important;
+            padding-left: 70px !important;
+            box-shadow: 0 12px 35px rgba(37, 99, 235, 0.12), 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+            outline: none !important;
+            position: relative;
+        }
+        .a4-preview.border-spiral .a4-spiral-binding {
+            display: flex !important;
+        }
+        .a4-spiral-binding {
+            display: none;
+            position: absolute;
+            top: 25px;
+            bottom: 25px;
+            left: -4px;
+            width: 48px;
+            flex-direction: column;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 20;
+        }
+        .a4-preview.border-spiral.rendering-image,
+        .a4-preview.border-spiral.rendering-pdf {
+            padding-left: 70px !important;
+            border: 2.5px solid #2563eb !important;
+            border-radius: 22px !important;
+        }
+
         .a4-preview.border-classic {
             border: var(--ws-border-width, 2px) solid #2d3748 !important;
             outline: none;
@@ -4065,7 +4157,10 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="sample-action-btn" type="button" onclick="loadSpiralWorkbookTemplate()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(2,132,199,0.25); display: inline-flex; align-items: center; gap: 5px;" title="Load the illustrated children's workbook layout with pictures & spiral binding from your screenshot">⭐ Illustrated Workbook (Screenshot)</button>
+                    <button type="button" id="btn-spiral-notebook-toggle" onclick="toggleSpiralNotebook()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #1e40af; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Toggle spiral notebook binding on the worksheet page">📓 Spiral: <span id="spiral-toggle-status">ON</span></button>
+                    <button type="button" id="btn-visual-cards-toggle" onclick="toggleVisualCardsMode()" class="sample-action-btn" style="font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; background: #059669; color: white; font-weight: 700; border: none; border-radius: 8px;" title="Ensure AI generates cute cartoon picture cards for each concept">📸 Picture Cards: <span id="visual-cards-status">AUTO</span></button>
                     <button class="sample-action-btn" type="button" onclick="openTemplateLibraryModal()" style="font-size: 12px; padding: 6px 12px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; border: none; font-weight: 700; box-shadow: 0 2px 6px rgba(37,99,235,0.2);">📐 Templates</button>
                     <button class="sample-action-btn" type="button" onclick="openSampleLibrary()" style="font-size: 12px; padding: 6px 12px;">📚 Texts & Samples</button>
                     <button class="sample-action-btn" type="button" onclick="triggerFileInput()" style="font-size: 12px; padding: 6px 12px;">📁 Import</button>
@@ -4094,7 +4189,8 @@
                     <div class="format-item">
                         <label class="format-label">Border:</label>
                         <select id="border-style-select" class="style-dropdown" onchange="updateWorksheetStyle(); triggerBorderDrawAnimation();" style="font-size: 12px; padding: 4px 8px;">
-                            <option value="border-classic" selected>Classic Solid</option>
+                            <option value="border-spiral" selected>Spiral Notebook 📓 (Workbook Style)</option>
+                            <option value="border-classic">Classic Solid</option>
                             <option value="border-none">None (Clean)</option>
                             <option value="border-double">Double Line</option>
                             <option value="border-certificate">Certificate</option>
@@ -4906,7 +5002,8 @@
             <span id="toast-text">Worksheet saved successfully!</span>
         </div>
 
-        <div class="a4-preview" id="a4-preview-area" style="margin-top: 20px;">
+        <div class="a4-preview border-spiral" id="a4-preview-area" style="margin-top: 20px;">
+            <div id="a4-spiral-binding" class="a4-spiral-binding" aria-hidden="true"></div>
             <div id="a4-watermark-overlay" class="a4-watermark-layer"></div>
             <div id="a4-qr-footer" class="a4-qr-layer" onclick="openDigitalShareModal(event)" style="cursor: pointer;" title="Click to view and share digital link">
                 <div id="qrcode-box" class="a4-qr-box"></div>
@@ -5566,6 +5663,128 @@
             showToast(enabled ? "Spellcheck enabled 📝" : "Spellcheck disabled 🚫", "✨");
         }
 
+        
+        // --- SPIRAL NOTEBOOK BINDING ENGINE ---
+        let isSpiralNotebookEnabled = true;
+        let isVisualCardsMode = true;
+
+        function renderSpiralBinding() {
+            const previewArea = document.getElementById('a4-preview-area');
+            const spiralContainer = document.getElementById('a4-spiral-binding');
+            if (!previewArea || !spiralContainer) return;
+
+            const isSpiral = previewArea.classList.contains('border-spiral');
+            if (!isSpiral) {
+                spiralContainer.style.display = 'none';
+                spiralContainer.innerHTML = '';
+                return;
+            }
+
+            spiralContainer.style.display = 'flex';
+            const height = previewArea.offsetHeight || 1123;
+            // Spacing each ring roughly every 42px
+            const ringCount = Math.max(18, Math.min(48, Math.floor((height - 40) / 42)));
+
+            let ringsHtml = '';
+            for (let i = 0; i < ringCount; i++) {
+                ringsHtml += `
+                <svg width="48" height="34" viewBox="0 0 48 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible; flex-shrink: 0;">
+                    <defs>
+                        <linearGradient id="wireGrad-${i}" x1="0" y1="0" x2="42" y2="28" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#0f172a" />
+                            <stop offset="20%" stop-color="#1e40af" />
+                            <stop offset="45%" stop-color="#60a5fa" />
+                            <stop offset="70%" stop-color="#2563eb" />
+                            <stop offset="95%" stop-color="#0f172a" />
+                        </linearGradient>
+                        <filter id="shadow-${i}" x="-20%" y="-20%" width="160%" height="160%">
+                            <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.32"/>
+                        </filter>
+                    </defs>
+                    <!-- Punch hole in notebook paper -->
+                    <ellipse cx="29" cy="18" rx="6.5" ry="4.2" fill="#0f172a" opacity="0.95" />
+                    <ellipse cx="29" cy="17" rx="6" ry="3.5" fill="#1e293b" />
+                    <ellipse cx="29" cy="19" rx="5.5" ry="2.2" fill="#020617" opacity="0.4" />
+                    <!-- 3D Metallic Blue Spiral Wire looping through hole -->
+                    <path d="M 2 24 C 2 7, 18 4, 30 16" stroke="url(#wireGrad-${i})" stroke-width="4.2" stroke-linecap="round" filter="url(#shadow-${i})" />
+                    <!-- Wire glossy highlight -->
+                    <path d="M 5 21 C 6 9, 17 7, 26 15" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.8" />
+                </svg>`;
+            }
+            spiralContainer.innerHTML = ringsHtml;
+        }
+
+        function toggleSpiralNotebook() {
+            const previewArea = document.getElementById('a4-preview-area');
+            const statusEl = document.getElementById('spiral-toggle-status');
+            const borderSelect = document.getElementById('border-style-select');
+            if (!previewArea) return;
+
+            const isCurrentlySpiral = previewArea.classList.contains('border-spiral');
+            if (isCurrentlySpiral) {
+                previewArea.classList.remove('border-spiral');
+                previewArea.classList.add('border-classic');
+                if (borderSelect) borderSelect.value = 'border-classic';
+                if (statusEl) statusEl.textContent = 'OFF';
+                isSpiralNotebookEnabled = false;
+                showToast("Spiral binding turned OFF (Classic border)", "📓");
+            } else {
+                const borderClasses = ['border-none', 'border-classic', 'border-double', 'border-dashed', 'border-dotted', 'border-certificate', 'border-modern', 'border-bold'];
+                borderClasses.forEach(cls => previewArea.classList.remove(cls));
+                previewArea.classList.add('border-spiral');
+                if (borderSelect) borderSelect.value = 'border-spiral';
+                if (statusEl) statusEl.textContent = 'ON';
+                isSpiralNotebookEnabled = true;
+                showToast("Spiral notebook binding activated! 📓✨", "✨");
+            }
+            renderSpiralBinding();
+        }
+
+        function toggleVisualCardsMode() {
+            isVisualCardsMode = !isVisualCardsMode;
+            const statusEl = document.getElementById('visual-cards-status');
+            const btn = document.getElementById('btn-visual-cards-toggle');
+            if (statusEl) statusEl.textContent = isVisualCardsMode ? 'ON' : 'OFF';
+            if (btn) {
+                btn.style.background = isVisualCardsMode ? '#059669' : 'var(--input-bg)';
+                btn.style.color = isVisualCardsMode ? '#ffffff' : 'var(--text-main)';
+            }
+            showToast(isVisualCardsMode ? "📸 Illustrated Picture Cards enabled for AI generation!" : "Standard text worksheets enabled", "🎨");
+        }
+
+        function loadSpiralWorkbookTemplate() {
+            const previewArea = document.getElementById('a4-preview-area');
+            const levelBody = document.getElementById('level-body');
+            const borderSelect = document.getElementById('border-style-select');
+            const promptInput = document.getElementById('custom-prompt');
+
+            // 1. Enable spiral border
+            if (borderSelect) borderSelect.value = 'border-spiral';
+            if (previewArea) {
+                const borderClasses = ['border-none', 'border-classic', 'border-double', 'border-dashed', 'border-dotted', 'border-certificate', 'border-modern', 'border-bold'];
+                borderClasses.forEach(cls => previewArea.classList.remove(cls));
+                previewArea.classList.add('border-spiral');
+            }
+            const statusEl = document.getElementById('spiral-toggle-status');
+            if (statusEl) statusEl.textContent = 'ON';
+            isSpiralNotebookEnabled = true;
+
+            // 2. Load template content
+            const tmpl = WORKSHEET_LAYOUT_TEMPLATES.find(t => t.id === 'tmpl-spiral-workbook');
+            if (tmpl && levelBody) {
+                levelBody.innerHTML = tmpl.getHTML();
+                if (promptInput) {
+                    promptInput.value = tmpl.aiPrompt;
+                }
+            }
+
+            renderSpiralBinding();
+            showToast("Loaded Illustrated Spiral Workbook from screenshot! 📓⭐", "✨");
+            if (previewArea) {
+                previewArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
         function updateWorksheetStyle() {
             const borderStyle = document.getElementById('border-style-select').value;
             const borderThickness = document.getElementById('border-thickness-select') ? document.getElementById('border-thickness-select').value : '2px';
@@ -5584,7 +5803,7 @@
             }
 
             // Remove previous border classes and apply selected one
-            const borderClasses = ['border-none', 'border-classic', 'border-double', 'border-dashed', 'border-dotted', 'border-certificate', 'border-modern', 'border-bold'];
+            const borderClasses = ['border-none', 'border-classic', 'border-spiral', 'border-double', 'border-dashed', 'border-dotted', 'border-certificate', 'border-modern', 'border-bold'];
             borderClasses.forEach(cls => previewArea.classList.remove(cls));
             previewArea.classList.add(borderStyle);
 
@@ -5716,7 +5935,41 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 currentTeacherName = nameTextEl.innerText.trim();
             }
 
-            const prompt = `You are an expert English Language Teacher (ESL / EFL / ELT) and master educational worksheet designer. Create an impeccably organized, pedagogy-driven English language learning worksheet based exactly on this request: "${userRequest}". ${sampleContextInstruction}
+            
+            const isWorkbookRequest = isVisualCardsMode || /picture|pictures|spiral|workbook|clipart|screenshot|draw|visual|kid|children/i.test(userRequest);
+            let workbookInstruction = "";
+            if (isWorkbookRequest) {
+                // Activate spiral notebook border if not already on
+                const previewArea = document.getElementById('a4-preview-area');
+                if (previewArea && !previewArea.classList.contains('border-spiral')) {
+                    const borderClasses = ['border-none', 'border-classic', 'border-double', 'border-dashed', 'border-dotted', 'border-certificate', 'border-modern', 'border-bold'];
+                    borderClasses.forEach(cls => previewArea.classList.remove(cls));
+                    previewArea.classList.add('border-spiral');
+                    const borderSelect = document.getElementById('border-style-select');
+                    if (borderSelect) borderSelect.value = 'border-spiral';
+                    const statusEl = document.getElementById('spiral-toggle-status');
+                    if (statusEl) statusEl.textContent = 'ON';
+                    renderSpiralBinding();
+                }
+
+                workbookInstruction = `
+            SPECIAL MANDATE - CHILDREN'S ILLUSTRATED WORKBOOK WITH PICTURE CARDS:
+            The user wants an illustrated workbook layout with cute cartoon pictures (like the picture cards in children's grammar/vocab textbooks):
+            - Title: Bold uppercase title flanked by stars/pencil doodles (e.g. ⭐ [TITLE] ✏️) with Name, Class, Date header line.
+            - Numbered pill headers: <div style="display: inline-flex; align-items: center; gap: 8px; background: #1e40af; color: white; border-radius: 9999px; padding: 4px 14px; font-weight: 800; font-size: 13px; margin-bottom: 12px;"><span style="background: white; color: #1e40af; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900;">1</span> <span>LEARN: [TOPIC]</span></div>
+            - Picture Card Grids: Group concepts/rules/vocabulary into neat card grids. Each card MUST have:
+              * A top pill label or conversion arrow (e.g., I -> my, he -> his, or word)
+              * A cute cartoon educational clipart image from Pollinations AI:
+                <img src="https://image.pollinations.ai/prompt/{detailed-URL-encoded-character-or-object-description}%20cute%20vibrant%20cartoon%20character%20children%20book%20illustration%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="{label}">
+              * A clear, authentic example sentence underneath with target word in bold.
+            - REMEMBER Box: A soft-tinted tip box with icons (⭐, 💡) and mini illustrated example cards (e.g., "my bag", "her pen", "their house").
+            - Possession / Application Cards: 4 visual cards with cartoon pictures illustrating the rule (e.g., Tom's ball, Sara's pen, Mum's car, teacher's desk).
+            - QUICK PRACTICE: Matching columns with connection dots (•) and Circle the correct word sentences.
+            - Footer: Page number flanked by stars (e.g. ✨ 1 / 3 ⭐).
+            `;
+            }
+
+            const prompt = `You are an expert English Language Teacher (ESL / EFL / ELT) and master educational worksheet designer. ${workbookInstruction} Create an impeccably organized, pedagogy-driven English language learning worksheet based exactly on this request: "${userRequest}". ${sampleContextInstruction}
             Format the response ENTIRELY in valid, clean HTML. 
             
             Strict Guidelines for English Worksheets Organization & Layout:
@@ -6811,6 +7064,197 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
         // --- TEMPLATES LIBRARY ENGINE ---
         const WORKSHEET_LAYOUT_TEMPLATES = [
+            {
+                id: 'tmpl-spiral-workbook',
+                title: 'Illustrated Visual Workbook (Spiral)',
+                category: 'ILLUSTRATED & GRAMMAR',
+                badgeBg: '#e0f2fe',
+                badgeColor: '#0284c7',
+                icon: '📓',
+                description: "Children's illustrated visual grammar & vocabulary workbook with realistic spiral notebook binding, cute cartoon picture cards, remember tips, and quick practice matching exercises (as seen in screenshot).",
+                wireframe: '<b>[Spiral Notebook Left Binding]</b><br>⭐ <b>POSSESSIVE ADJECTIVES</b> ✏️<br><b>[Part 1]</b> 7 Cartoon Picture Cards (I→my, you→your, etc.)<br><b>[Part 2]</b> Remember Box + 3 Example Cards<br><b>[Part 3]</b> 4 Possession Cards ('s)<br><b>[Part 4]</b> Quick Practice (Match + Circle)',
+                aiPrompt: "Generate an illustrated children's workbook worksheet about Possessive Adjectives and 'S Possession with spiral notebook binding. Include cute cartoon picture cards for each pronoun, a remember rule box, example illustrated cards, and quick practice matching exercises.",
+                getHTML: function() {
+                    return `
+                    <!-- Header Title & Teacher / Student Details -->
+                    <div style="text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span style="font-size: 22px;">⭐</span>
+                        <h2 style="color: #1e3a8a; font-size: 21px; font-weight: 900; letter-spacing: 0.5px; margin: 0; text-transform: uppercase;">POSSESSIVE ADJECTIVES & 'S POSSESSION</h2>
+                        <span style="font-size: 22px;">✏️</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 8px; font-size: 13.5px; color: #334155; font-weight: 600;">
+                        <span>Name: __________________________</span>
+                        <span>Class: ____________</span>
+                        <span>Date: ____________</span>
+                    </div>
+
+                    <!-- 1 LEARN: POSSESSIVE ADJECTIVES -->
+                    <div class="ws-block" style="margin-bottom: 16px; padding: 12px; background: #ffffff; border-radius: 14px; border: 1.5px solid #bfdbfe; box-shadow: 0 2px 8px rgba(37,99,235,0.05);">
+                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #1e40af; color: white; border-radius: 9999px; padding: 4px 14px; font-weight: 800; font-size: 13px; margin-bottom: 12px;">
+                            <span style="background: white; color: #1e40af; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900;">1</span>
+                            <span>LEARN: POSSESSIVE ADJECTIVES</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center;">
+                            <!-- 1: I -> my -->
+                            <div style="border: 1.2px solid #bfdbfe; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #dbeafe; color: #1e40af; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">I<br>↓<br>my</div>
+                                <img src="https://image.pollinations.ai/prompt/cute%20cartoon%20boy%20sitting%20reading%20a%20red%20book%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="my book">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">This is<br><strong style="color: #1e40af;">my</strong> book.</div>
+                            </div>
+                            <!-- 2: you -> your -->
+                            <div style="border: 1.2px solid #bbf7d0; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #dcfce7; color: #15803d; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">you<br>↓<br>your</div>
+                                <img src="https://image.pollinations.ai/prompt/cute%20cartoon%20little%20girl%20smiling%20holding%20a%20pencil%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="your pencil">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">This is<br><strong style="color: #15803d;">your</strong> pencil.</div>
+                            </div>
+                            <!-- 3: he -> his -->
+                            <div style="border: 1.2px solid #e9d5ff; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #f3e8ff; color: #7e22ce; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">he<br>↓<br>his</div>
+                                <img src="https://image.pollinations.ai/prompt/cute%20cartoon%20boy%20riding%20a%20bicycle%20wearing%20helmet%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="his bike">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">This is<br><strong style="color: #7e22ce;">his</strong> bike.</div>
+                            </div>
+                            <!-- 4: she -> her -->
+                            <div style="border: 1.2px solid #fbcfe8; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #fce7f3; color: #be185d; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">she<br>↓<br>her</div>
+                                <img src="https://image.pollinations.ai/prompt/cute%20cartoon%20girl%20hugging%20a%20doll%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="her doll">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">This is<br><strong style="color: #be185d;">her</strong> doll.</div>
+                            </div>
+                            <!-- 5: it -> its -->
+                            <div style="border: 1.2px solid #fde68a; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #fef3c7; color: #b45309; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">it<br>↓<br>its</div>
+                                <img src="https://image.pollinations.ai/prompt/cute%20grey%20and%20white%20cat%20eating%20food%20from%20a%20blue%20bowl%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="its food">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">The cat is<br>eating <strong style="color: #b45309;">its</strong> food.</div>
+                            </div>
+                            <!-- 6: we -> our -->
+                            <div style="border: 1.2px solid #99f6e4; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #ccfbf1; color: #0f766e; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">we<br>↓<br>our</div>
+                                <img src="https://image.pollinations.ai/prompt/school%20classroom%20with%20blackboard%20and%20desks%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="our classroom">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">This is<br><strong style="color: #0f766e;">our</strong> classroom.</div>
+                            </div>
+                            <!-- 7: they -> their -->
+                            <div style="border: 1.2px solid #c7d2fe; border-radius: 10px; padding: 6px 4px; background: #f8fafc;">
+                                <div style="background: #e0e7ff; color: #4338ca; border-radius: 9999px; padding: 2px 4px; font-weight: 800; font-size: 11px; margin-bottom: 4px;">they<br>↓<br>their</div>
+                                <img src="https://image.pollinations.ai/prompt/two%20happy%20school%20children%20wearing%20backpacks%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 54px; height: 54px; object-fit: contain; margin: 0 auto 4px; display: block; border-radius: 6px;" alt="their bags">
+                                <div style="font-size: 10px; font-weight: 600; color: #1e293b; line-height: 1.2;">These are<br><strong style="color: #4338ca;">their</strong> bags.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2 REMEMBER -->
+                    <div class="ws-block" style="margin-bottom: 16px; padding: 12px; background: #ffffff; border-radius: 14px; border: 1.5px solid #93c5fd; box-shadow: 0 2px 8px rgba(37,99,235,0.05);">
+                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #1e40af; color: white; border-radius: 9999px; padding: 4px 14px; font-weight: 800; font-size: 13px; margin-bottom: 10px;">
+                            <span style="background: white; color: #1e40af; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900;">2</span>
+                            <span>REMEMBER</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 10px; align-items: center;">
+                            <!-- Tip 1 -->
+                            <div style="border: 1.2px solid #bfdbfe; border-radius: 10px; padding: 10px; background: #f0f9ff; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 22px;">⭐</span>
+                                <div style="font-size: 12px; line-height: 1.4; color: #1e3a8a; font-weight: 600;">Possessive adjectives come <strong>before nouns</strong>.</div>
+                            </div>
+                            <!-- Tip 2 -->
+                            <div style="border: 1.2px solid #fde68a; border-radius: 10px; padding: 10px; background: #fefce8; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 22px;">💡</span>
+                                <div style="font-size: 12px; line-height: 1.4; color: #854d0e; font-weight: 600;">We use them to show <strong>who something belongs to</strong>.</div>
+                            </div>
+                            <!-- Examples -->
+                            <div style="border: 1.2px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc;">
+                                <div style="font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 6px;">Examples:</div>
+                                <div style="display: flex; justify-content: space-around; gap: 6px; text-align: center;">
+                                    <div>
+                                        <img src="https://image.pollinations.ai/prompt/blue%20school%20backpack%20bag%20children%20book%20educational%20clipart%20clean%20white%20background?width=180&height=180&nologo=true" style="width: 36px; height: 36px; object-fit: contain; margin: 0 auto 2px; display: block;" alt="my bag">
+                                        <span style="background: #e0f2fe; color: #0369a1; border-radius: 6px; padding: 2px 6px; font-size: 10.5px; font-weight: 700;">my bag</span>
+                                    </div>
+                                    <div>
+                                        <img src="https://image.pollinations.ai/prompt/pink%20writing%20pen%20children%20book%20educational%20clipart%20clean%20white%20background?width=180&height=180&nologo=true" style="width: 36px; height: 36px; object-fit: contain; margin: 0 auto 2px; display: block;" alt="her pen">
+                                        <span style="background: #fce7f3; color: #be185d; border-radius: 6px; padding: 2px 6px; font-size: 10.5px; font-weight: 700;">her pen</span>
+                                    </div>
+                                    <div>
+                                        <img src="https://image.pollinations.ai/prompt/cozy%20little%20family%20house%20with%20roof%20children%20book%20educational%20clipart%20clean%20white%20background?width=180&height=180&nologo=true" style="width: 36px; height: 36px; object-fit: contain; margin: 0 auto 2px; display: block;" alt="their house">
+                                        <span style="background: #f1f5f9; color: #334155; border-radius: 6px; padding: 2px 6px; font-size: 10.5px; font-weight: 700;">their house</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3 LEARN: 'S POSSESSION -->
+                    <div class="ws-block" style="margin-bottom: 16px; padding: 12px; background: #ffffff; border-radius: 14px; border: 1.5px solid #bfdbfe; box-shadow: 0 2px 8px rgba(37,99,235,0.05);">
+                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #1e40af; color: white; border-radius: 9999px; padding: 4px 14px; font-weight: 800; font-size: 13px; margin-bottom: 8px;">
+                            <span style="background: white; color: #1e40af; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900;">3</span>
+                            <span>LEARN: 'S POSSESSION</span>
+                        </div>
+                        <div style="text-align: center; font-size: 13px; color: #1e3a8a; font-weight: 600; margin-bottom: 10px;">
+                            We add <strong>'s</strong> to a name to show possession.
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;">
+                            <!-- 1 -->
+                            <div style="border: 1.2px solid #bfdbfe; border-radius: 10px; padding: 8px; background: #f8fafc;">
+                                <img src="https://image.pollinations.ai/prompt/cute%20cartoon%20boy%20holding%20a%20soccer%20ball%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 65px; height: 65px; object-fit: contain; margin: 0 auto 6px; display: block;" alt="Tom's ball">
+                                <span style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 9999px; padding: 2px 10px; font-size: 11.5px; font-weight: 700; display: inline-block;">Tom's ball</span>
+                            </div>
+                            <!-- 2 -->
+                            <div style="border: 1.2px solid #bfdbfe; border-radius: 10px; padding: 8px; background: #f8fafc;">
+                                <img src="https://image.pollinations.ai/prompt/cute%20cartoon%20girl%20smiling%20holding%20a%20purple%20pen%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 65px; height: 65px; object-fit: contain; margin: 0 auto 6px; display: block;" alt="Sara's pen">
+                                <span style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 9999px; padding: 2px 10px; font-size: 11.5px; font-weight: 700; display: inline-block;">Sara's pen</span>
+                            </div>
+                            <!-- 3 -->
+                            <div style="border: 1.2px solid #bfdbfe; border-radius: 10px; padding: 8px; background: #f8fafc;">
+                                <img src="https://image.pollinations.ai/prompt/cute%20blue%20compact%20car%20sedan%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 65px; height: 65px; object-fit: contain; margin: 0 auto 6px; display: block;" alt="Mum's car">
+                                <span style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 9999px; padding: 2px 10px; font-size: 11.5px; font-weight: 700; display: inline-block;">Mum's car</span>
+                            </div>
+                            <!-- 4 -->
+                            <div style="border: 1.2px solid #bfdbfe; border-radius: 10px; padding: 8px; background: #f8fafc;">
+                                <img src="https://image.pollinations.ai/prompt/wooden%20teacher%20desk%20with%20books%20and%20pencils%20children%20book%20educational%20clipart%20clean%20white%20background?width=250&height=250&nologo=true" style="width: 65px; height: 65px; object-fit: contain; margin: 0 auto 6px; display: block;" alt="the teacher's desk">
+                                <span style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 9999px; padding: 2px 10px; font-size: 11.5px; font-weight: 700; display: inline-block;">the teacher's desk</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 QUICK PRACTICE -->
+                    <div class="ws-block" style="margin-bottom: 12px; padding: 12px; background: #ffffff; border-radius: 14px; border: 1.5px solid #bfdbfe; box-shadow: 0 2px 8px rgba(37,99,235,0.05);">
+                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #1e40af; color: white; border-radius: 9999px; padding: 4px 14px; font-weight: 800; font-size: 13px; margin-bottom: 12px;">
+                            <span style="background: white; color: #1e40af; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900;">4</span>
+                            <span>QUICK PRACTICE</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 14px;">
+                            <!-- A. Match -->
+                            <div style="border: 1.2px solid #e2e8f0; border-radius: 10px; padding: 10px; background: #f8fafc;">
+                                <div style="font-weight: 800; font-size: 12px; color: #1e40af; margin-bottom: 8px;">A. Match</div>
+                                <table style="width: 100%; font-size: 12px; border-collapse: collapse; font-weight: 600; color: #1e293b;">
+                                    <tr><td style="padding: 2.5px 0;"><span style="background: #dbeafe; color: #1e40af; padding: 1px 5px; border-radius: 4px;">1</span> I</td><td style="text-align: center; color: #94a3b8;">•</td><td style="text-align: center; color: #94a3b8;">•</td><td><span style="background: #e2e8f0; padding: 1px 5px; border-radius: 4px;">a</span> our</td></tr>
+                                    <tr><td style="padding: 2.5px 0;"><span style="background: #dbeafe; color: #1e40af; padding: 1px 5px; border-radius: 4px;">2</span> you</td><td style="text-align: center; color: #94a3b8;">•</td><td style="text-align: center; color: #94a3b8;">•</td><td><span style="background: #e2e8f0; padding: 1px 5px; border-radius: 4px;">b</span> my</td></tr>
+                                    <tr><td style="padding: 2.5px 0;"><span style="background: #dbeafe; color: #1e40af; padding: 1px 5px; border-radius: 4px;">3</span> he</td><td style="text-align: center; color: #94a3b8;">•</td><td style="text-align: center; color: #94a3b8;">•</td><td><span style="background: #e2e8f0; padding: 1px 5px; border-radius: 4px;">c</span> their</td></tr>
+                                    <tr><td style="padding: 2.5px 0;"><span style="background: #dbeafe; color: #1e40af; padding: 1px 5px; border-radius: 4px;">4</span> she</td><td style="text-align: center; color: #94a3b8;">•</td><td style="text-align: center; color: #94a3b8;">•</td><td><span style="background: #e2e8f0; padding: 1px 5px; border-radius: 4px;">d</span> his</td></tr>
+                                    <tr><td style="padding: 2.5px 0;"><span style="background: #dbeafe; color: #1e40af; padding: 1px 5px; border-radius: 4px;">5</span> we</td><td style="text-align: center; color: #94a3b8;">•</td><td style="text-align: center; color: #94a3b8;">•</td><td><span style="background: #e2e8f0; padding: 1px 5px; border-radius: 4px;">e</span> your</td></tr>
+                                    <tr><td style="padding: 2.5px 0;"><span style="background: #dbeafe; color: #1e40af; padding: 1px 5px; border-radius: 4px;">6</span> they</td><td style="text-align: center; color: #94a3b8;">•</td><td style="text-align: center; color: #94a3b8;">•</td><td><span style="background: #e2e8f0; padding: 1px 5px; border-radius: 4px;">f</span> her</td></tr>
+                                </table>
+                            </div>
+                            <!-- B. Circle the correct word -->
+                            <div style="border: 1.2px solid #e2e8f0; border-radius: 10px; padding: 10px; background: #f8fafc;">
+                                <div style="font-weight: 800; font-size: 12px; color: #1e40af; margin-bottom: 8px;">B. Circle the correct word.</div>
+                                <ol style="margin: 0; padding-left: 16px; line-height: 1.85; font-size: 12px; color: #1e293b; font-weight: 600;">
+                                    <li>I have a pencil. It is ( <span style="color: #64748b;">her</span> / <span style="color: #2563eb; text-decoration: underline;">my</span> / <span style="color: #64748b;">their</span> ) pencil.</li>
+                                    <li>Ben has a kite. It is ( <span style="color: #64748b;">our</span> / <span style="color: #64748b;">your</span> / <span style="color: #2563eb; text-decoration: underline;">his</span> ) kite.</li>
+                                    <li>We love our school. It is ( <span style="color: #2563eb; text-decoration: underline;">our</span> / <span style="color: #64748b;">its</span> / <span style="color: #64748b;">his</span> ) school.</li>
+                                    <li>The girls have bags. These are ( <span style="color: #64748b;">her</span> / <span style="color: #2563eb; text-decoration: underline;">their</span> / <span style="color: #64748b;">my</span> ) bags.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Page Number with Stars -->
+                    <div style="text-align: center; margin-top: 14px; font-size: 13px; font-weight: 700; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>✨</span>
+                        <span>1 / 3</span>
+                        <span>⭐</span>
+                    </div>
+                    `;
+                }
+            },
+
             {
                 id: 'tmpl-2col-grammar',
                 title: '2-Column Grammar & Rules',
@@ -8993,11 +9437,15 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             initSampleFeatures();
             updateSavedCountBadges();
             loadSavedTheme();
+            renderSpiralBinding();
             checkAndLoadSharedWorksheetHash();
             updateQRCodePreview();
             restoreAutoSavedWorksheet();
             initSlideTouchAndKeyboardControls();
             restoreCopilotChatFromStorage();
+        });
+        window.addEventListener('resize', () => {
+            renderSpiralBinding();
         });
         window.addEventListener('hashchange', checkAndLoadSharedWorksheetHash);
         
@@ -10551,15 +10999,16 @@ Each object MUST strictly contain:
                 return;
             }
 
-            previewArea.classList.add('rendering-pdf');
+            previewArea.classList.add('rendering-image');
 
             captureCanvas(previewArea, {
-                scale: 2,
+                scale: 3,
+                windowWidth: 794,
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false
             }).then(canvas => {
-                previewArea.classList.remove('rendering-pdf');
+                previewArea.classList.remove('rendering-image');
                 if (wasEditing) setWorksheetEditMode(true);
 
                 const dataUrl = canvas.toDataURL('image/png');
@@ -10596,7 +11045,8 @@ Each object MUST strictly contain:
                     }, 'image/png');
                 }
             }).catch(err => {
-                previewArea.classList.remove('rendering-pdf');
+                previewArea.classList.remove('rendering-image');
+                previewArea.classList.remove('rendering-image'); // Fallback safety
                 if (wasEditing) setWorksheetEditMode(true);
                 console.error("Image export error:", err);
                 showToast("Error generating image. You can use Print / PDF export.", "⚠️");
