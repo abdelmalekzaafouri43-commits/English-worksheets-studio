@@ -206,6 +206,10 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
                             "Saved $safeFilename to Downloads/Pictures!",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
+
+                        val escapedName = safeFilename.replace("'", "\\'")
+                        val escapedMime = mimeType.replace("'", "\\'")
+                        webView.evaluateJavascript("if(typeof onAndroidFileSaved==='function') onAndroidFileSaved('$escapedName', '$escapedMime');", null)
                     } else {
                         android.widget.Toast.makeText(
                             webView.context,
@@ -217,6 +221,75 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     android.widget.Toast.makeText(webView.context, "Export error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    @JavascriptInterface
+    fun openFile(filename: String, mimeType: String) {
+        coroutineScope.launch(Dispatchers.IO) {
+            try {
+                val context = webView.context
+                val safeFilename = filename.ifBlank { "file" }
+                val cacheDir = java.io.File(context.cacheDir, "exports")
+                var targetFile = java.io.File(cacheDir, safeFilename)
+
+                if (!targetFile.exists()) {
+                    val isImage = mimeType.startsWith("image/")
+                    val baseDir = if (isImage) {
+                        android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES)
+                    } else {
+                        android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
+                    }
+                    val publicFile = java.io.File(java.io.File(baseDir, "Worksheets"), safeFilename)
+                    if (publicFile.exists()) {
+                        targetFile = publicFile
+                    } else {
+                        val directPublic = java.io.File(baseDir, safeFilename)
+                        if (directPublic.exists()) {
+                            targetFile = directPublic
+                        }
+                    }
+                }
+
+                if (!targetFile.exists()) {
+                    withContext(Dispatchers.Main) {
+                        android.widget.Toast.makeText(context, "File not found: $safeFilename", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
+
+                val uri = androidx.core.content.FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    targetFile
+                )
+
+                val ext = targetFile.extension.lowercase()
+                val computedMime = if (mimeType.isBlank() || mimeType == "*/*") {
+                    when (ext) {
+                        "pdf" -> "application/pdf"
+                        "png" -> "image/png"
+                        "jpg", "jpeg" -> "image/jpeg"
+                        "doc", "docx" -> "application/msword"
+                        else -> "*/*"
+                    }
+                } else mimeType
+
+                withContext(Dispatchers.Main) {
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                        setDataAndType(uri, computedMime)
+                        addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    val chooser = android.content.Intent.createChooser(intent, "Open $safeFilename")
+                    chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(chooser)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    android.widget.Toast.makeText(webView.context, "Could not open file: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -299,12 +372,21 @@ class WebAppInterface(private val webView: WebView, private val coroutineScope: 
     fun openExternalUrl(url: String) {
         coroutineScope.launch(Dispatchers.Main) {
             try {
+                val context = webView.context
+                if (url.startsWith("file://") || url.startsWith("content://") || url.startsWith("/")) {
+                    val cleanPath = url.removePrefix("file://")
+                    val file = java.io.File(cleanPath)
+                    if (file.exists()) {
+                        openFile(file.name, "*/*")
+                        return@launch
+                    }
+                }
                 val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url)).apply {
                     addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                webView.context.startActivity(intent)
+                context.startActivity(intent)
             } catch (e: Exception) {
-                android.widget.Toast.makeText(webView.context, "Open Link: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(webView.context, "Open Link/File: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }

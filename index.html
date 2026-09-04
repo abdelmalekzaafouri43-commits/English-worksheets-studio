@@ -8286,14 +8286,32 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                         worker.output('datauristring').then(function(pdfAsString) {
                             window.AndroidAI.savePdf(pdfAsString, opt.filename);
                             restoreState();
+                            if (typeof onAndroidFileSaved === 'function') {
+                                onAndroidFileSaved(opt.filename, 'application/pdf');
+                            } else {
+                                showToast("PDF Saved to Downloads!", "📥");
+                            }
                         }).catch((e) => {
                             console.error("PDF datauri generation failed, using native print", e);
                             restoreState();
                             printWorksheet();
                         });
                     } else {
-                        worker.save().then(() => {
+                        worker.output('blob').then(function(blob) {
                             restoreState();
+                            const url = URL.createObjectURL(blob);
+                            const downloadAnchor = document.createElement('a');
+                            downloadAnchor.href = url;
+                            downloadAnchor.download = opt.filename;
+                            document.body.appendChild(downloadAnchor);
+                            downloadAnchor.click();
+                            setTimeout(() => {
+                                if (downloadAnchor.parentNode) downloadAnchor.parentNode.removeChild(downloadAnchor);
+                            }, 1000);
+                            setTimeout(() => {
+                                URL.revokeObjectURL(url);
+                            }, 600000);
+                            showToast(`PDF downloaded! <a href="${url}" target="_blank" download="${escapeHtml(opt.filename)}" style="margin-left: 8px; color: #60a5fa; font-weight: 700; text-decoration: underline;">📂 Open PDF</a>`, "📥", 10000);
                         }).catch((e) => {
                             console.error("PDF save failed, using print", e);
                             restoreState();
@@ -8681,20 +8699,38 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             showToast("Worksheets backup downloaded!", "📤");
         }
 
-        function showToast(message, icon = "💾") {
+        function openSavedAndroidFile(filename, mimeType) {
+            if (window.AndroidAI && typeof window.AndroidAI.openFile === 'function') {
+                window.AndroidAI.openFile(filename, mimeType || '*/*');
+            } else if (window.AndroidAI && typeof window.AndroidAI.openExternalUrl === 'function') {
+                window.AndroidAI.openExternalUrl(filename);
+            } else {
+                showToast("File is saved in your device Downloads / Pictures folder", "📂");
+            }
+        }
+
+        function onAndroidFileSaved(filename, mimeType) {
+            const isImg = (mimeType || '').startsWith('image/');
+            const isPdf = (mimeType || '').includes('pdf');
+            const label = isImg ? 'PNG Image' : (isPdf ? 'PDF Document' : 'Document');
+            const openBtnHtml = `<button onclick="openSavedAndroidFile('${escapeHtml(filename)}', '${escapeHtml(mimeType)}')" style="margin-left: 10px; padding: 4px 12px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; cursor: pointer; font-weight: 700; font-size: 12px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);">📂 Open File</button>`;
+            showToast(`${label} saved! ${openBtnHtml}`, "✨", 10000);
+        }
+
+        function showToast(message, icon = "💾", duration = 4000) {
             const toast = document.getElementById('toast-notification');
             const text = document.getElementById('toast-text');
             const ico = document.getElementById('toast-icon');
             if (!toast) return;
 
-            if (text) text.innerText = message;
+            if (text) text.innerHTML = message;
             if (ico) ico.innerText = icon;
 
             toast.classList.add('show');
             clearTimeout(toast._timeout);
             toast._timeout = setTimeout(() => {
                 toast.classList.remove('show');
-            }, 3000);
+            }, duration);
         }
 
         function escapeHtml(str) {
@@ -10216,6 +10252,11 @@ Each object MUST strictly contain:
                 } else {
                     window.AndroidAI.saveFile(base64Data, filename, 'application/msword');
                 }
+                if (typeof onAndroidFileSaved === 'function') {
+                    onAndroidFileSaved(filename, 'application/msword');
+                } else {
+                    showToast("Worksheet exported as editable Microsoft Word document (.doc)! 📄", "✨");
+                }
             } else {
                 const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
@@ -10225,13 +10266,15 @@ Each object MUST strictly contain:
                 document.body.appendChild(downloadAnchor);
                 downloadAnchor.click();
                 setTimeout(() => {
-                    document.body.removeChild(downloadAnchor);
+                    if (downloadAnchor.parentNode) downloadAnchor.parentNode.removeChild(downloadAnchor);
+                }, 1000);
+                setTimeout(() => {
                     URL.revokeObjectURL(url);
-                }, 200);
+                }, 600000);
+                showToast(`Worksheet Word document downloaded! <a href="${url}" target="_blank" download="${escapeHtml(filename)}" style="margin-left: 8px; color: #60a5fa; font-weight: 700; text-decoration: underline;">📄 Open Doc</a>`, "✨", 10000);
             }
 
             if (wasEditing) setWorksheetEditMode(true);
-            showToast(`Worksheet exported as editable Microsoft Word document (.doc)! 📄`, "✨");
         }
 
         function exportWorksheetImage() {
@@ -10276,7 +10319,11 @@ Each object MUST strictly contain:
                     } else {
                         window.AndroidAI.saveFile(dataUrl, filename, 'image/png');
                     }
-                    showToast(`Worksheet saved to Pictures as PNG image! 🖼️`, "✨");
+                    if (typeof onAndroidFileSaved === 'function') {
+                        onAndroidFileSaved(filename, 'image/png');
+                    } else {
+                        showToast(`Worksheet saved to Pictures as PNG image! 🖼️`, "✨");
+                    }
                 } else {
                     canvas.toBlob(blob => {
                         if (!blob) {
@@ -10290,10 +10337,12 @@ Each object MUST strictly contain:
                         document.body.appendChild(a);
                         a.click();
                         setTimeout(() => {
-                            document.body.removeChild(a);
+                            if (a.parentNode) a.parentNode.removeChild(a);
+                        }, 1000);
+                        setTimeout(() => {
                             URL.revokeObjectURL(url);
-                        }, 200);
-                        showToast(`Worksheet saved as high-resolution printable PNG image! 🖼️`, "✨");
+                        }, 600000);
+                        showToast(`Worksheet PNG image downloaded! <a href="${url}" target="_blank" download="${escapeHtml(filename)}" style="margin-left: 8px; color: #60a5fa; font-weight: 700; text-decoration: underline;">🖼️ Open Image</a>`, "✨", 10000);
                     }, 'image/png');
                 }
             }).catch(err => {
@@ -10372,6 +10421,11 @@ Each object MUST strictly contain:
                 } else {
                     window.AndroidAI.saveFile(base64Data, filename, 'application/msword');
                 }
+                if (typeof onAndroidFileSaved === 'function') {
+                    onAndroidFileSaved(filename, 'application/msword');
+                } else {
+                    showToast(`Slide deck exported as editable Microsoft Word document (.doc)! 📄`, "✨");
+                }
             } else {
                 const blob = new Blob(['\ufeff' + wordHtml], { type: 'application/msword;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
@@ -10381,11 +10435,13 @@ Each object MUST strictly contain:
                 document.body.appendChild(a);
                 a.click();
                 setTimeout(() => {
-                    document.body.removeChild(a);
+                    if (a.parentNode) a.parentNode.removeChild(a);
+                }, 1000);
+                setTimeout(() => {
                     URL.revokeObjectURL(url);
-                }, 200);
+                }, 600000);
+                showToast(`Slide deck exported! <a href="${url}" target="_blank" download="${escapeHtml(filename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">📄 Open File</a>`, "✨", 10000);
             }
-            showToast(`Slide deck exported as editable Microsoft Word document (.doc)! 📄`, "✨");
         }
 
         function exportSlideImage() {
@@ -10426,7 +10482,11 @@ Each object MUST strictly contain:
                     } else {
                         window.AndroidAI.saveFile(dataUrl, filename, 'image/png');
                     }
-                    showToast(`Slide ${currentSlideIndex + 1} saved to Pictures as PNG image! 🖼️`, "✨");
+                    if (typeof onAndroidFileSaved === 'function') {
+                        onAndroidFileSaved(filename, 'image/png');
+                    } else {
+                        showToast(`Slide ${currentSlideIndex + 1} saved to Pictures as PNG image! 🖼️`, "✨");
+                    }
                 } else {
                     canvas.toBlob(blob => {
                         if (!blob) {
@@ -10440,10 +10500,12 @@ Each object MUST strictly contain:
                         document.body.appendChild(a);
                         a.click();
                         setTimeout(() => {
-                            document.body.removeChild(a);
+                            if (a.parentNode) a.parentNode.removeChild(a);
+                        }, 1000);
+                        setTimeout(() => {
                             URL.revokeObjectURL(url);
-                        }, 200);
-                        showToast(`Slide ${currentSlideIndex + 1} saved as high-resolution PNG image! 🖼️`, "✨");
+                        }, 600000);
+                        showToast(`Slide ${currentSlideIndex + 1} PNG image downloaded! <a href="${url}" target="_blank" download="${escapeHtml(filename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">🖼️ Open Image</a>`, "✨", 10000);
                     }, 'image/png');
                 }
             }).catch(err => {
