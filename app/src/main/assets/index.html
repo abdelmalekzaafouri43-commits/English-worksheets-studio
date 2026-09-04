@@ -10931,9 +10931,12 @@ Each object MUST strictly contain:
                     </div>
 
                     <!-- Slide Bottom Footer -->
-                    <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                    <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; flex-wrap: wrap; gap: 8px;">
                         <span>ESL Interactive Masterclass</span>
-                        <span>Key Target: Speaking & Fluency</span>
+                        <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openDigitalShareModal(event)" title="Click to share digital link">
+                            <span style="background: rgba(37,99,235,0.08); color: #2563eb; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(37,99,235,0.2);">📱 Digital Version Link</span>
+                        </div>
+                        <span>Target: Speaking & Fluency</span>
                     </div>
                 </div>
             `;
@@ -11703,7 +11706,16 @@ Each object MUST strictly contain:
             ctx.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.fillStyle = '#64748b';
             ctx.fillText('ESL Interactive Masterclass Presentation', pad + 10, height - 20);
+
+            // Digital link center stamp
+            ctx.textAlign = 'center';
+            ctx.fillStyle = accentColor;
+            ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('📱 Digital Interactive Version Available', width / 2, height - 20);
+
             ctx.textAlign = 'right';
+            ctx.fillStyle = '#64748b';
+            ctx.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.fillText('Target Focus: Speaking & Fluency', width - pad, height - 20);
 
             ctx.restore();
@@ -11744,16 +11756,7 @@ Each object MUST strictly contain:
                 if (progressBar) progressBar.style.width = `${percent}%`;
             }
 
-            updateProgress(5, "Setting up 16:9 canvas and WebAudio synthesis stream...");
-
-            const offscreenContainer = document.createElement('div');
-            offscreenContainer.style.position = 'fixed';
-            offscreenContainer.style.top = '-9999px';
-            offscreenContainer.style.left = '-9999px';
-            offscreenContainer.style.width = `${width}px`;
-            offscreenContainer.style.height = `${height}px`;
-            offscreenContainer.style.background = '#f8fafc';
-            document.body.appendChild(offscreenContainer);
+            updateProgress(5, "Setting up 16:9 canvas and video recording stream...");
 
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = width;
@@ -11763,32 +11766,42 @@ Each object MUST strictly contain:
             let audioCtx = null;
             let dest = null;
             try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                dest = audioCtx.createMediaStreamDestination();
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume().catch(() => {});
+                    }
+                    dest = audioCtx.createMediaStreamDestination();
+                }
             } catch(e) {
                 console.warn("AudioContext setup failed:", e);
             }
 
-            let combinedStream;
+            let combinedStream = null;
             try {
                 const canvasStream = exportCanvas.captureStream ? exportCanvas.captureStream(30) : null;
-                const tracks = canvasStream ? [...canvasStream.getVideoTracks()] : [];
-                if (dest && dest.stream) {
-                    tracks.push(...dest.stream.getAudioTracks());
+                if (canvasStream) {
+                    const tracks = [...canvasStream.getVideoTracks()];
+                    if (dest && dest.stream && dest.stream.getAudioTracks().length > 0) {
+                        tracks.push(...dest.stream.getAudioTracks());
+                    }
+                    combinedStream = new MediaStream(tracks);
                 }
-                combinedStream = tracks.length > 0 ? new MediaStream(tracks) : null;
             } catch(e) {
                 console.warn("Stream creation issue:", e);
             }
 
             let mimeType = 'video/webm;codecs=vp9,opus';
-            if (typeof MediaRecorder !== 'undefined') {
-                if (!MediaRecorder.isTypeSupported || !MediaRecorder.isTypeSupported(mimeType)) {
-                    mimeType = 'video/webm;codecs=vp8,opus';
-                    if (!MediaRecorder.isTypeSupported || !MediaRecorder.isTypeSupported(mimeType)) {
-                        mimeType = 'video/webm';
-                    }
-                }
+            if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported) {
+                const candidates = [
+                    'video/webm;codecs=vp9,opus',
+                    'video/webm;codecs=vp8,opus',
+                    'video/webm;codecs=h264,opus',
+                    'video/webm',
+                    'video/mp4'
+                ];
+                mimeType = candidates.find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
             }
 
             const recordedChunks = [];
@@ -11807,46 +11820,30 @@ Each object MUST strictly contain:
                     canRecordVideo = true;
                 } catch(e) {
                     console.warn("MediaRecorder creation fallback:", e);
-                    canRecordVideo = false;
+                    try {
+                        mediaRecorder = new MediaRecorder(combinedStream);
+                        mediaRecorder.ondataavailable = (e) => {
+                            if (e.data && e.data.size > 0) {
+                                recordedChunks.push(e.data);
+                            }
+                        };
+                        mediaRecorder.start(100);
+                        canRecordVideo = true;
+                    } catch(e2) {
+                        console.warn("MediaRecorder fallback failed:", e2);
+                        canRecordVideo = false;
+                    }
                 }
             }
-
-            const captureCanvas = (typeof html2canvas === 'function') ? html2canvas : (window.html2canvas || null);
 
             for (let i = 0; i < totalSlides; i++) {
                 const slide = currentSlidesData[i];
                 const currentPercent = Math.round(((i) / totalSlides) * 85) + 5;
-                updateProgress(currentPercent, `Slide ${i + 1} of ${totalSlides}: "${slide.title}"`);
-
-                offscreenContainer.innerHTML = `
-                    <div style="width:100%; height:100%; padding:48px; box-sizing:border-box; font-family:system-ui, -apple-system, sans-serif; background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left:14px solid ${slide.accent}; display:flex; flex-direction:column; justify-content:space-between;">
-                        ${getSlideHTML(slide, i, totalSlides, currentSlideLayout, '')}
-                    </div>
-                `;
+                updateProgress(currentPercent, `Rendering Slide ${i + 1} of ${totalSlides}: "${slide.title}"`);
 
                 try {
-                    let renderedCanvas = null;
-                    if (captureCanvas) {
-                        try {
-                            renderedCanvas = await captureCanvas(offscreenContainer, {
-                                width: width,
-                                height: height,
-                                scale: 1,
-                                useCORS: true,
-                                logging: false
-                            });
-                        } catch(e) {
-                            console.warn("html2canvas error, using direct 2D canvas renderer:", e);
-                        }
-                    }
-
-                    if (renderedCanvas) {
-                        ctx.clearRect(0, 0, width, height);
-                        ctx.drawImage(renderedCanvas, 0, 0, width, height);
-                    } else {
-                        // Direct high-performance Canvas drawing fallback
-                        drawSlideToCanvasDirectly(ctx, slide, i, totalSlides, width, height);
-                    }
+                    // Direct high-performance Canvas drawing
+                    drawSlideToCanvasDirectly(ctx, slide, i, totalSlides, width, height);
 
                     if (framePreview) {
                         framePreview.src = exportCanvas.toDataURL('image/jpeg', 0.8);
@@ -11870,7 +11867,7 @@ Each object MUST strictly contain:
                             utterance.lang = 'en-US';
                             utterance.rate = voiceRate;
                             const voices = window.speechSynthesis.getVoices();
-                            const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('English')));
+                            const preferredVoice = voices.find(v => v.lang && v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('English')));
                             if (preferredVoice) utterance.voice = preferredVoice;
                             window.speechSynthesis.speak(utterance);
                         } catch(e) {
@@ -11878,17 +11875,13 @@ Each object MUST strictly contain:
                         }
                     }
 
-                    const wordCount = textToRead.split(/\s+/).length;
-                    const estimatedSpeechDurationMs = Math.max((wordCount / (150 * voiceRate / 60)) * 1000, 3200);
+                    const wordCount = textToRead.split(/\s+/).filter(Boolean).length;
+                    const estimatedSpeechDurationMs = Math.max((wordCount / (140 * voiceRate / 60)) * 1000, 3000);
                     const totalSlideHoldMs = estimatedSpeechDurationMs + (pauseSec * 1000);
 
                     const startTime = Date.now();
                     while (Date.now() - startTime < totalSlideHoldMs) {
-                        if (!renderedCanvas) {
-                            drawSlideToCanvasDirectly(ctx, slide, i, totalSlides, width, height);
-                        } else {
-                            ctx.drawImage(renderedCanvas, 0, 0, width, height);
-                        }
+                        drawSlideToCanvasDirectly(ctx, slide, i, totalSlides, width, height);
                         await new Promise(r => setTimeout(r, 60));
                     }
 
@@ -11897,22 +11890,23 @@ Each object MUST strictly contain:
                 }
             }
 
-            updateProgress(95, "Finalizing video container and downloading file...");
+            updateProgress(95, "Finalizing video container and preparing download...");
 
             const titleEl = document.getElementById('slide-deck-title');
             const deckTitle = (titleEl && titleEl.innerText) ? titleEl.innerText : "Lesson_Presentation_Video";
             const filename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_Narrated.webm';
 
-            const finishExport = (blobDataUrl) => {
-                if (offscreenContainer.parentNode) {
-                    document.body.removeChild(offscreenContainer);
-                }
+            const finishExport = (downloadUrl, finalFilename) => {
                 if (audioCtx && audioCtx.state !== 'closed') {
-                    audioCtx.close();
+                    audioCtx.close().catch(() => {});
                 }
 
                 updateProgress(100, "Export Complete! Video saved.");
-                showToast("Narrated Slide Deck Video exported successfully! 🎬", "✨");
+                if (downloadUrl) {
+                    showToast(`Slide deck exported! <a href="${downloadUrl}" target="_blank" download="${escapeHtml(finalFilename || filename)}" style="margin-left:8px;color:#60a5fa;font-weight:700;text-decoration:underline;">🎬 Open Video</a>`, "✨", 10000);
+                } else {
+                    showToast("Narrated Slide Deck Video exported successfully! 🎬", "✨");
+                }
 
                 if (startBtn) {
                     startBtn.disabled = false;
@@ -11922,12 +11916,12 @@ Each object MUST strictly contain:
 
                 setTimeout(() => {
                     closeSlideVideoModal();
-                }, 1500);
+                }, 2000);
             };
 
-            if (canRecordVideo && mediaRecorder) {
+            if (canRecordVideo && mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: mimeType });
+                    const blob = new Blob(recordedChunks, { type: mimeType || 'video/webm' });
                     const reader = new FileReader();
                     reader.onloadend = () => {
                         const base64Data = reader.result;
@@ -11944,15 +11938,22 @@ Each object MUST strictly contain:
                     document.body.appendChild(a);
                     a.click();
                     setTimeout(() => {
-                        document.body.removeChild(a);
+                        if (a.parentNode) a.parentNode.removeChild(a);
+                    }, 1000);
+                    setTimeout(() => {
                         URL.revokeObjectURL(url);
-                    }, 500);
+                    }, 600000);
 
-                    finishExport();
+                    finishExport(url, filename);
                 };
-                mediaRecorder.stop();
+                try {
+                    mediaRecorder.stop();
+                } catch(stopErr) {
+                    console.error("MediaRecorder stop error:", stopErr);
+                    finishExport();
+                }
             } else {
-                // Snapshot fallback for environments where full MediaRecorder is restricted
+                // High-resolution fallback for browsers/environments where MediaRecorder is unavailable
                 const pngDataUrl = exportCanvas.toDataURL('image/png');
                 const imageFilename = deckTitle.replace(/[^a-zA-Z0-9_-]/g, '_') + '_SlideDeck.png';
                 if (window.AndroidAI && typeof window.AndroidAI.saveFile === 'function') {
@@ -11964,9 +11965,9 @@ Each object MUST strictly contain:
                 document.body.appendChild(a);
                 a.click();
                 setTimeout(() => {
-                    document.body.removeChild(a);
-                }, 500);
-                finishExport();
+                    if (a.parentNode) a.parentNode.removeChild(a);
+                }, 1000);
+                finishExport(pngDataUrl, imageFilename);
             }
         }
 
