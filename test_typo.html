@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/typo-js@1.2.4/typo.min.js"></script>
+</head>
+<body>
+    <div id="content" contenteditable="true">
+        This is a tset to sea if it workss correcly.
+    </div>
+    <script>
+        async function run() {
+            const affData = await fetch('https://unpkg.com/dictionary-en@3.2.0/index.aff').then(r => r.text());
+            const dicData = await fetch('https://unpkg.com/dictionary-en@3.2.0/index.dic').then(r => r.text());
+            const typo = new Typo("en_US", affData, dicData);
+            console.log(typo.check("test"));
+            console.log(typo.check("tset"));
+            console.log(typo.check("workss"));
+            console.log(typo.check("correcly"));
+        }
+        run();
+    </script>
+</body>
+</html>

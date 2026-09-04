@@ -3482,6 +3482,15 @@
                 min-height: auto !important;
                 aspect-ratio: auto !important;
             }
+            .slides-player-wrapper {
+                margin-top: 12px !important;
+                border-radius: 12px !important;
+            }
+            .slides-player-wrapper > div:first-child {
+                padding: 12px !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
             .slide-card-container {
                 gap: 12px;
             }
@@ -3885,6 +3894,15 @@
             .copilot-messages-container {
                 padding: 14px;
             }
+        }
+        
+        /* Spellcheck Custom Highlight */
+        ::highlight(spelling-errors) {
+            text-decoration: underline wavy #ef4444;
+            text-decoration-thickness: 1.5px;
+            text-decoration-skip-ink: none;
+            background-color: rgba(239, 68, 68, 0.08);
+            color: inherit;
         }
     </style>
 </head>
@@ -4970,15 +4988,15 @@
             </div>
 
             <!-- Slides Presentation Player Canvas (16:9 Widescreen) -->
-            <div class="slides-player-wrapper" style="margin-top: 24px; background: var(--bg-card); border: 2px solid var(--tag-border); border-radius: 20px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.08);">
+            <div class="slides-player-wrapper" style="margin-top: 24px; background: var(--bg-card); border: 2px solid var(--tag-border); border-radius: 20px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.08); width: 100%; box-sizing: border-box;">
                 <!-- Player Header / Controls Bar -->
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--primary-box-bg); border-bottom: 1px solid var(--tag-border);">
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--primary-box-bg); border-bottom: 1px solid var(--tag-border); flex-wrap: wrap; gap: 12px; width: 100%; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <span style="font-weight: 700; font-size: 15px; color: var(--title-color);" id="slide-deck-title">Interactive Lesson Presentation</span>
-                        <span class="educator-pill" id="slide-counter-badge" style="font-size: 12px; font-weight: 700; background: var(--accent-primary); color: white; padding: 2px 10px; border-radius: 10px;">Slide 1 of 5</span>
+                        <span class="educator-pill" id="slide-counter-badge" style="font-size: 12px; font-weight: 700; background: var(--accent-primary); color: white; padding: 2px 10px; border-radius: 10px; white-space: nowrap;">Slide 1 of 5</span>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 5px;">
+                        <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
                             <label for="slide-transition-select" style="font-size: 12px; font-weight: 700; color: var(--text-muted);">✨ Animation:</label>
                             <select id="slide-transition-select" onchange="setSlideTransition(this.value)" class="editor-btn" style="padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px;" title="Select CSS slide transition animation effect">
                                 <option value="slide">Slide Horizontal ↔️</option>
@@ -4987,25 +5005,33 @@
                                 <option value="vertical">Slide Vertical ↕️</option>
                                 <option value="flip">3D Flip 🎴</option>
                             </select>
+                            <button type="button" class="editor-btn" onclick="toggleSlideLayout()" id="slide-layout-toggle-btn" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Toggle between Horizontal Split and Vertical Stacked layout">Layout: Horizontal ↔️</button>
                         </div>
-                        <button type="button" class="editor-btn" onclick="toggleSlideLayout()" id="slide-layout-toggle-btn" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Toggle between Horizontal Split and Vertical Stacked layout">Layout: Horizontal ↔️</button>
-                        <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Previous slide (Left Arrow)">◀ Prev</button>
-                        <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Next slide (Right Arrow / Space)">Next ▶</button>
-                        <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px;" title="Standard PDF Export">📥 PDF</button>
-                        <button type="button" class="editor-btn" onclick="exportSlidesAudioPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);" title="Export interactive PDF presentation with embedded voice narration">🎧 Audio PDF</button>
-                        <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);" title="Export complete slide deck as a WebM / MP4 video with synthesized voice narration">🎬 Export Video</button>
-                        <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #1e40af; color: white; border: none; cursor: pointer;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Word</button>
-                        <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #059669; color: white; border: none; cursor: pointer;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
+                        
+                        <!-- Navigation Group -->
+                        <div style="display: flex; gap: 4px; border-left: 1px solid var(--tag-border); padding-left: 8px; margin-left: 4px;">
+                            <button type="button" class="editor-btn" onclick="prevSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Previous slide (Left Arrow)">◀ Prev</button>
+                            <button type="button" class="editor-btn" onclick="nextSlide()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Next slide (Right Arrow / Space)">Next ▶</button>
+                        </div>
+                        
+                        <!-- Export Group -->
+                        <div style="display: flex; gap: 6px; border-left: 1px solid var(--tag-border); padding-left: 8px; margin-left: 4px; flex-wrap: wrap; align-items: center;">
+                            <button type="button" class="print-btn" onclick="downloadSlidesPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; white-space: nowrap;" title="Standard PDF Export">📥 PDF</button>
+                            <button type="button" class="editor-btn" onclick="exportSlidesAudioPDF()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); white-space: nowrap;" title="Export interactive PDF presentation with embedded voice narration">🎧 Audio PDF</button>
+                            <button type="button" class="editor-btn" onclick="openSlideVideoModal()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); white-space: nowrap;" title="Export complete slide deck as a WebM / MP4 video with synthesized voice narration">🎬 Video</button>
+                            <button type="button" class="editor-btn" onclick="exportSlidesWordDoc()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #1e40af; color: white; border: none; cursor: pointer; white-space: nowrap;" title="Export complete slide deck to editable Microsoft Word document (.doc)">📄 Word</button>
+                            <button type="button" class="editor-btn" onclick="exportSlideImage()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #059669; color: white; border: none; cursor: pointer; white-space: nowrap;" title="Save current slide as a high-resolution PNG image">🖼️ PNG</button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 16:9 Widescreen Slide Canvas -->
-                <div id="slide-viewport-canvas" style="aspect-ratio: 16/9; min-height: 480px; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: #0f172a; position: relative;">
+                <div id="slide-viewport-canvas" style="aspect-ratio: 16/9; min-height: 480px; max-width: 100%; box-sizing: border-box; overflow: hidden; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: #0f172a; position: relative;">
                     <!-- Slide content injected here -->
                 </div>
 
                 <!-- Player Footer Navigation -->
-                <div style="display: flex; justify-content: center; align-items: center; padding: 12px; background: var(--primary-box-bg); border-top: 1px solid var(--tag-border); gap: 6px;" id="slide-dots-container">
+                <div style="display: flex; justify-content: center; align-items: center; padding: 12px; background: var(--primary-box-bg); border-top: 1px solid var(--tag-border); gap: 6px; flex-wrap: wrap;" id="slide-dots-container">
                     <!-- Dots -->
                 </div>
             </div>
@@ -5434,16 +5460,109 @@
             }, 1200);
         }
 
+        // --- CUSTOM REAL-TIME SPELLCHECK HIGHLIGHTER ---
+        let typoDictionary = null;
+        let isDictionaryLoading = false;
+        let spellcheckTimeoutId = null;
+        const spellcheckCache = new Map();
+
+        async function initCustomSpellchecker() {
+            if (typoDictionary || isDictionaryLoading) return;
+            isDictionaryLoading = true;
+            try {
+                if (typeof Typo === 'undefined') {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/typo-js@1.2.4/typo.min.js';
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
+                }
+                const [affData, dicData] = await Promise.all([
+                    fetch('https://unpkg.com/dictionary-en@3.2.0/index.aff').then(r => r.text()),
+                    fetch('https://unpkg.com/dictionary-en@3.2.0/index.dic').then(r => r.text())
+                ]);
+                typoDictionary = new Typo("en_US", affData, dicData);
+                console.log("Custom Spellcheck Dictionary Loaded.");
+                triggerRealTimeSpellcheck();
+            } catch (err) {
+                console.error("Failed to load spellcheck dictionary.", err);
+            } finally {
+                isDictionaryLoading = false;
+            }
+        }
+
+        function checkWordSpelling(word) {
+            if (spellcheckCache.has(word)) return spellcheckCache.get(word);
+            const isCorrect = typoDictionary.check(word);
+            spellcheckCache.set(word, isCorrect);
+            return isCorrect;
+        }
+
+        function triggerRealTimeSpellcheck() {
+            if (typeof CSS === 'undefined' || !CSS.highlights) return; // Fallback to native if not supported
+            
+            const toggle = document.getElementById('spellcheck-toggle');
+            const enabled = toggle ? toggle.checked : true;
+            const root = document.getElementById('ws-content-root') || document.getElementById('level-body');
+            const isEditing = root && root.querySelector('.ws-block[contenteditable="true"]');
+            
+            if (!enabled || !isEditing || !typoDictionary) {
+                CSS.highlights.delete("spelling-errors");
+                return;
+            }
+
+            const ranges = [];
+            const treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            const wordRegex = /[a-zA-Z]+(?:'[a-zA-Z]+)?/g;
+            
+            while ((node = treeWalker.nextNode())) {
+                const parent = node.parentElement;
+                if (parent && (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.closest('.no-print'))) {
+                    continue;
+                }
+                const text = node.nodeValue;
+                let match;
+                while ((match = wordRegex.exec(text)) !== null) {
+                    const word = match[0];
+                    if (!checkWordSpelling(word)) {
+                        try {
+                            const range = new Range();
+                            range.setStart(node, match.index);
+                            range.setEnd(node, match.index + word.length);
+                            ranges.push(range);
+                        } catch (e) {}
+                    }
+                }
+            }
+            
+            const highlight = new Highlight(...ranges);
+            CSS.highlights.set("spelling-errors", highlight);
+        }
+
         function toggleSpellcheck() {
             const toggle = document.getElementById('spellcheck-toggle');
             const enabled = toggle ? toggle.checked : true;
             const root = document.getElementById('ws-content-root') || document.getElementById('level-body');
+            
             if (root) {
                 const blocks = root.querySelectorAll('.ws-block');
                 blocks.forEach(block => {
                     block.setAttribute('spellcheck', enabled ? 'true' : 'false');
                 });
             }
+            
+            if (enabled) {
+                initCustomSpellchecker();
+                triggerRealTimeSpellcheck();
+            } else {
+                if (typeof CSS !== 'undefined' && CSS.highlights) {
+                    CSS.highlights.delete("spelling-errors");
+                }
+            }
+            
             showToast(enabled ? "Spellcheck enabled 📝" : "Spellcheck disabled 🚫", "✨");
         }
 
@@ -6206,6 +6325,18 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                     </button>
                 </div>
                 `;
+            } else {
+                // Auto-embed Pollinations AI illustration based on worksheet topic if missing
+                if (!formattedText.includes('<img') && userRequest) {
+                    const encodedTopic = encodeURIComponent(userRequest.substring(0, 80) + " clean flat vector icon educational clipart white background");
+                    const imageHtml = `<div class="ws-block" style="text-align: center; margin-bottom: 20px; background: transparent; border: none; box-shadow: none; padding: 0;"><img src="https://image.pollinations.ai/prompt/${encodedTopic}?width=400&height=400&nologo=true" style="max-width: 140px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 24px rgba(0,0,0,0.12);" alt="Educational Illustration"></div>`;
+                    
+                    if (formattedText.includes('</h2>')) {
+                        formattedText = formattedText.replace('</h2>', '</h2>\n' + imageHtml);
+                    } else {
+                        formattedText = imageHtml + formattedText;
+                    }
+                }
             }
             
             originalWorksheetHTML = formattedText;
@@ -6291,6 +6422,13 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 if (a4Area) a4Area.classList.remove('editing-mode-active');
                 cleanWorksheetForPreview();
             }
+        }
+
+        function handleWorksheetInputForSpellcheck() {
+            if (spellcheckTimeoutId) clearTimeout(spellcheckTimeoutId);
+            spellcheckTimeoutId = setTimeout(() => {
+                triggerRealTimeSpellcheck();
+            }, 600);
         }
 
         function prepareWorksheetBlocksForEditing() {
@@ -6439,11 +6577,21 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                     highlightBlock(draggedBlock);
                 };
             });
+            
+            // Add custom real-time spellcheck hook
+            if (spellcheckEnabled) {
+                initCustomSpellchecker();
+                triggerRealTimeSpellcheck();
+                root.removeEventListener('input', handleWorksheetInputForSpellcheck);
+                root.addEventListener('input', handleWorksheetInputForSpellcheck);
+            }
         }
 
         function cleanWorksheetForPreview() {
             const root = document.getElementById('ws-content-root') || document.getElementById('level-body');
             if (!root) return;
+            
+            root.removeEventListener('input', handleWorksheetInputForSpellcheck);
 
             const blocks = root.querySelectorAll('.ws-block');
             blocks.forEach(block => {
