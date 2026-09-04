@@ -8318,13 +8318,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             setTheme('sapphire', false);
         }
 
-        // Close theme menu when clicking outside
-        document.addEventListener('click', (e) => {
-            const container = document.querySelector('.theme-selector-container');
-            if (container && !container.contains(e.target)) {
-                closeThemeMenu();
-            }
-        });
+        // Theme menu uses overlay click or close button to dismiss
 
         function openPrintPreviewModal() {
             if (isEditMode) setWorksheetEditMode(false);
@@ -9163,20 +9157,12 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         }
 
         function openSavedWorksheetsModal() {
-            const dashboard = document.getElementById('bento-dashboard');
-            if (dashboard && dashboard.tagName === 'DETAILS') {
-                dashboard.open = true;
-            }
-            
-            const bentoTile = document.getElementById('bento-tile-saved-list');
-            if (bentoTile) {
-                bentoTile.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const searchInput = document.getElementById('bento-saved-search');
-                if (searchInput) setTimeout(() => searchInput.focus(), 250);
-            } else {
-                const modal = document.getElementById('saved-worksheets-modal');
-                if (modal) modal.style.display = 'flex';
+            const modal = document.getElementById('saved-worksheets-modal');
+            if (modal) {
+                modal.style.display = 'flex';
                 renderSavedWorksheetsList();
+                const searchInput = document.getElementById('saved-search-input');
+                if (searchInput) setTimeout(() => searchInput.focus(), 200);
             }
         }
 
