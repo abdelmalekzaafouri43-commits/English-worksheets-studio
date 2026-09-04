@@ -8,6 +8,8 @@ import android.print.PrintManager
 import android.view.View
 import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
+import android.webkit.JsPromptResult
+import android.webkit.JsResult
 import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -59,6 +61,15 @@ class MainActivity : ComponentActivity() {
             HtmlAppWebView()
         }
       }
+    }
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    if (hasFocus) {
+      val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+      insetsController.hide(WindowInsetsCompat.Type.systemBars())
+      insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
   }
 }
@@ -478,6 +489,74 @@ fun HtmlAppWebView() {
                 
                 webChromeClient = object : WebChromeClient() {
                     override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                        consoleMessage?.let {
+                            android.util.Log.d("WebViewConsole", "${it.message()} -- From line ${it.lineNumber()} of ${it.sourceId()}")
+                        }
+                        return true
+                    }
+
+                    override fun onJsAlert(
+                        view: WebView?,
+                        url: String?,
+                        message: String?,
+                        result: JsResult?
+                    ): Boolean {
+                        android.app.AlertDialog.Builder(context)
+                            .setTitle("Worksheet Studio")
+                            .setMessage(message ?: "")
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                result?.confirm()
+                            }
+                            .setCancelable(false)
+                            .create()
+                            .show()
+                        return true
+                    }
+
+                    override fun onJsConfirm(
+                        view: WebView?,
+                        url: String?,
+                        message: String?,
+                        result: JsResult?
+                    ): Boolean {
+                        android.app.AlertDialog.Builder(context)
+                            .setTitle("Worksheet Studio")
+                            .setMessage(message ?: "")
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                result?.confirm()
+                            }
+                            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                                result?.cancel()
+                            }
+                            .setCancelable(false)
+                            .create()
+                            .show()
+                        return true
+                    }
+
+                    override fun onJsPrompt(
+                        view: WebView?,
+                        url: String?,
+                        message: String?,
+                        defaultValue: String?,
+                        result: JsPromptResult?
+                    ): Boolean {
+                        val input = android.widget.EditText(context).apply {
+                            setText(defaultValue ?: "")
+                        }
+                        android.app.AlertDialog.Builder(context)
+                            .setTitle("Worksheet Studio")
+                            .setMessage(message ?: "")
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                result?.confirm(input.text.toString())
+                            }
+                            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                                result?.cancel()
+                            }
+                            .setCancelable(false)
+                            .create()
+                            .show()
                         return true
                     }
                 }

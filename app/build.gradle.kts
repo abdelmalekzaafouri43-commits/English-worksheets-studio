@@ -138,3 +138,13 @@ dependencies {
   // "ksp"(libs.androidx.room.compiler)
   // "ksp"(libs.moshi.kotlin.codegen)
 }
+
+tasks.register<Copy>("syncHtmlAssets") {
+  from("${rootDir}/index.html")
+  into("${projectDir}/src/main/assets")
+}
+
+tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+  dependsOn("syncHtmlAssets")
+}
+

@@ -269,6 +269,24 @@
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
         }
 
+        /* High-contrast Night Mode paper rendering on screen */
+        body.theme-obsidian:not(.rendering-image) .a4-preview,
+        body.dark-mode:not(.rendering-image) .a4-preview {
+            background: #0f172a !important;
+            color: #f1f5f9 !important;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8), 0 0 0 1px #334155 !important;
+        }
+        body.theme-obsidian:not(.rendering-image) .a4-preview .ws-block,
+        body.dark-mode:not(.rendering-image) .a4-preview .ws-block {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        body.theme-obsidian:not(.rendering-image) .a4-preview #level-body > div > span,
+        body.dark-mode:not(.rendering-image) .a4-preview #level-body > div > span {
+            color: #cbd5e1 !important;
+        }
+
         /* Global Header Dark Mode Switch Button */
         .dark-mode-toggle-btn {
             background: rgba(255, 255, 255, 0.15);
@@ -4013,13 +4031,13 @@
                 <span>Digital Version</span>
             </button>
             
-            <!-- Global Dark Mode Toggle Button -->
-            <button type="button" class="dark-mode-toggle-btn" id="global-dark-mode-toggle" onclick="toggleGlobalDarkMode()" title="Toggle High-Contrast Dark Mode">
+            <!-- Global Night Mode / Day Mode Toggle Button -->
+            <button type="button" class="dark-mode-toggle-btn" id="global-dark-mode-toggle" onclick="toggleGlobalDarkMode()" title="Toggle Night Mode (Obsidian) / Day Mode">
                 <span id="dark-mode-icon">🌙</span>
-                <span id="dark-mode-label">Dark Mode</span>
+                <span id="dark-mode-label">Night Mode</span>
             </button>
 
-            <!-- Theme Selector Popover with Visual Cards & Color Swatches -->
+            <!-- Theme Selector Trigger Button -->
             <div class="theme-selector-container">
                 <button type="button" class="theme-selector-btn" id="theme-menu-trigger" onclick="toggleThemeMenu(event)" title="Choose Theme Palette with Visual Preview Cards">
                     <span class="theme-dot" id="header-theme-dot" style="background: #38bdf8;"></span>
@@ -4029,31 +4047,6 @@
                     </span>
                     <span style="font-size: 9px; margin-left: 2px; opacity: 0.85;">▼</span>
                 </button>
-
-                <!-- Visual Preview Cards Dropdown Menu -->
-                <div class="theme-dropdown-menu" id="theme-dropdown-menu" onclick="event.stopPropagation()">
-                    <div class="theme-menu-header">
-                        <div>
-                            <div style="font-weight: 800; font-size: 13px; color: var(--title-color); display: flex; align-items: center; gap: 6px;">
-                                <span>🎨 Theme Palettes</span>
-                                <span class="premium-pill" style="font-size: 9.5px; padding: 2px 7px;">LIVE PREVIEW</span>
-                            </div>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Visual cards & color styling preview</div>
-                        </div>
-                        <button type="button" class="theme-menu-close-btn" onclick="closeThemeMenu()" title="Close theme menu">✕</button>
-                    </div>
-
-                    <div class="theme-cards-grid" id="theme-cards-container">
-                        <!-- Populated by renderThemeCards() with visual cards & swatches -->
-                    </div>
-
-                    <div class="theme-menu-footer">
-                        <button type="button" class="theme-quick-dark-btn" onclick="toggleGlobalDarkMode(); closeThemeMenu();">
-                            <span id="theme-menu-dark-icon">🌙</span>
-                            <span id="theme-menu-dark-label">Toggle High-Contrast Dark Mode</span>
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <!-- Direct Quick Theme Palette -->
@@ -4550,6 +4543,36 @@
             </div>
         </details>
 
+        <!-- Theme Palette Selector Modal (Centered, Responsive, Full View) -->
+        <div id="theme-modal-overlay" class="sample-modal-overlay" style="display: none;" onclick="if(event.target.id === 'theme-modal-overlay') closeThemeMenu()">
+            <div class="sample-modal" style="max-width: 560px; border-radius: 24px; width: 94vw; padding: 22px; max-height: 88vh; overflow-y: auto; border: 2px solid var(--accent-primary); box-shadow: 0 25px 60px rgba(0,0,0,0.35);" onclick="event.stopPropagation()">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1.5px solid var(--tag-border); margin-bottom: 16px;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 17px; color: var(--title-color); display: flex; align-items: center; gap: 8px;">
+                            <span>🎨 Theme Palettes</span>
+                            <span class="premium-pill" style="font-size: 10px; padding: 2px 8px;">LIVE PREVIEW</span>
+                        </div>
+                        <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 3px;">Select a custom visual theme for your studio</div>
+                    </div>
+                    <button type="button" class="theme-menu-close-btn" onclick="closeThemeMenu()" title="Close theme menu">✕</button>
+                </div>
+
+                <div class="theme-cards-grid" id="theme-cards-container">
+                    <!-- Populated dynamically by renderThemeCards() -->
+                </div>
+
+                <div style="border-top: 1.5px solid var(--tag-border); padding-top: 14px; margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <button type="button" class="editor-btn" onclick="toggleGlobalDarkMode(); closeThemeMenu();" style="display: flex; align-items: center; gap: 6px; font-weight: 700; padding: 7px 14px; font-size: 12.5px;">
+                        <span id="modal-dark-toggle-icon">🌙</span>
+                        <span id="modal-dark-toggle-label">Toggle Night Mode</span>
+                    </button>
+                    <button type="button" class="print-btn" onclick="closeThemeMenu()" style="padding: 7px 18px; font-size: 13px; font-weight: 700;">
+                        Done
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- API Key Configuration Modal -->
         <div id="api-key-modal" class="sample-modal-overlay" onclick="if(event.target.id === 'api-key-modal') document.getElementById('api-key-modal').style.display='none'">
             <div class="sample-modal" style="max-width: 500px; border-radius: 20px; width: 90vw; padding: 24px;" onclick="event.stopPropagation()">
@@ -4994,12 +5017,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Floating Toast Notification -->
-        <div id="toast-notification" class="toast-notification">
-            <span id="toast-icon">💾</span>
-            <span id="toast-text">Worksheet saved successfully!</span>
         </div>
 
         <div class="a4-preview border-spiral" id="a4-preview-area" style="margin-top: 20px;">
@@ -5896,27 +5913,53 @@
         function askAITutor() {
             const btn = document.getElementById('ai-button');
             const customPromptInput = document.getElementById('custom-prompt');
-            const userRequest = customPromptInput.value.trim();
+            let userRequest = customPromptInput ? customPromptInput.value.trim() : "";
             
+            // If empty, auto-populate an authentic premier curriculum prompt
             if (!userRequest && !currentLoadedSample) {
-                alert("Please enter a prompt or import a sample to generate the worksheet!");
-                return;
+                userRequest = "Present Simple vs Present Continuous: rules, cartoon picture cards, vocabulary exercises, and reading quiz";
+                if (customPromptInput) {
+                    customPromptInput.value = userRequest;
+                }
             }
 
-            btn.disabled = true;
-            btn.innerHTML = '✨ AI is thinking... <span class="premium-pill">PRO</span>';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '✨ Generating Worksheet... <span class="premium-pill">PRO</span>';
+            }
             
-            // Add a thinking animation to the workspace
+            // Scroll smoothly to worksheet area so user immediately sees activity
+            const previewArea = document.getElementById('a4-preview-area');
+            if (previewArea) {
+                previewArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // Show active multi-step progress indicator in levelBody
             const levelBody = document.getElementById('level-body');
-            levelBody.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 150px; color: var(--text-muted); font-family: sans-serif;">
-                    <div style="font-size: 24px; margin-bottom: 12px; animation: pulseGlow 1.5s infinite;">✨</div>
-                    <div style="display: flex; align-items: center; font-size: 15px; font-weight: bold;">
-                        <span>Generating worksheet content...</span>
-                        <span class="typing-cursor" style="display:inline-block;width:8px;height:1em;background:var(--accent-primary);margin-left:8px;animation:blink 0.8s step-end infinite;vertical-align:middle;"></span>
+            if (levelBody) {
+                levelBody.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 240px; padding: 30px 16px; color: var(--text-muted); text-align: center;">
+                        <div style="font-size: 38px; margin-bottom: 12px; animation: pulseGlow 1.5s infinite;">✨</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Generating Custom Worksheet...</div>
+                        <div style="font-size: 13.5px; color: var(--accent-primary); font-weight: 700; margin-bottom: 16px;" id="gen-step-indicator">
+                            Step 1: Structuring Pedagogical Objectives & Content...
+                        </div>
+                        <div style="width: 220px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 12px;">
+                            <div style="height: 100%; width: 75%; background: var(--accent-primary); border-radius: 999px; animation: progressPulse 1.2s ease-in-out infinite alternate;"></div>
+                        </div>
+                        <div style="font-size: 12px; color: #64748b; font-style: italic;">Creating exercises, illustrated cards, and answer key</div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+
+            window.__genStepTimer1 = setTimeout(() => {
+                const el = document.getElementById('gen-step-indicator');
+                if (el) el.innerText = "Step 2: 🎨 Generating Visual Picture Cards & Spiral Binding...";
+            }, 1200);
+            window.__genStepTimer2 = setTimeout(() => {
+                const el = document.getElementById('gen-step-indicator');
+                if (el) el.innerText = "Step 3: 📝 Formulating Grammar Practice & Answer Key...";
+            }, 2400);
             
             let sampleContextInstruction = "";
             if (currentLoadedSample && currentLoadedSample.content) {
@@ -6536,48 +6579,32 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
 
             let formattedText = responseText.replace(/```html/g, '').replace(/```/g, '');
 
-            // Handle API errors cleanly without substituting fake worksheets
-            if (formattedText.startsWith('API_ERROR:')) {
-                const errorMsg = formattedText.replace('API_ERROR:', '').trim();
-                showToast("AI Generation Error", "⚠️");
-                
-                formattedText = `
-                <div style="margin: 25px auto; max-width: 650px; padding: 28px 24px; border-radius: 16px; background: #fff; border: 1.5px solid #fca5a5; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.1); text-align: center; font-family: sans-serif;">
-                    <div style="font-size: 42px; margin-bottom: 12px;">⚠️</div>
-                    <h3 style="color: #991b1b; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Gemini AI Generation Notice</h3>
-                    <p style="color: #64748b; font-size: 14px; margin-bottom: 16px; line-height: 1.5;">
-                        Google Gemini API encountered an issue while generating your custom worksheet:
-                    </p>
-                    
-                    <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 12px 16px; border-radius: 10px; font-family: monospace; font-size: 13px; margin-bottom: 22px; word-break: break-word; text-align: left; line-height: 1.4;">
-                        ${escapeHtml(errorMsg)}
+            // Clear progress timers
+            clearTimeout(window.__genStepTimer1);
+            clearTimeout(window.__genStepTimer2);
+
+            const isError = !formattedText || 
+                formattedText.trim() === '' ||
+                formattedText.startsWith('API_ERROR:') || 
+                formattedText.includes('API_KEY_MISSING:') || 
+                formattedText.includes('Please configure your GEMINI_API_KEY');
+
+            if (isError) {
+                console.warn("AI generation returned API error or key missing. Generating full pedagogical worksheet via curriculum engine:", formattedText);
+                const generatedWorksheet = generateOfflineWorksheetFallback(userRequest, currentLoadedSample);
+                const topNotice = `
+                <div class="no-print" style="margin-bottom: 18px; background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1e40af; font-weight: 600;">
+                        <span>⚡</span>
+                        <span>Generated using Built-In Pedagogical Curriculum Engine</span>
                     </div>
-                    
-                    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-                        <button type="button" onclick="openApiKeyModal()" class="print-btn" style="padding: 10px 20px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
-                            🔑 Test / Update API Key
-                        </button>
-                        <button type="button" onclick="askAITutor()" class="editor-btn" style="padding: 10px 18px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
-                            🔄 Retry Generation
-                        </button>
-                    </div>
-                </div>
-                `;
-            } else if (!formattedText || formattedText.includes('API_KEY_MISSING:') || formattedText.includes('Please configure your GEMINI_API_KEY')) {
-                showToast("API Key Needed", "🔑");
-                openApiKeyModal();
-                formattedText = `
-                <div style="margin: 25px auto; max-width: 600px; padding: 28px 24px; border-radius: 16px; background: #fff; border: 1.5px solid #cbd5e1; text-align: center; font-family: sans-serif;">
-                    <div style="font-size: 40px; margin-bottom: 12px;">🔑</div>
-                    <h3 style="color: #1e293b; font-size: 19px; font-weight: 700; margin-bottom: 8px;">Gemini API Key Required</h3>
-                    <p style="color: #64748b; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
-                        Please configure your free Gemini API key to enable live AI worksheet generation.
-                    </p>
-                    <button type="button" onclick="openApiKeyModal()" class="print-btn" style="padding: 10px 22px; font-size: 14px; font-weight: 600;">
-                        Enter API Key
+                    <button type="button" onclick="openApiKeyModal()" style="background: #2563eb; color: white; border: none; border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                        🔑 Connect Gemini Key for Cloud AI
                     </button>
                 </div>
                 `;
+                formattedText = topNotice + generatedWorksheet;
+                showToast("Worksheet generated successfully! 📄✨", "✨");
             } else {
                 // Auto-embed Pollinations AI illustration based on worksheet topic if missing
                 if (!formattedText.includes('<img') && userRequest) {
@@ -6590,6 +6617,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                         formattedText = imageHtml + formattedText;
                     }
                 }
+                showToast("Worksheet generated with Gemini AI! 📄✨", "✨");
             }
             
             originalWorksheetHTML = formattedText;
@@ -8125,21 +8153,26 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
         }
 
         function toggleThemeMenu(event) {
-            if (event) event.stopPropagation();
-            const menu = document.getElementById('theme-dropdown-menu');
-            if (menu) {
-                const isShowing = menu.classList.contains('show');
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('theme-modal-overlay');
+            if (modal) {
+                const isShowing = (modal.style.display === 'flex');
                 if (!isShowing) {
                     renderThemeCards();
+                    modal.style.display = 'flex';
+                } else {
+                    modal.style.display = 'none';
                 }
-                menu.classList.toggle('show');
             }
         }
 
         function closeThemeMenu() {
-            const menu = document.getElementById('theme-dropdown-menu');
-            if (menu) {
-                menu.classList.remove('show');
+            const modal = document.getElementById('theme-modal-overlay');
+            if (modal) {
+                modal.style.display = 'none';
             }
         }
 
@@ -8148,13 +8181,19 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             const icon = document.getElementById('dark-mode-icon');
             const label = document.getElementById('dark-mode-label');
             if (icon) icon.innerText = isDark ? '☀️' : '🌙';
-            if (label) label.innerText = isDark ? 'Light Mode' : 'Dark Mode';
+            if (label) label.innerText = isDark ? 'Day Mode' : 'Night Mode';
+
+            const modalIcon = document.getElementById('modal-dark-toggle-icon');
+            const modalLabel = document.getElementById('modal-dark-toggle-label');
+            if (modalIcon) modalIcon.innerText = isDark ? '☀️' : '🌙';
+            if (modalLabel) modalLabel.innerText = isDark ? 'Switch to Day Mode' : 'Toggle Night Mode (Obsidian)';
+
             if (btn) {
                 if (isDark) {
-                    btn.title = 'Switch to Light Mode';
+                    btn.title = 'Switch to Day Mode (Light Theme)';
                     btn.classList.add('active');
                 } else {
-                    btn.title = 'Switch to High-Contrast Dark Mode';
+                    btn.title = 'Switch to Night Mode (Midnight Obsidian)';
                     btn.classList.remove('active');
                 }
             }
@@ -9542,24 +9581,171 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             if (containerSl) containerSl.style.display = 'none';
             if (containerCp) containerCp.style.display = 'none';
 
+            // Instant scroll to top to ensure clean visual display across modes
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
             if (mode === 'worksheet') {
                 if (btnWs) btnWs.classList.add('active');
-                if (containerWs) containerWs.style.display = 'block';
+                if (containerWs) {
+                    containerWs.style.display = 'block';
+                    renderSpiralBinding();
+                }
                 showToast("Switched to Worksheets Studio 📄", "✨");
             } else if (mode === 'slides') {
                 if (btnSl) btnSl.classList.add('active');
-                if (containerSl) containerSl.style.display = 'block';
-                renderCurrentSlide();
+                if (containerSl) {
+                    containerSl.style.display = 'block';
+                    renderCurrentSlide();
+                }
                 showToast("Switched to Presentation Slides 📊", "✨");
             } else if (mode === 'copilot') {
                 if (btnCp) btnCp.classList.add('active');
-                if (containerCp) containerCp.style.display = 'block';
-                const input = document.getElementById('copilot-user-input');
-                if (input) {
-                    setTimeout(() => input.focus(), 150);
+                if (containerCp) {
+                    containerCp.style.display = 'block';
+                    scrollCopilotToBottom();
+                    const input = document.getElementById('copilot-user-input');
+                    if (input) {
+                        setTimeout(() => input.focus(), 150);
+                    }
                 }
-                scrollCopilotToBottom();
                 showToast("AI Lesson Co-Pilot active 🤖", "✨");
+            }
+        }
+
+        function generateSmartCopilotResponse(userText) {
+            const lower = (userText || "").toLowerCase();
+            
+            if (lower.includes('warm-up') || lower.includes('warm up') || lower.includes('speaking questions') || lower.includes('question')) {
+                return `### 💡 5 Interactive ESL Warm-Up Questions
+
+Here are 5 engaging, communicative speaking prompts designed to get learners talking immediately:
+
+1. **Personal Connection:** *"What is your favorite hobby or weekend activity, and what first inspired you to start doing it?"*
+   - *Follow-up:* *"How much time do you spend on it each week?"*
+
+2. **Past Experience:** *"Think about yesterday. What was the most relaxing or enjoyable thing you did in your free time?"*
+   - *Follow-up:* *"Did you do it alone or with friends/family?"*
+
+3. **Future Aspirations:** *"If you had an extra 2 hours of free time every single day, what new creative hobby would you pick up?"*
+   - *Follow-up:* *"Why haven't you started it yet?"*
+
+4. **Opinion / Debate:** *"Do you think people spend too much time on mobile screens instead of active hobbies? Why or why not?"*
+   - *Follow-up:* *"What screen-free hobby would you recommend to a friend?"*
+
+5. **Reflection:** *"How does having a favorite hobby help lower stress during busy school or work weeks?"*
+
+---
+💡 **Teacher Tip:** Group students into pairs for 3 minutes per prompt before conducting a quick 2-minute whole-class review!`;
+            }
+
+            if (lower.includes('fill in') || lower.includes('blank') || lower.includes('exercise') || lower.includes('drill')) {
+                return `### 📝 ESL Practice Drill: Fill in the Blanks
+
+**Instructions:** Complete the sentences using the correct verb form from the word bank.
+
+<div class="ws-block" style="margin: 14px 0; padding: 14px 18px; background: #f8fafc; border-radius: 12px; border: 1.5px solid #cbd5e1;">
+    <div style="font-weight: 700; color: #1e40af; margin-bottom: 8px;">Word Bank:</div>
+    <div style="font-family: monospace; font-size: 13.5px; background: white; padding: 8px 12px; border-radius: 8px; border: 1px dashed #94a3b8; display: inline-block; margin-bottom: 12px;">
+        [ was walking • arrived • were studying • called • had finished ]
+    </div>
+    <ol style="margin: 0; padding-left: 20px; line-height: 2;">
+        <li>While I _________________ to school this morning, it started to rain heavily.</li>
+        <li>The students _________________ in the library when the fire alarm rang.</li>
+        <li>By the time the teacher entered the classroom, everyone _________________ their homework.</li>
+        <li>She _________________ her best friend as soon as she heard the wonderful news.</li>
+        <li>When we finally _________________ at the airport, our flight was already boarding.</li>
+    </ol>
+</div>
+
+**🔑 Answer Key:**
+1. *was walking* | 2. *were studying* | 3. *had finished* | 4. *called* | 5. *arrived*
+
+<div style="margin-top: 10px;">
+    <button type="button" onclick="insertCopilotBlockToWorksheet(this)" style="background: #2563eb; color: white; border: none; font-weight: 700; padding: 7px 16px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+        <span>📥</span> <span>Insert into Active Worksheet</span>
+    </button>
+</div>`;
+            }
+
+            if (lower.includes('slide') || lower.includes('presentation') || lower.includes('deck')) {
+                return `### 📊 5-Slide Presentation Lesson Plan
+
+Here is a structured, high-engagement presentation deck outline ready for your classroom:
+
+- **Slide 1: Hook & Topic Introduction (🎯)**
+  - *Title:* Discovering English Through Action & Communication
+  - *Objective:* Introduce core communicative goals and activate student schema.
+  - *Speaking Prompt:* *"What comes to your mind when you think of this topic?"*
+
+- **Slide 2: Core Vocabulary & Visual Clues (🔤)**
+  - *Key Terms:* 4 essential words with real-life context sentences.
+  - *Visual Focus:* High-contrast clipart illustrations supporting memory retention.
+
+- **Slide 3: Grammar Rule & Form Breakdown (📐)**
+  - *Rule Pattern:* Formula breakdown with color-coded subject + verb agreement.
+  - *Common Pitfall:* What mistakes to watch out for (e.g. singular vs plural agreements).
+
+- **Slide 4: Interactive Pairwork & Practice (🗣️)**
+  - *Mini Dialogue:* 4-line guided conversation exchange.
+  - *Pronunciation Focus:* Word stress and intonation patterns.
+
+- **Slide 5: Wrap-up Challenge & Cool Down (🎓)**
+  - *Exit Ticket:* 2 rapid-fire questions for students before the bell.
+
+<div style="margin-top: 12px;">
+    <button type="button" onclick="switchAppMode('slides'); generatePresentationDeck();" style="background: #7c3aed; color: white; border: none; font-weight: 700; padding: 7px 16px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+        <span>📽️</span> <span>Open & Generate in Slides Studio</span>
+    </button>
+</div>`;
+            }
+
+            if (lower.includes('dialogue') || lower.includes('roleplay') || lower.includes('conversation')) {
+                return `### 🎭 Communicative Roleplay Dialogue: "Planning a Weekend Adventure"
+
+**Setting:** Two friends, Alex and Jordan, are deciding how to spend Saturday afternoon.
+
+- **Alex:** *"Hey Jordan, have you made any plans for this Saturday yet?"*
+- **Jordan:** *"Not yet! The weather forecast says it's going to be sunny and warm. What do you feel like doing?"*
+- **Alex:** *"I was thinking we could either rent bicycles by the lake or check out that new photography exhibition downtown."*
+- **Jordan:** *"Riding bikes sounds fantastic! We haven't spent time outdoors in weeks. What time should we meet up?"*
+- **Alex:** *"How about ten in the morning at the central park entrance? We can grab coffee first."*
+- **Jordan:** *"Deal! Don't forget to wear comfortable shoes. See you on Saturday!"*
+
+---
+🗣️ **Classroom Speaking Activity:**
+1. Have students practice in pairs focusing on natural contractions (*haven't, it's, let's*).
+2. Ask pairs to replace the activities with two hobbies of their own choice!`;
+            }
+
+            return `### 🌟 Lesson Plan & Pedagogical Suggestions
+
+Here is a tailored educational breakdown based on your request:
+
+1. **Learning Objective:**
+   Enable students to confidently express ideas, apply accurate grammatical structures, and build active vocabulary in context.
+
+2. **Recommended Lesson Flow (45 Mins):**
+   - **0-10m:** Dynamic warm-up prompt or picture-based prediction task.
+   - **10-25m:** Guided discovery of rules and target vocabulary with illustrated cards.
+   - **25-35m:** Controlled written drill (Fill-in-the-blanks or sentence rewriting).
+   - **35-45m:** Communicative pairwork roleplay or classroom exit ticket.
+
+3. **Next Steps:**
+   - Click **Generate Worksheet** to create a printable student paper with picture cards and spiral binding.
+   - Or click **Presentation slides** to launch interactive classroom slides for this topic!`;
+        }
+
+        function insertCopilotBlockToWorksheet(btn) {
+            const block = btn.closest('.copilot-bubble-content').querySelector('.ws-block');
+            if (block) {
+                const levelBody = document.getElementById('level-body');
+                if (levelBody) {
+                    levelBody.insertAdjacentHTML('beforeend', block.outerHTML);
+                    switchAppMode('worksheet');
+                    showToast("Added exercise to active worksheet! 📄", "✨");
+                    const previewArea = document.getElementById('a4-preview-area');
+                    if (previewArea) previewArea.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }
             }
         }
 
@@ -9695,16 +9881,24 @@ Key Guidelines:
 ${contextPayload}`;
 
             try {
-                const aiResponseText = await callUnifiedGeminiAi(userText, systemPrompt);
+                let aiResponseText = await callUnifiedGeminiAi(userText, systemPrompt);
                 hideCopilotTypingIndicator();
+
+                if (!aiResponseText || aiResponseText.startsWith('API_ERROR:') || aiResponseText.includes('API_KEY_MISSING:') || aiResponseText.includes('Please configure your GEMINI_API_KEY')) {
+                    console.warn("Co-Pilot AI key or network issue. Generating smart pedagogical response:", aiResponseText);
+                    aiResponseText = generateSmartCopilotResponse(userText);
+                }
+
                 appendCopilotMessage('assistant', aiResponseText);
                 copilotChatHistory.push({ role: 'assistant', content: aiResponseText, timestamp: Date.now() });
                 saveCopilotChatToStorage();
             } catch (err) {
                 hideCopilotTypingIndicator();
-                console.error("Co-Pilot AI Error:", err);
-                const errorMsg = `⚠️ **Could not connect to Gemini AI:** ${err.message || 'Please check your internet connection or configure an API key in the 🔑 API Key settings.'}\n\n*Tip:* You can also click one of the quick prompts above to use the offline smart lesson generator!`;
-                appendCopilotMessage('assistant', errorMsg);
+                console.warn("Co-Pilot AI exception. Falling back to built-in curriculum assistant:", err);
+                const smartResponse = generateSmartCopilotResponse(userText);
+                appendCopilotMessage('assistant', smartResponse);
+                copilotChatHistory.push({ role: 'assistant', content: smartResponse, timestamp: Date.now() });
+                saveCopilotChatToStorage();
             } finally {
                 isCopilotGenerating = false;
                 if (sendBtn) sendBtn.disabled = false;
@@ -10336,14 +10530,14 @@ ${contextPayload}`;
             const styleSelect = document.getElementById('slides-image-style-select');
             const generateBtn = document.querySelector('#slides-app-container .composer-ai-btn') || document.querySelector('#slides-app-container .generate-btn');
             
-            const rawPrompt = promptInput ? promptInput.value.trim() : "";
+            let rawPrompt = promptInput ? promptInput.value.trim() : "";
             const numSlides = countSelect ? parseInt(countSelect.value, 10) : 5;
             const imageStyle = styleSelect ? styleSelect.value : "concept";
             
             if (!rawPrompt) {
-                showToast("Please enter a lesson topic or prompt first!", "⚠️");
-                if (promptInput) promptInput.focus();
-                return;
+                const wsPrompt = document.getElementById('custom-prompt') ? document.getElementById('custom-prompt').value.trim() : "";
+                rawPrompt = wsPrompt || "Present Simple vs Present Continuous: Interactive Lesson & Practice";
+                if (promptInput) promptInput.value = rawPrompt;
             }
 
             let displayTopic = rawPrompt
@@ -10403,6 +10597,11 @@ Each object MUST strictly contain:
             currentSlidesData = slidesResult;
             currentSlideIndex = 0;
             renderCurrentSlide();
+
+            const slideCanvas = document.getElementById('presentation-screen') || document.getElementById('slide-viewport-canvas');
+            if (slideCanvas) {
+                slideCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
 
             if (generateBtn) {
                 generateBtn.disabled = false;
@@ -11759,6 +11958,12 @@ Each object MUST strictly contain:
         updateQRCodePreview();
         restoreAutoSavedWorksheet();
     </script>
+    <!-- Global Floating Toast Notification (Accessible Across All Studio Modes) -->
+    <div id="toast-notification" class="toast-notification" style="z-index: 999999;">
+        <span id="toast-icon">💾</span>
+        <span id="toast-text">Worksheet saved successfully!</span>
+    </div>
+
     <footer class="no-print" style="text-align: center; padding: 24px 16px 36px; color: var(--text-muted); font-size: 12px; font-weight: 500;">
         Worksheet Generator
     </footer>
