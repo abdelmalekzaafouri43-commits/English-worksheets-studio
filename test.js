@@ -794,7 +794,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             4. For Word Banks, present them in clean styled boxes:
                <div style="background: #ffffff; border: 1.5px dashed #3b82f6; border-radius: 8px; padding: 10px 14px; margin: 10px 0 14px; text-align: center; font-weight: 600; color: #1e3a8a; letter-spacing: 0.5px;">[ word1 • word2 • word3 • word4 • word5 ]</div>
             5. For Questions, use clear numbered lists <ol style="padding-left: 20px; line-height: 1.9; font-size: 15px; color: #1e293b;"> with generous spacing and distinct answer lines.
-            6. EXTREME FORMATTING RULE: You MUST return ONLY valid, clean HTML. Absolutely NO markdown, NO markdown code blocks (\&#96;\&#96;\&#96;html), NO **bold**, NO # headings, NO backticks. Do NOT wrap your output in code blocks. Ensure ALL text is inside appropriate tags (<p>, <li>, <span>, <div>). Ensure NO raw disorganized text floats outside of HTML tags.
+            6. EXTREME FORMATTING RULE: You MUST return ONLY valid, clean HTML. Do NOT include ANY conversational text, greetings, pleasantries, or explanations (e.g. "Here is the worksheet you requested"). START IMMEDIATELY with the HTML code and END IMMEDIATELY after the HTML code. Absolutely NO markdown, NO markdown code blocks (\&#96;\&#96;\&#96;html), NO **bold**, NO # headings, NO backticks. Do NOT wrap your output in code blocks. Ensure ALL text is inside appropriate tags (<p>, <li>, <span>, <div>). Ensure NO raw disorganized text floats outside of HTML tags.
             7. PROACTIVELY embed 1-2 relevant high-quality flat vector icons or illustrations based on the worksheet topic, even if the user hasn't explicitly requested them. Embed generative clipart using this format: <img src="https://image.pollinations.ai/prompt/{detailed-URL-encoded-description}%20clean%20flat%20vector%20icon%20educational%20clipart%20white%20background?width=400&height=400&nologo=true" style="max-width: 150px; border-radius: 12px; display: block; margin: 18px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" alt="Educational Icon"> (Ensure you append descriptive style keywords like "clean flat vector icon" to the prompt URL). For vocabulary matching or lists, you should also proactively use large emojis as inline icons next to the words (e.g., <span style="font-size: 38px;">🍎</span>).
             8. Ensure vocabulary, grammar rules, dialogues, and exercises are authentic, error-free, pedagogical, and completely organized. If generating a table, use proper HTML <table>, <tr>, <th>, <td> tags with inline styles for borders.`;
 
@@ -3695,7 +3695,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 blocks.forEach((block, index) => {
                     const blockHeight = block.offsetHeight;
                     const style = window.getComputedStyle(block);
-                    const marginTotal = parseFloat(style.marginTop || 0) + parseFloat(style.marginBottom || 0);
+                    const marginTotal = (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
                     const totalBlockSpace = blockHeight + marginTotal;
                     
                     if (currentHeight + totalBlockSpace > MAX_CONTENT_HEIGHT && index !== 0) {
