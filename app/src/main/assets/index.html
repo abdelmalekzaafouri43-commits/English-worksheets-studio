@@ -1045,6 +1045,36 @@
             transition: all 0.3s ease;
         }
 
+        
+        .transition-gallery-btn {
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+            opacity: 0.6;
+            filter: grayscale(1);
+        }
+        .transition-gallery-btn:hover {
+            background: rgba(0,0,0,0.05);
+            opacity: 0.9;
+        }
+        .transition-gallery-btn.active {
+            background: var(--bg-card);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: var(--text-main);
+            opacity: 1;
+            filter: none;
+            border: 1px solid var(--input-border);
+        }
+        body.dark-mode .transition-gallery-btn.active {
+            background: var(--primary-box-bg);
+            border-color: var(--tag-border);
+        }
+
         /* Specialized PDF Generation Clean Rules */
         .a4-preview.rendering-image {
             width: 794px !important;
@@ -5121,14 +5151,14 @@
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                         <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
-                            <label for="slide-transition-select" style="font-size: 12px; font-weight: 700; color: var(--text-muted);">✨ Animation:</label>
-                            <select id="slide-transition-select" onchange="setSlideTransition(this.value)" class="editor-btn" style="padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px;" title="Select CSS slide transition animation effect">
-                                <option value="slide">Slide Horizontal ↔️</option>
-                                <option value="fade">Fade & Soft Blur 🌫️</option>
-                                <option value="zoom">Dynamic Zoom 🔍</option>
-                                <option value="vertical">Slide Vertical ↕️</option>
-                                <option value="flip">3D Flip 🎴</option>
-                            </select>
+                            <div class="transition-gallery" style="display: inline-flex; background: var(--bg-body); padding: 3px; border-radius: 10px; border: 1px solid var(--tag-border); gap: 2px; align-items: center;">
+                                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); padding: 0 8px 0 6px; text-transform: uppercase;">✨ FX</span>
+                                <button type="button" class="transition-gallery-btn active" data-transition="slide" onclick="setSlideTransition('slide')" title="Slide Horizontal">↔️</button>
+                                <button type="button" class="transition-gallery-btn" data-transition="fade" onclick="setSlideTransition('fade')" title="Fade & Soft Blur">🌫️</button>
+                                <button type="button" class="transition-gallery-btn" data-transition="zoom" onclick="setSlideTransition('zoom')" title="Dynamic Zoom">🔍</button>
+                                <button type="button" class="transition-gallery-btn" data-transition="vertical" onclick="setSlideTransition('vertical')" title="Slide Vertical">↕️</button>
+                                <button type="button" class="transition-gallery-btn" data-transition="flip" onclick="setSlideTransition('flip')" title="3D Flip">🎴</button>
+                            </div>
                             <button type="button" class="editor-btn" onclick="toggleSlideLayout()" id="slide-layout-toggle-btn" style="padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;" title="Toggle between Horizontal Split and Vertical Stacked layout">Layout: Horizontal ↔️</button>
                         </div>
                         
@@ -8937,7 +8967,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 794, width: 794, scrollX: 0, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['css', 'legacy'], avoid: ['.middle-box', '.a4-qr-layer', '.image-placeholder', 'tr', 'img', 'p', 'li'] }
+                pagebreak:    { mode: ['css', 'legacy'], avoid: ['.ws-block', '.middle-box', '.a4-qr-layer', '.image-placeholder', 'tr', 'img', 'p', 'li'] }
             };
 
             const restoreState = () => {
@@ -10848,6 +10878,16 @@ Each object MUST strictly contain:
         function setSlideTransition(val) {
             currentSlideTransition = val || 'slide';
             localStorage.setItem('slide_transition_style', currentSlideTransition);
+            
+            // Update active state in gallery buttons
+            document.querySelectorAll('.transition-gallery-btn').forEach(btn => {
+                if (btn.dataset.transition === val) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
             renderCurrentSlide('forward');
             showToast(`Transition set to ${getSlideTransitionLabel(currentSlideTransition)}! ✨`, "✨");
         }
@@ -10954,13 +10994,17 @@ Each object MUST strictly contain:
             const titleEl = document.getElementById('slide-deck-title');
             const counterEl = document.getElementById('slide-counter-badge');
             const dotsContainer = document.getElementById('slide-dots-container');
-            const transitionSelect = document.getElementById('slide-transition-select');
             
             if (!viewport || !currentSlidesData || currentSlidesData.length === 0) return;
 
-            if (transitionSelect && transitionSelect.value !== currentSlideTransition) {
-                transitionSelect.value = currentSlideTransition;
-            }
+            // Sync gallery visual state
+            document.querySelectorAll('.transition-gallery-btn').forEach(btn => {
+                if (btn.dataset.transition === currentSlideTransition) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
 
             const slide = currentSlidesData[currentSlideIndex];
             if (titleEl) titleEl.innerText = slide.title;
@@ -11107,6 +11151,7 @@ Each object MUST strictly contain:
                             h1 { font-size: 20pt; font-weight: bold; }
                             h2 { font-size: 14pt; font-weight: bold; border-bottom: 1.5pt solid #cbd5e1; padding-bottom: 4pt; }
                             p, li { font-size: 11.5pt; margin-bottom: 6pt; }
+                            .ws-block { page-break-inside: avoid; margin-bottom: 15pt; }
                             table {
                                 width: 100%;
                                 border-collapse: collapse;
@@ -11267,7 +11312,7 @@ Each object MUST strictly contain:
                 currentSlidesData.forEach((slide, idx) => {
                     const bulletItems = (slide.bullets || []).map(b => `<li style="font-size: 11.5pt; margin-bottom: 6pt; color: #1e293b;">${escapeHtml(b)}</li>`).join('');
                     slidesHtmlContent += `
-                        <div style="border: 1pt solid #cbd5e1; border-left: 6pt solid ${slide.accent}; border-radius: 6pt; padding: 14pt; margin-bottom: 16pt; background-color: #f8fafc;">
+                        <div style="page-break-inside: avoid; border: 1pt solid #cbd5e1; border-left: 6pt solid ${slide.accent}; border-radius: 6pt; padding: 14pt; margin-bottom: 16pt; background-color: #f8fafc;">
                             <div style="font-size: 10pt; font-weight: bold; color: ${slide.accent}; text-transform: uppercase;">Slide ${idx + 1} of ${currentSlidesData.length}</div>
                             <h2 style="color: #0f172a; font-size: 16pt; margin: 4pt 0 4pt 0;">${escapeHtml(slide.title)}</h2>
                             <div style="color: #64748b; font-size: 11pt; font-style: italic; margin-bottom: 10pt;">${escapeHtml(slide.subtitle || '')}</div>
