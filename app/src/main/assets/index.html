@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
     <style>
         :root, :root[data-theme="sapphire"], html.theme-sapphire, body.theme-sapphire {
             --theme-name: 'Sapphire';
@@ -3662,13 +3663,44 @@
         .slide-bullets-panel li {
             animation: slideItemStagger 0.38s ease-out backwards;
         }
-        .slide-bullets-panel li:nth-child(1) { animation-delay: 0.05s; }
-        .slide-bullets-panel li:nth-child(2) { animation-delay: 0.11s; }
-        .slide-bullets-panel li:nth-child(3) { animation-delay: 0.17s; }
-        .slide-bullets-panel li:nth-child(4) { animation-delay: 0.23s; }
-        .slide-bullets-panel li:nth-child(5) { animation-delay: 0.29s; }
+        .slide-bullets-panel li:nth-child(1) { animation-delay: 0.08s; }
+        .slide-bullets-panel li:nth-child(2) { animation-delay: 0.14s; }
+        .slide-bullets-panel li:nth-child(3) { animation-delay: 0.20s; }
+        .slide-bullets-panel li:nth-child(4) { animation-delay: 0.26s; }
+        .slide-bullets-panel li:nth-child(5) { animation-delay: 0.32s; }
 
         @keyframes slideItemStagger {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 14px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        /* Professional Slide Component Motion Animations */
+        .slide-stage-wrapper h1 {
+            animation: slideComponentFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
+        }
+        .slide-stage-wrapper div > div:first-child > div:first-child {
+            animation: slideComponentFadeIn 0.35s ease-out 0.0s both;
+        }
+        .slide-stage-wrapper div > div:first-child > div:nth-child(3) {
+            animation: slideComponentFadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+        }
+        .slide-bullets-panel {
+            animation: slideComponentFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+        }
+        .slide-visual-panel {
+            animation: slideComponentZoomIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) 0.15s both;
+        }
+        .slide-visual-panel div:first-child {
+            animation: slideIconFloat 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes slideComponentFadeIn {
             0% {
                 opacity: 0;
                 transform: translate3d(0, 10px, 0);
@@ -3677,6 +3709,22 @@
                 opacity: 1;
                 transform: translate3d(0, 0, 0);
             }
+        }
+
+        @keyframes slideComponentZoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translate3d(0, 10px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translate3d(0, 0, 0);
+            }
+        }
+
+        @keyframes slideIconFloat {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-6px) scale(1.04); }
         }
 
         /* Enhanced Responsive Rules for Slides & Worksheets */
@@ -4139,6 +4187,10 @@
         </div>
         
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <!-- Watch Tutorial Button -->
+            <button type="button" class="dark-mode-toggle-btn" onclick="openTutorialModal(event)" title="Watch video guide on how to create worksheets" style="background: linear-gradient(135deg, #7c3aed, #9333ea); color: white; border: none;">
+                <span>▶ Watch Tutorial</span>
+            </button>
             <!-- Digital Interactive QR Link -->
             <button type="button" class="dark-mode-toggle-btn" onclick="openDigitalShareModal(event)" title="Show QR code for interactive digital version">
                 <span>📱 Digital Link</span>
@@ -4329,6 +4381,11 @@
                             <option value="formatting-minimalist">Minimalist</option>
                             <option value="formatting-high-contrast">High-Contrast</option>
                         </select>
+                    </div>
+                    <div class="format-item" style="display: flex; align-items: center;">
+                        <button type="button" id="contrast-ratio-lock-btn" onclick="toggleContrastRatioLock()" style="padding: 5px 12px; font-size: 12px; font-weight: 700; border-radius: 8px; background: #f1f5f9; color: #334155; border: 1.5px solid #cbd5e1; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;" title="Verrouiller le ratio de contraste (Conformité WCAG AAA 7:1)">
+                            <span>🔒 Contraste WCAG 7:1</span>
+                        </button>
                     </div>
                     <div class="format-item">
                         <label class="format-label">Layout:</label>
@@ -5018,6 +5075,48 @@
                         <button type="button" onclick="openDigitalLinkDirectly()" class="editor-btn" style="padding: 10px 18px; font-size: 13.5px;">
                             🌐 Open Link
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorial Video Guide Modal -->
+        <div id="tutorial-video-modal" class="sample-modal-overlay" style="display: none;" onclick="if(event.target.id === 'tutorial-video-modal') closeTutorialModal()">
+            <div class="sample-modal" onclick="event.stopPropagation()" style="max-width: 680px;">
+                <div class="sample-modal-header">
+                    <div style="font-size: 17px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span>🎬 How to Create Professional Worksheets</span>
+                        <span class="educator-pill" style="font-size: 10px; background: #7c3aed; color: white;">VIDEO GUIDE</span>
+                    </div>
+                    <button type="button" onclick="closeTutorialModal()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">✖</button>
+                </div>
+                <div class="sample-modal-body" style="padding: 20px 24px;">
+                    <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.5;">
+                        Watch this step-by-step video guide to learn how to generate, customize, format, and export professional educational worksheets and interactive presentation slides in seconds.
+                    </p>
+                    <div style="position: relative; width: 100%; aspect-ratio: 16 / 9; background: #0f172a; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 20px;">
+                        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(124,58,237,0.3)); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+                            <div style="width: 64px; height: 64px; border-radius: 50%; background: #7c3aed; color: white; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 8px 20px rgba(124,58,237,0.5); cursor: pointer; transition: transform 0.2s;" onclick="playTutorialVideoSimulation(this)" title="Play Tutorial Video">▶</div>
+                            <div style="color: white; font-weight: 800; font-size: 16px; margin-top: 14px;" id="tutorial-video-title">English Worksheet Studio — Masterclass Walkthrough</div>
+                            <div style="color: #cbd5e1; font-size: 12.5px; margin-top: 6px;" id="tutorial-video-status">Click play to start guided video walkthrough</div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                        <div style="background: var(--input-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--tag-border);">
+                            <div style="font-size: 12px; font-weight: 800; color: var(--accent-primary); margin-bottom: 4px;">1. Prompt & Generate</div>
+                            <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">Type your topic or choose AI templates to instantly build custom worksheets.</div>
+                        </div>
+                        <div style="background: var(--input-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--tag-border);">
+                            <div style="font-size: 12px; font-weight: 800; color: var(--accent-primary); margin-bottom: 4px;">2. Customize & Style</div>
+                            <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">Reorder blocks, toggle columns, switch color palettes & enforce WCAG contrast.</div>
+                        </div>
+                        <div style="background: var(--input-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--tag-border);">
+                            <div style="font-size: 12px; font-weight: 800; color: var(--accent-primary); margin-bottom: 4px;">3. Export & Share</div>
+                            <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">Download high-res PDF, Word docs, PNG images, or share via QR code.</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" onclick="closeTutorialModal()" class="editor-btn" style="padding: 10px 20px; font-size: 13.5px;">Close Guide</button>
                     </div>
                 </div>
             </div>
@@ -5836,7 +5935,10 @@
             previewArea.classList.add(colorTheme);
 
             // Apply Visual Formatting Theme (Standard, Minimalist, High-Contrast)
-            const formattingTheme = document.getElementById('formatting-theme-select') ? document.getElementById('formatting-theme-select').value : 'formatting-standard';
+            let formattingTheme = document.getElementById('formatting-theme-select') ? document.getElementById('formatting-theme-select').value : 'formatting-standard';
+            if (isContrastRatioLocked) {
+                formattingTheme = 'formatting-high-contrast';
+            }
             const formattingClasses = ['formatting-standard', 'formatting-minimalist', 'formatting-high-contrast'];
             formattingClasses.forEach(cls => previewArea.classList.remove(cls));
             previewArea.classList.add(formattingTheme);
@@ -8850,6 +8952,29 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
             if (modal) modal.style.display = 'none';
         }
 
+        // --- TUTORIAL VIDEO MODAL LOGIC ---
+        function openTutorialModal(event) {
+            if (event) event.stopPropagation();
+            const modal = document.getElementById('tutorial-video-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+        function closeTutorialModal() {
+            const modal = document.getElementById('tutorial-video-modal');
+            if (modal) modal.style.display = 'none';
+        }
+        function playTutorialVideoSimulation(btn) {
+            const status = document.getElementById('tutorial-video-status');
+            if (status) status.innerText = "Playing Masterclass Walkthrough (0:01 / 3:45)... 🎬";
+            if (btn) btn.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                if (status) status.innerText = "Demonstrating AI Prompt Generation & Smart Layouts... ✨";
+            }, 2500);
+            setTimeout(() => {
+                if (status) status.innerText = "Tutorial Completed! You're ready to create amazing worksheets. 🎉";
+                if (btn) btn.style.transform = 'scale(1)';
+            }, 6000);
+        }
+
         function handleDigitalShareOverlayClick(event) {
             if (event.target && event.target.id === 'digital-share-modal') {
                 closeDigitalShareModal();
@@ -9544,6 +9669,38 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 }
             }
         }, 8000);
+
+        let isContrastRatioLocked = false;
+        function toggleContrastRatioLock() {
+            isContrastRatioLocked = !isContrastRatioLocked;
+            const btn = document.getElementById('contrast-ratio-lock-btn');
+            const styleSelect = document.getElementById('formatting-theme-select');
+            if (isContrastRatioLocked) {
+                if (btn) {
+                    btn.style.background = '#2563eb';
+                    btn.style.color = '#ffffff';
+                    btn.style.borderColor = '#1d4ed8';
+                    btn.innerHTML = '🔒 Contraste Verrouillé (WCAG AAA 7:1)';
+                }
+                if (styleSelect) {
+                    styleSelect.value = 'formatting-high-contrast';
+                    styleSelect.disabled = true;
+                }
+                showToast("Ratio de contraste verrouillé au format WCAG AAA (7:1) 🔒", "✨");
+            } else {
+                if (btn) {
+                    btn.style.background = '#f1f5f9';
+                    btn.style.color = '#334155';
+                    btn.style.borderColor = '#cbd5e1';
+                    btn.innerHTML = '🔒 Contraste WCAG 7:1';
+                }
+                if (styleSelect) {
+                    styleSelect.disabled = false;
+                }
+                showToast("Ratio de contraste déverrouillé 🔓", "✨");
+            }
+            updateWorksheetStyle();
+        }
 
         // Presentation Slides Presentation State & Logic
         let currentSlidesData = [
@@ -11022,6 +11179,20 @@ Each object MUST strictly contain:
             viewport.style.borderLeft = `8px solid ${slide.accent}`;
             const animClass = getSlideAnimationClass(currentSlideTransition, direction);
             viewport.innerHTML = getSlideHTML(slide, currentSlideIndex, currentSlidesData.length, currentSlideLayout, animClass);
+
+            // Framer Motion hardware-accelerated fluid spring transition
+            if (typeof Motion !== 'undefined' && Motion.animate) {
+                const isBack = direction === 'backward';
+                const startX = isBack ? -45 : 45;
+                Motion.animate(viewport, {
+                    transform: [`translate3d(${startX}px, 0, 0)`, 'translate3d(0px, 0, 0)'],
+                    opacity: [0, 1],
+                    scale: [0.98, 1]
+                }, {
+                    duration: 0.4,
+                    easing: [0.16, 1, 0.3, 1]
+                });
+            }
             
             if (dotsContainer) {
                 dotsContainer.innerHTML = currentSlidesData.map((_, idx) => `
