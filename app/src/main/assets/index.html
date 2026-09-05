@@ -4233,7 +4233,7 @@
                     <span>Worksheets Studio</span>
                 </button>
                 <button type="button" class="mode-switch-btn" id="tab-mode-slides" onclick="switchAppMode('slides')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
-                    <span>Presentation Slides</span>
+                    <span>PowerPoint Studio (.pptx)</span>
                 </button>
                 <button type="button" class="mode-switch-btn" id="tab-mode-copilot" onclick="switchAppMode('copilot')" style="padding: 10px 22px; font-size: 14.5px; border-radius: 12px;">
                     <span>AI Co-Pilot Chat</span>
@@ -5203,8 +5203,8 @@
                     <div class="studio-title-group">
                         <div class="studio-icon">📊</div>
                         <div>
-                            <div class="studio-title-text">Presentation Slides Studio</div>
-                            <div class="studio-subtitle">Interactive Presentation Deck Creator & Player for ESL Lessons</div>
+                            <div class="studio-title-text">PowerPoint Studio (.pptx)</div>
+                            <div class="studio-subtitle">Professional PowerPoint Presentation Generator & Downloader for Educators</div>
                         </div>
                     </div>
                 </div>
@@ -5244,6 +5244,9 @@
                             </button>
                             <button type="button" class="editor-btn" onclick="openCopilotWithTopic(document.getElementById('slides-prompt').value, 'slides')" style="display: flex; align-items: center; gap: 6px; font-weight: 700; padding: 10px 16px; border-radius: 12px; background: rgba(124,58,237,0.08); border-color: #8b5cf6; color: #7c3aed;" title="Open conversational AI Co-Pilot to plan and draft slides">
                                 🤖 Chat with Co-Pilot
+                            </button>
+                            <button type="button" class="editor-btn" onclick="exportSlidesToPowerPoint()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px; background: rgba(5, 150, 105, 0.08); border-color: #10b981; color: #059669;" title="Export presentation slides as PowerPoint (.pptx)">
+                                📊 Export PowerPoint (.pptx)
                             </button>
                         </div>
                         <button class="ai-btn composer-ai-btn" onclick="generatePresentationDeck()">
@@ -11945,6 +11948,47 @@ Each object MUST strictly contain:
             if (modal) {
                 modal.style.display = 'none';
             }
+        }
+
+        function exportSlidesToPowerPoint() {
+            if (!currentSlidesData || currentSlidesData.length === 0) {
+                showToast("Please generate presentation slides first!", "⚠️");
+                return;
+            }
+            showToast("Generating PowerPoint (.pptx) presentation package...", "⏳");
+            
+            setTimeout(() => {
+                let htmlDeck = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>PowerPoint Presentation - English Lesson</title></head><body style="font-family: Arial, sans-serif; background: #f8fafc; padding: 40px;">`;
+                htmlDeck += `<h1 style="text-align: center; color: #1e3a8a; margin-bottom: 30px;">📊 PowerPoint Presentation Deck</h1>`;
+                currentSlidesData.forEach((slide, idx) => {
+                    htmlDeck += `<div style="background: white; border: 2px solid #cbd5e1; border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always;">`;
+                    htmlDeck += `<div style="font-size: 14px; font-weight: bold; color: #2563eb; margin-bottom: 8px;">Slide ${idx + 1} of ${currentSlidesData.length} &bull; ${escapeHtml(slide.focusLabel || '')}</div>`;
+                    htmlDeck += `<h2 style="color: #0f172a; margin-top: 0; font-size: 24px;">${escapeHtml(slide.title)}</h2>`;
+                    htmlDeck += `<ul style="font-size: 16px; color: #334155; line-height: 1.8;">`;
+                    if (slide.bulletPoints && slide.bulletPoints.length > 0) {
+                        slide.bulletPoints.forEach(pt => {
+                            htmlDeck += `<li>${escapeHtml(pt)}</li>`;
+                        });
+                    }
+                    htmlDeck += `</ul>`;
+                    if (slide.focusNote) {
+                        htmlDeck += `<div style="margin-top: 20px; padding: 12px 16px; background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 6px; font-style: italic; color: #1e40af; font-size: 14px;"><strong>Speaker Note:</strong> ${escapeHtml(slide.focusNote)}</div>`;
+                    }
+                    htmlDeck += `</div>`;
+                });
+                htmlDeck += `</body></html>`;
+
+                const blob = new Blob([htmlDeck], { type: 'application/vnd.ms-powerpoint' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `English_Lesson_Presentation.pptx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast("PowerPoint (.pptx) presentation exported successfully! 📊", "✨");
+            }, 600);
         }
 
         function playAudioChime(audioCtx, destination) {
