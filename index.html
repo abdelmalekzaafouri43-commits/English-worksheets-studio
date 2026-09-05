@@ -1893,7 +1893,7 @@
         }
         
         /* Spiral Notebook Border & Realistic 3D Binding Coil */
-        .a4-preview.border-spiral {
+        .a4-preview.{
             border: var(--ws-border-width, 2.5px) solid #2563eb !important;
             border-radius: 22px !important;
             padding-left: 70px !important;
@@ -1901,7 +1901,7 @@
             outline: none !important;
             position: relative;
         }
-        .a4-preview.border-spiral .a4-spiral-binding {
+        .a4-preview..a4-spiral-binding {
             display: flex !important;
         }
         .a4-spiral-binding {
@@ -5097,7 +5097,7 @@
             </div>
         </div>
 
-        <div class="a4-preview border-spiral has-qr" id="a4-preview-area" style="margin-top: 20px;">
+        <div class="a4-preview has-qr" id="a4-preview-area" style="margin-top: 20px;">
             <div id="a4-spiral-binding" class="a4-spiral-binding" aria-hidden="true"></div>
             <div id="a4-watermark-overlay" class="a4-watermark-layer"></div>
             <div id="a4-qr-footer" class="a4-qr-layer" onclick="openDigitalShareModal(event)" style="cursor: pointer;" title="Click to view and share digital link">
@@ -5758,7 +5758,7 @@
 
         
         // --- SPIRAL NOTEBOOK BINDING ENGINE ---
-        let isSpiralNotebookEnabled = true;
+        let isSpiralNotebookEnabled = false;
         let isVisualCardsMode = true;
 
         function renderSpiralBinding() {
@@ -9006,7 +9006,7 @@ Instruction: You MUST base the worksheet directly on the reference sample materi
                 blocks.forEach((block, index) => {
                     const blockHeight = block.offsetHeight;
                     const style = window.getComputedStyle(block);
-                    const marginTotal = parseFloat(style.marginTop || 0) + parseFloat(style.marginBottom || 0);
+                    const marginTotal = (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
                     const totalBlockSpace = blockHeight + marginTotal;
                     
                     if (currentHeight + totalBlockSpace > MAX_CONTENT_HEIGHT && index !== 0) {

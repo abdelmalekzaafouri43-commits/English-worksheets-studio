@@ -447,7 +447,7 @@
 
         
         // --- SPIRAL NOTEBOOK BINDING ENGINE ---
-        let isSpiralNotebookEnabled = true;
+        let isSpiralNotebookEnabled = false;
         let isVisualCardsMode = true;
 
         function renderSpiralBinding() {
